@@ -1,0 +1,123 @@
+---
+title: "Project Proposal"
+author: "Neil Chin (nkc2124) & Yahui Wu (yw3551)"
+date: '`r Sys.Date()`'
+output:
+  pdf_document:
+    toc: no
+    toc_depth: '3'
+    number_sections: yes
+  html_document:
+    toc: yes
+    toc_depth: 3
+    toc_float: yes
+    number_sections: yes
+    highlight: tango
+    theme: default
+    fig_caption: yes
+    df_print: tibble
+urlcolor: blue
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+library(tidyverse) 
+library(readxl)
+library(lubridate)
+library(censusapi)
+```
+
+# Reseach Question and Motivations
+
+# Policy Background
+
+# Data Description
+
+# Preliminary Exploratory Analysis
+
+```{r}
+```
+
+# Empirical Strategy
+
+# Appendix
+
+## Data Importing and Cleaning
+
+### Appalachian Counties Data
+
+The Appalachian Regional Commission defines 423 counties in 13 states (West Virginia, Alabama, Georgia, Kentucky, Maryland, Mississippi, New York, North Carolina, Ohio, Pennsylvania, South Carolina, Tennessee, and Virginia) as demarcating the Appalachian region. We adopt this geographical definition in our research approach.
+
+More information available at: https://www.arc.gov/appalachian-counties-served-by-arc/
+
+```{r}
+appalachian_counties <- read_excel('data/appalachian_counties_ARC_2021.xlsx')
+```
+
+### Medicaid Expansion
+
+Of the 13 states, five states (Kentucky, Maryland, New York, Ohio, and West Virginia) passed legislation mandating the expansion of medicaid as of January 1st, 2014. Two additional states, Pennsylvania and Virginia, would later expand Medicaid, with the former in 2015 and the latter in 2019. Six states (Alabama, Georgia, Mississippi, North Carolina, South Carolina, and Tennessee) have not expanded Medicaid to-date.
+
+We add a dummy variable into our data to reflect this policy difference.
+
+```{r}
+# Create dummy variable for medicaid expansion and a variable for date of expansion
+
+expansion <- c("Kentucky", "Maryland", "New York", "Ohio", "West Virginia",
+                     "Pennsylvania", "Virginia")
+
+no_expansion <- c("Alabama", "Georgia", "Mississippi", "North Carolina", 
+                  "South Carolina", "Tennessee")
+
+appalachian_counties <- appalachian_counties %>% 
+  mutate(medicaid_expansion = as.numeric(STATE %in% expansion),
+         expansion_date = make_date(2014, 1, 1))
+
+# Re-code dates for non-expansion and late expansion states
+
+appalachian_counties$expansion_date[appalachian_counties$STATE %in% no_expansion] <-
+  NA 
+appalachian_counties$expansion_date[appalachian_counties$STATE == "Pennsylvania"] <-
+  make_date(2015,1,1)
+appalachian_counties$expansion_date[appalachian_counties$STATE == "Virginia"] <-
+  make_date(2019,1,1)
+
+```
+
+### Overdose Deaths
+
+Our data on drug overdose deaths comes from estimates modeled by the National Center for Health Statistics (NCHS), which are available at the county-level for the period 2003-2020. Source link: https://www.cdc.gov/nchs/data-visualization/drug-poisoning-mortality/
+
+```{r}
+overdose_data <- read_csv("data/NCHS_-_Drug_Poisoning_Mortality_by_County__United_States.csv")
+
+# We only keep columns for FIPS codes (merging purposes) and modeled overdose deaths
+
+overdose_data <- overdose_data %>% 
+  select(FIPS, `Model-based Death Rate`) %>%
+  rename(estimated_overdose_death_rate = `Model-based Death Rate`)
+```
+
+### ACS Data
+
+To control for time-variant, county-variant factors, we pull demographic data from the US Census Bureau's American Community Survey, for years 2013-2015.
+
+```{r}
+
+Sys.setenv(CENSUS_KEY="b79b301dc87bb0fd551147883a8141dca4e2823e")
+
+#Pull 2013 ACS data
+acs_2013 <- getCensus(name = "acs/acs1", vintage = 2013,
+                               vars = c("B00001_001E"),
+                               region = "county:*",
+                               regionin = "state:*")
+
+#Pull 2014 ACS data
+acs_2014 <- getCensus(name = "acs/acs1", vintage = 2014,
+                               vars = c("B00001_001E"),
+                               region = "county:*",
+                               regionin = "state:*")
+
+```
+
+
