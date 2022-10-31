@@ -118,6 +118,13 @@ acs_2014 <- getCensus(name = "acs/acs1", vintage = 2014,
                                region = "county:*",
                                regionin = "state:*")
 
+
+#Pull 2014 ACS data
+acs_2014 <- getCensus(name = "acs/acs1", vintage = 2015,
+                               vars = c("B00001_001E"),
+                               region = "county:*",
+                               regionin = "state:*")
+
 ```
 
 
