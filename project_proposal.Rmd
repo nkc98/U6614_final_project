@@ -31,6 +31,8 @@ library(lubridate)
 
 **Did 2014 Medicaid expansion reduce drug overdose deaths in Appalachia?**
 
+[@ Nicole, some useful background here could be context for drug overdose deaths in Appalachia. Historically, drug overdoses have been super high in the region, so there should be a ton of good articles out there!]
+
 # Policy Background
 
 The Affordable Care Act (ACA) was passed by the United States Congress and signed into law by President Barack Obama in 2010, drastically changing the policy landscape for health care in the United States. Among the major provisions in the ACA was expanded eligibility for Medicaid (i.e., "Medicaid Expansion"), which allowed states to raise the income-eligibility threshold to 138% of the federal poverty level. 
