@@ -29,7 +29,7 @@ library(censusapi)
 
 # Reseach Question and Motivations
 
-HI NICOLE
+*Did 2014 Medicaid expansion reduce drug overdose deaths in Appalachia?*
 
 # Policy Background
 
