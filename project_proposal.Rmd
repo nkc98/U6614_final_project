@@ -22,9 +22,9 @@ urlcolor: blue
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 library(tidyverse) 
+library(tidycensus)
 library(readxl)
 library(lubridate)
-library(censusapi)
 ```
 
 # Reseach Question and Motivations
@@ -33,16 +33,30 @@ library(censusapi)
 
 # Policy Background
 
-The Affordable Care Act (ACA) was passed by the United States Congress and signed into law by President Barack Obama in 2010, drastically changing the policy landscape for 
+The Affordable Care Act (ACA) was passed by the United States Congress and signed into law by President Barack Obama in 2010, drastically changing the policy landscape for health care in the United States. Among the major provisions in the ACA was expanded eligibility for Medicaid (i.e., "Medicaid Expansion"), which allowed states to raise the income-eligibility threshold to 138% of the federal poverty level. 
+
+Among the 13 states whose boundaries overlap with the broad geographical definition of Appalachia, five states (Kentucky, Maryland, New York, Ohio, and West Virginia) passed legislation mandating the expansion of Medicaid as of January 1st, 2014. Two additional states, Pennsylvania and Virginia, would later expand Medicaid, with the former in 2015 and the latter in 2019. Six states (Alabama, Georgia, Mississippi, North Carolina, South Carolina, and Tennessee) have not expanded Medicaid to-date. 
+
+In our study, we identify this policy adoption differential as a "treatment" affecting drug overdose incidence in Appalachian communities. Expanded Medicaid eligibility allowed for greater access to low-cost health care in expansion states, therefore theoretically enabling people struggling with drug addiction to receive treatment and thus reducing overall deaths from drug overdose.
 
 # Data Description
 
+Our data examines drug overdose deaths in Appalachian counties over the period 2012-2015.
+
+[TK, sources currently found in the Appendices]
+
 # Preliminary Exploratory Analysis
+
+Summary statistics for counties in expansion states and for counties in non-expansion states.
 
 ```{r}
 ```
 
 # Empirical Strategy
+
+To evaluate the effect of Medicaid expansion on drug overdose deaths in Appalachian counties, we estimate the following "differences-in-differences" specification:
+
+$Overdose~Death~Rate_{it} =  Medicaid~Expansion_{it} + Medicaid~Expansion_{it}*Post~Expansion_{t} + Male~Share_{it} + Average ~Age_{it} + Black~Share_{it} + Median~Income_{it} + \Gamma_{i} + \Upsilon_{t} + \varepsilon_{it}$
 
 # Appendix
 
@@ -52,7 +66,7 @@ The Affordable Care Act (ACA) was passed by the United States Congress and signe
 
 The Appalachian Regional Commission defines 423 counties in 13 states (West Virginia, Alabama, Georgia, Kentucky, Maryland, Mississippi, New York, North Carolina, Ohio, Pennsylvania, South Carolina, Tennessee, and Virginia) as demarcating the Appalachian region. We adopt this geographical definition in our research approach.
 
-More information available at: https://www.arc.gov/appalachian-counties-served-by-arc/
+More information available at: https://www.arc.gov/appalachian-counties-served-by-arc/.
 
 ```{r}
 appalachian_counties <- read_excel('data/appalachian_counties_ARC_2021.xlsx')
@@ -60,7 +74,7 @@ appalachian_counties <- read_excel('data/appalachian_counties_ARC_2021.xlsx')
 
 ### Medicaid Expansion
 
-Of the 13 states, five states (Kentucky, Maryland, New York, Ohio, and West Virginia) passed legislation mandating the expansion of medicaid as of January 1st, 2014. Two additional states, Pennsylvania and Virginia, would later expand Medicaid, with the former in 2015 and the latter in 2019. Six states (Alabama, Georgia, Mississippi, North Carolina, South Carolina, and Tennessee) have not expanded Medicaid to-date.
+Of the 13 states, five states (Kentucky, Maryland, New York, Ohio, and West Virginia) passed legislation mandating the expansion of Medicaid as of January 1st, 2014. Two additional states, Pennsylvania and Virginia, would later expand Medicaid, with the former in 2015 and the latter in 2019. Six states (Alabama, Georgia, Mississippi, North Carolina, South Carolina, and Tennessee) have not expanded Medicaid to-date.
 
 We add a dummy variable into our data to reflect this policy difference. Information on state-level Medicaid expansion available at: https://www.kff.org/medicaid/issue-brief/status-of-state-medicaid-expansion-decisions-interactive-map/.
 
@@ -69,7 +83,6 @@ We add a dummy variable into our data to reflect this policy difference. Informa
 
 expansion <- c("Kentucky", "Maryland", "New York", "Ohio", "West Virginia",
                      "Pennsylvania", "Virginia")
-
 no_expansion <- c("Alabama", "Georgia", "Mississippi", "North Carolina", 
                   "South Carolina", "Tennessee")
 
@@ -90,7 +103,7 @@ appalachian_counties$expansion_date[appalachian_counties$STATE == "Virginia"] <-
 
 ### Overdose Deaths
 
-Our data on drug overdose deaths comes from estimates modeled by the National Center for Health Statistics (NCHS), which are available at the county-level for the period 2003-2020. Source link: https://www.cdc.gov/nchs/data-visualization/drug-poisoning-mortality/
+Our data on drug overdose deaths comes from estimates modeled by the National Center for Health Statistics (NCHS), which are available at the county-level for the period 2003-2020. Source link: https://www.cdc.gov/nchs/data-visualization/drug-poisoning-mortality/.
 
 ```{r}
 overdose_data <- read_csv("data/NCHS_-_Drug_Poisoning_Mortality_by_County__United_States.csv")
@@ -104,31 +117,15 @@ overdose_data <- overdose_data %>%
 
 ### ACS Data
 
-To control for time-variant, county-variant factors, we pull demographic data from the US Census Bureau's American Community Survey, for years 2013-2015.
+To control for time-variant, county-variant factors, we pull demographic data from the US Census Bureau's American Community Survey, for years 2013-2015. Data is downloaded from the US Census Bureau API using the package tidycensus.
 
 ```{r}
 
-Sys.setenv(CENSUS_KEY="b79b301dc87bb0fd551147883a8141dca4e2823e")
+census_api_key("b79b301dc87bb0fd551147883a8141dca4e2823e")
 
-#Pull 2013 ACS data
-acs_2013 <- getCensus(name = "acs/acs1", vintage = 2013,
-                               vars = c("B00001_001E"),
-                               region = "county:*",
-                               regionin = "state:*")
-
-#Pull 2014 ACS data
-acs_2014 <- getCensus(name = "acs/acs1", vintage = 2014,
-                               vars = c("B00001_001E"),
-                               region = "county:*",
-                               regionin = "state:*")
-
-
-#Pull 2015 ACS data
-acs_2014 <- getCensus(name = "acs/acs1", vintage = 2015,
-                               vars = c("B00001_001E"),
-                               region = "county:*",
-                               regionin = "state:*")
-
+acs_2012 = get_acs(geography = "county",
+                   variables = c(medincome = "B19013_001"),
+                   year = 2012)
 ```
 
 ## Merge Data into Consolidated Data Set
