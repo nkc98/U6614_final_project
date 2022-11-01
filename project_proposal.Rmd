@@ -1,6 +1,6 @@
 ---
 title: "U6614 Final Project Proposal — Deliverable 2"
-author: "Neil Chin (nkc2124) & Nicole (Yahui) Wu (yw3551)"
+author: "Neil Chin (nkc2124) & Nicole Yahui Wu (yw3551)"
 date: '`r Sys.Date()`'
 output:
   pdf_document:
@@ -39,7 +39,7 @@ The Affordable Care Act (ACA) was passed by the United States Congress and signe
 
 Among the 13 states whose boundaries overlap with the broad geographical definition of Appalachia, five states (Kentucky, Maryland, New York, Ohio, and West Virginia) passed legislation mandating the expansion of Medicaid as of January 1st, 2014. Two additional states, Pennsylvania and Virginia, would later expand Medicaid, with the former in 2015 and the latter in 2019. Six states (Alabama, Georgia, Mississippi, North Carolina, South Carolina, and Tennessee) have not expanded Medicaid to-date. 
 
-In our study, we identify this policy adoption differential as a "treatment" affecting drug overdose incidence in Appalachian communities. Expanded Medicaid eligibility allowed for greater access to low-cost health care in expansion states, therefore theoretically enabling people struggling with drug addiction to receive treatment and thus reducing overall deaths from drug overdose.
+In our study, we identify this policy adoption differential as a "treatment" affecting drug overdose incidence in Appalachian communities. Expanded Medicaid eligibility allowed for greater access to low-cost health care in expansion states, therefore potentially enabling people struggling with drug addiction to receive treatment and thus reducing overall deaths from drug overdose.
 
 # Data Description
 
@@ -59,6 +59,16 @@ year_county_panel <- readRDS("yearly_panel.rds")
 
 [Note: Can use ggplot facet wrapping and histograms to show distribution between "treatment" and "control" groups for each year]
 
+```{r}
+year_county_panel %>% 
+    ggplot(aes(x = estimated_overdose_death_rate, 
+               color = as.factor(medicaid_expansion), 
+               fill = as.factor(medicaid_expansion))) +
+    geom_histogram() + 
+    facet_wrap(~ Year, nrow = 4)
+```
+
+
 # Empirical Strategy
 
 To evaluate the effect of Medicaid expansion on drug overdose deaths in Appalachian counties, we would like to estimate the following "differences-in-differences" specification:
@@ -68,7 +78,9 @@ $Overdose~Death~Rate_{it} =  Medicaid~Expansion_{it} + Medicaid~Expansion_{it}*P
 [Explanation of why we use fixed effects]
 
 
-Key limitations — 1). both overdose data and ACS data are estimates, which are subject to error, 2). potential imbalance between pseudo "treatment" and "control" groups
+Key limitations — 1). both overdose data and ACS data are estimates, which are subject to error, 2). potential imbalance between pseudo "treatment" and "control" groups.
+
+To address the first limitation, we compile two years of data for the pre- and post-"treatment" periods, to smooth out any potential irregularities in single-year estimates.
 
 # Appendix
 
@@ -129,10 +141,10 @@ overdose_data <- overdose_data %>%
 
 ### ACS Data
 
-To control for time-variant, county-variant factors, we pull demographic data from the US Census Bureau's American Community Survey, for years 2013-2015. Data is downloaded from the US Census Bureau API using the package tidycensus.
+To control for time-variant, county-variant factors, we pull demographic data from the US Census Bureau's American Community Survey, for years 2012-2015. Data is downloaded from the US Census Bureau API using the package tidycensus.
 
 ```{r}
-census_api_key("b79b301dc87bb0fd551147883a8141dca4e2823e")
+census_api_key("b79b301dc87bb0fd551147883a8141dca4e2823e", install = TRUE)
 
 # Pull 2012 ACS county-level data 
 
@@ -268,7 +280,5 @@ yearly_counties_panel_overdose_acs <- appalachian_counties_overdose_panel %>%
   left_join(acs_12_to_15, by = c("FIPS", "Year"))
 
 saveRDS(yearly_counties_panel_overdose_acs, file = "yearly_panel.rds")
-
-# Create final panel 
 ```
 
