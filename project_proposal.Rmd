@@ -1,6 +1,6 @@
 ---
 title: "U6614 Final Project Proposal — Deliverable 2"
-author: "Neil Chin (nkc2124) & Yahui Wu (yw3551)"
+author: "Neil Chin (nkc2124) & Nicole (Yahui) Wu (yw3551)"
 date: '`r Sys.Date()`'
 output:
   pdf_document:
@@ -43,7 +43,9 @@ In our study, we identify this policy adoption differential as a "treatment" aff
 
 # Data Description
 
-Our data examines drug overdose deaths in Appalachian counties over the period 2012-2015.
+Our data examines drug overdose deaths in Appalachian counties over the period 2012-2015. The subset of US counties defined as "Appalachian" is based on the jurisdiction of the Appalachian Regional Council. 
+
+Data on drug overdose deaths comes from estimates modeled by the National Center for Health Statistics (NCHS), which are available at the county-level for the period 2003-2020. Unfortunately, county-level statistics on overdose deaths based on final counts of cause of death reporting only became available in 2020, outside of the time frame of this study.
 
 [TK, sources currently found in the Appendices]
 
@@ -52,6 +54,7 @@ Our data examines drug overdose deaths in Appalachian counties over the period 2
 Summary statistics for counties in expansion states and for counties in non-expansion states.
 
 ```{r}
+year_county_panel <- readRDS("yearly_panel.rds")
 ```
 
 [Note: Can use ggplot facet wrapping and histograms to show distribution between "treatment" and "control" groups for each year]
@@ -117,7 +120,7 @@ Our data on drug overdose deaths comes from estimates modeled by the National Ce
 ```{r}
 overdose_data <- read_csv("data/NCHS_-_Drug_Poisoning_Mortality_by_County__United_States.csv")
 
-# Keep columns for FIPS codes (merging purposes), year, and modeled overdose deaths
+# Keep columns for FIPS codes, year, and modeled overdose deaths
 
 overdose_data <- overdose_data %>% 
   select(FIPS, Year, `Model-based Death Rate`) %>%
@@ -131,14 +134,141 @@ To control for time-variant, county-variant factors, we pull demographic data fr
 ```{r}
 census_api_key("b79b301dc87bb0fd551147883a8141dca4e2823e")
 
-acs_2012 = get_acs(geography = "county",
-                   variables = c(medincome = "B19013_001"),
+# Pull 2012 ACS county-level data 
+
+acs_2012 <- get_acs(geography = "county",
+                   variables = c(population = "B01001_001",
+                                 white_pop = "B01001H_001",
+                                 hisp_pop = "B01001I_001",
+                                 asian_pop = "B02001_005",
+                                 black_pop = "B02001_003",
+                                 male_pop = "B01001_002",
+                                 med_income = "B19013_001",
+                                 med_age = "B01002_001"),
                    year = 2012)
+
+acs_2012 <- acs_2012 %>% 
+  select(-moe, -NAME) %>% 
+  spread(key = variable, value = estimate) %>% 
+  mutate(Year = 2012,
+         white_share = 100 * (white_pop/population),
+         hisp_share = 100 * (hisp_pop/population),
+         asian_share = 100 * (asian_pop/population),
+         black_share = 100 * (black_pop/population),
+         male_share = 100 * (male_pop/population))
+
+# Pull 2013 ACS county-level data 
+
+acs_2013 <- get_acs(geography = "county",
+                   variables = c(population = "B01001_001",
+                                 white_pop = "B01001H_001",
+                                 hisp_pop = "B01001I_001",
+                                 asian_pop = "B02001_005",
+                                 black_pop = "B02001_003",
+                                 male_pop = "B01001_002",
+                                 med_income = "B19013_001",
+                                 med_age = "B01002_001"),
+                   year = 2013)
+
+acs_2013 <- acs_2013 %>% 
+  select(-moe, -NAME) %>% 
+  spread(key = variable, value = estimate) %>% 
+  mutate(Year = 2013,
+         white_share = 100 * (white_pop/population),
+         hisp_share = 100 * (hisp_pop/population),
+         asian_share = 100 * (asian_pop/population),
+         black_share = 100 * (black_pop/population),
+         male_share = 100 * (male_pop/population))
+
+# Pull 2014 ACS county-level data 
+
+acs_2014 <- get_acs(geography = "county",
+                   variables = c(population = "B01001_001",
+                                 white_pop = "B01001H_001",
+                                 hisp_pop = "B01001I_001",
+                                 asian_pop = "B02001_005",
+                                 black_pop = "B02001_003",
+                                 male_pop = "B01001_002",
+                                 med_income = "B19013_001",
+                                 med_age = "B01002_001"),
+                   year = 2014)
+
+acs_2014 <- acs_2014 %>% 
+  select(-moe, -NAME) %>% 
+  spread(key = variable, value = estimate) %>% 
+  mutate(Year = 2014,
+         white_share = 100 * (white_pop/population),
+         hisp_share = 100 * (hisp_pop/population),
+         asian_share = 100 * (asian_pop/population),
+         black_share = 100 * (black_pop/population),
+         male_share = 100 * (male_pop/population))
+
+# Pull 2015 ACS county-level data 
+
+acs_2015 <- get_acs(geography = "county",
+                   variables = c(population = "B01001_001",
+                                 white_pop = "B01001H_001",
+                                 hisp_pop = "B01001I_001",
+                                 asian_pop = "B02001_005",
+                                 black_pop = "B02001_003",
+                                 male_pop = "B01001_002",
+                                 med_income = "B19013_001",
+                                 med_age = "B01002_001"),
+                   year = 2015)
+
+acs_2015 <- acs_2015 %>% 
+  select(-moe, -NAME) %>% 
+  spread(key = variable, value = estimate) %>% 
+  mutate(Year = 2015,
+         white_share = 100 * (white_pop/population),
+         hisp_share = 100 * (hisp_pop/population),
+         asian_share = 100 * (asian_pop/population),
+         black_share = 100 * (black_pop/population),
+         male_share = 100 * (male_pop/population))
+
+# Append into single ACS data frame, rename GEOID as FIPS
+
+acs_12_to_15 <- rbind(acs_2012, acs_2013, acs_2014, acs_2015)
+acs_12_to_15 <- acs_12_to_15 %>% 
+  mutate(GEOID = as.numeric(GEOID)) %>% 
+  rename(FIPS = GEOID)
 ```
 
 ## Merge Data into Consolidated Data Set
 
+We merge the Appalachian counties data, overdose data, and ACS data into a single data set.
+
 ```{r}
 
+# Create four versions of the Appalachian counties data, one for each year in our study, then append into a panel
+
+appalachian_counties_12 <- appalachian_counties %>% 
+  mutate(Year = 2012)
+appalachian_counties_13 <- appalachian_counties %>% 
+  mutate(Year = 2013)
+appalachian_counties_14 <- appalachian_counties %>% 
+  mutate(Year = 2014)
+appalachian_counties_15 <- appalachian_counties %>% 
+  mutate(Year = 2015)
+
+appalachian_counties_panel <- rbind(appalachian_counties_12,
+                                    appalachian_counties_13,
+                                    appalachian_counties_14,
+                                    appalachian_counties_15)
+
+# Merge panel with overdose data
+
+appalachian_counties_overdose_panel <- appalachian_counties_panel %>% 
+  mutate(FIPS = as.numeric(FIPS)) %>% 
+  left_join(overdose_data, by = c("FIPS", "Year"))
+
+# Merge panel with ACS data (save as an RDS file)
+
+yearly_counties_panel_overdose_acs <- appalachian_counties_overdose_panel %>% 
+  left_join(acs_12_to_15, by = c("FIPS", "Year"))
+
+saveRDS(yearly_counties_panel_overdose_acs, file = "yearly_panel.rds")
+
+# Create final panel 
 ```
 
