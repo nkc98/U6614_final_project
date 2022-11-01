@@ -54,13 +54,15 @@ Summary statistics for counties in expansion states and for counties in non-expa
 
 # Empirical Strategy
 
-To evaluate the effect of Medicaid expansion on drug overdose deaths in Appalachian counties, we estimate the following "differences-in-differences" specification:
+To evaluate the effect of Medicaid expansion on drug overdose deaths in Appalachian counties, we would like to estimate the following "differences-in-differences" specification:
 
-$Overdose~Death~Rate_{it} =  Medicaid~Expansion_{it} + Medicaid~Expansion_{it}*Post~Expansion_{t} + Male~Share_{it} + Average ~Age_{it} + Black~Share_{it} + Median~Income_{it} + \Gamma_{i} + \Upsilon_{t} + \varepsilon_{it}$
+$Overdose~Death~Rate_{it} =  Medicaid~Expansion_{it} + Medicaid~Expansion_{it}*Post~Expansion_{t} + Male~Share_{it} + Average ~Age_{it} + Black~Share_{it} + Median~Income_{it} + \Gamma_{i} + Post~Expansion_{t} + u_{it}$
+
+[Explanation of why we use fixed effects]
 
 # Appendix
 
-## Data Importing and Cleaning
+## Data Sourcing and Cleaning
 
 ### Appalachian Counties Data
 
