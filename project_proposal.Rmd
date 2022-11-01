@@ -29,6 +29,8 @@ library(censusapi)
 
 # Reseach Question and Motivations
 
+HI NICOLE
+
 # Policy Background
 
 # Data Description
