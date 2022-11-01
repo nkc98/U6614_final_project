@@ -1,5 +1,5 @@
 ---
-title: "Project Proposal"
+title: "U6614 Final Project Proposal — Deliverable 2"
 author: "Neil Chin (nkc2124) & Yahui Wu (yw3551)"
 date: '`r Sys.Date()`'
 output:
@@ -54,13 +54,18 @@ Summary statistics for counties in expansion states and for counties in non-expa
 ```{r}
 ```
 
+[Note: Can use ggplot facet wrapping and histograms to show distribution between "treatment" and "control" groups for each year]
+
 # Empirical Strategy
 
 To evaluate the effect of Medicaid expansion on drug overdose deaths in Appalachian counties, we would like to estimate the following "differences-in-differences" specification:
 
-$Overdose~Death~Rate_{it} =  Medicaid~Expansion_{it} + Medicaid~Expansion_{it}*Post~Expansion_{t} + Male~Share_{it} + Average ~Age_{it} + Black~Share_{it} + Median~Income_{it} + \Gamma_{i} + Post~Expansion_{t} + u_{it}$
+$Overdose~Death~Rate_{it} =  Medicaid~Expansion_{it} + Medicaid~Expansion_{it}*Post~Expansion_{t} + Male~Share_{it} + Average ~Age_{it} + Black~Share_{it} + Median~Income_{it} + Post~Expansion_{t} + \Gamma_{i}  + u_{it}$
 
 [Explanation of why we use fixed effects]
+
+
+Key limitations — 1). both overdose data and ACS data are estimates, which are subject to error, 2). potential imbalance between pseudo "treatment" and "control" groups
 
 # Appendix
 
@@ -124,7 +129,6 @@ overdose_data <- overdose_data %>%
 To control for time-variant, county-variant factors, we pull demographic data from the US Census Bureau's American Community Survey, for years 2013-2015. Data is downloaded from the US Census Bureau API using the package tidycensus.
 
 ```{r}
-
 census_api_key("b79b301dc87bb0fd551147883a8141dca4e2823e")
 
 acs_2012 = get_acs(geography = "county",
