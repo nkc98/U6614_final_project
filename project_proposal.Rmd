@@ -39,7 +39,7 @@ The Affordable Care Act (ACA) was passed by the United States Congress and signe
 
 Among the 13 states whose boundaries overlap with the broad geographical definition of Appalachia, five states (Kentucky, Maryland, New York, Ohio, and West Virginia) passed legislation mandating the expansion of Medicaid as of January 1st, 2014. Two additional states, Pennsylvania and Virginia, would later expand Medicaid, with the former in 2015 and the latter in 2019. Six states (Alabama, Georgia, Mississippi, North Carolina, South Carolina, and Tennessee) have not expanded Medicaid to-date. 
 
-In our study, we identify this policy adoption differential as a "treatment" affecting drug overdose incidence in Appalachian communities. Expanded Medicaid eligibility allowed for greater access to low-cost health care in expansion states, therefore potentially enabling people struggling with drug addiction to receive treatment and thus reducing overall deaths from drug overdose.
+In our study, we identify this policy adoption differential as a "treatment" affecting drug overdose incidence in Appalachian communities. Expanded Medicaid eligibility allowed for greater access to low-cost health care in expansion states, therefore potentially enabling people struggling with drug addiction to receive treatment that otherwise would not have been able to receive care, reducing overall deaths from drug overdose.
 
 # Data Description
 
@@ -144,7 +144,7 @@ overdose_data <- overdose_data %>%
 To control for time-variant, county-variant factors, we pull demographic data from the US Census Bureau's American Community Survey, for years 2012-2015. Data is downloaded from the US Census Bureau API using the package tidycensus.
 
 ```{r}
-census_api_key("b79b301dc87bb0fd551147883a8141dca4e2823e", install = TRUE)
+census_api_key("b79b301dc87bb0fd551147883a8141dca4e2823e")
 
 # Pull 2012 ACS county-level data 
 
