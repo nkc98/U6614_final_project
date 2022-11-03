@@ -177,12 +177,12 @@ pre_2014_non_expansion_county_panel
 
 ### Post-Expansion Descriptive Statistics in Non-Expansion States
 
-```{r prep descriptive statistics, include = FALSE}
+```{r, include = FALSE}
 # @ Nicole, you can use this dataframe to write the code for descriptive statistics in this code chunk
 post_2014_non_expansion_county_panel
 ```
 
-```{r display descrpitive statistics}
+```{r}
 # @ Nicole, then use this chunk to display the table of descriptive statistics
 
 # e.g., for each x variable (median income, median age, male share, black share, etc.) calculate and display
