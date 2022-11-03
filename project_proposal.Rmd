@@ -93,6 +93,8 @@ In total, `r expansion_count[2]` Appalachian counties are located in expansion s
 
 In the histogram below, it is clear that the distribution of county-level drug overdose rates — our outcome variable of interest — differs considerably between counties in expansion states and counties in non-expansion states. Distributions also change year over year, and the distribution "spread" shows that there is considerable variation in overdose death rates within expansion and non-expansion counties.
 
+From a purely visual standpoint, it is not immediately evident whether Medicaid expansion had any effect on drug overdose death rates.
+
 ```{r}
 county_overdose_histogram
 ```
