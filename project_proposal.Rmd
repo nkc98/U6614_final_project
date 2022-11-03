@@ -27,31 +27,35 @@ library(readxl)
 library(lubridate)
 ```
 
-# Reseach Question and Motivations
+# Research Question and Motivations
 
 **Did 2014 Medicaid expansion reduce drug overdose deaths in Appalachia?**
 
-[@ Nicole, some useful background here could be context for drug overdose deaths in Appalachia. Historically, drug overdoses have been super high in the region, so there should be a ton of good articles out there!]
+Deaths due to drug overdose are a pressing problem facing United States policymakers, with reportedly more than 932,000 people dying due to overdose since 1999 ([CDC, 2022](https://www.cdc.gov/drugoverdose/deaths/index.html)). Rate of overdose deaths increased in nearly every US state from 2013-2017, with particularly severe incidence in the Appalachian region ([CDC, 2020](https://www.cdc.gov/drugoverdose/deaths/2013-2017-increase.html), [CDC, 2021](https://www.cdc.gov/drugoverdose/deaths/2014.html)). The increase in deaths is driven primarily by the ongoing US  opioid crisis, with the vast majority of deaths associated with opioid use ([CDC, 2022](https://www.cdc.gov/drugoverdose/deaths/index.html)).
+
+In this context, we hope to assess whether expansion of the social safety net through government policy can be causally linked to reductions in drug overdose death rates. Specifically, we examine the estimated effects of the 2014 expansion of the US Medicaid program, which increased income-based eligibility for healthcare (including drug addiction treatment) in some Appalachian states, on drug overdose deaths. We hope that the findings from this study can assist policymakers in determining whether expanding access to healthcare in low-income areas is a viable policy mechanism for addressing the ongoing drug overdose crisis.
 
 # Policy Background
 
-The Affordable Care Act (ACA) was passed by the United States Congress and signed into law by President Barack Obama in 2010, drastically changing the policy landscape for health care in the United States. Among the major provisions in the ACA was expanded eligibility for Medicaid (i.e., "Medicaid Expansion"), which allowed states to raise the income-eligibility threshold to 138% of the federal poverty level. 
+The Affordable Care Act (ACA) was passed by the United States Congress and signed into law by President Barack Obama in 2010, drastically changing the policy landscape for health care in the United States. Among the major provisions in the ACA was expanded eligibility for Medicaid (i.e., "Medicaid Expansion"), which allowed states to raise the income-eligibility threshold to 138% of the federal poverty level ([KFF, 2022](https://www.kff.org/medicaid/issue-brief/status-of-state-medicaid-expansion-decisions-interactive-map/)). 
 
-Among the 13 states whose boundaries overlap with the broad geographical definition of Appalachia, five states (Kentucky, Maryland, New York, Ohio, and West Virginia) passed legislation mandating the expansion of Medicaid as of January 1st, 2014. Two additional states, Pennsylvania and Virginia, would later expand Medicaid, with the former in 2015 and the latter in 2019. Six states (Alabama, Georgia, Mississippi, North Carolina, South Carolina, and Tennessee) have not expanded Medicaid to-date. 
+Among the 13 states whose boundaries overlap with the broad geographical definition of Appalachia, five states (Kentucky, Maryland, New York, Ohio, and West Virginia) passed legislation mandating the expansion of Medicaid as of January 1st, 2014 ([KFF, 2022](https://www.kff.org/medicaid/issue-brief/status-of-state-medicaid-expansion-decisions-interactive-map/)). Two additional states, Pennsylvania and Virginia, would later expand Medicaid, with the former in 2015 and the latter in 2019. Six states (Alabama, Georgia, Mississippi, North Carolina, South Carolina, and Tennessee) have not expanded Medicaid to-date. 
 
-In our study, we identify this policy adoption differential as a "treatment" affecting drug overdose incidence in Appalachian communities. Expanded Medicaid eligibility allowed for greater access to low-cost health care in expansion states, therefore potentially enabling people struggling with drug addiction to receive treatment that otherwise would not have been able to receive care, reducing overall deaths from drug overdose.
+In our study, we identify this policy adoption discrepancy as a "treatment" (i.e., "differential exposure within entities over time") affecting drug overdose incidence in Appalachian communities. Our hypothesized causal mechanism is that expanded Medicaid eligibility allowed for greater access to low-cost health care among Appalachian counties in expansion states, therefore enabling people struggling with drug addiction to receive treatment when they otherwise would not have been able to receive care, reducing overall deaths from drug overdose in these areas.
 
 # Data Description
 
-Our data examines drug overdose deaths in Appalachian counties over the period 2012-2015. The subset of US counties defined as "Appalachian" is based on the jurisdiction of the Appalachian Regional Council. 
+Our data examines drug overdose deaths in Appalachian counties over the period 2012-2015. The subset of US counties defined as "Appalachian" is based on the jurisdiction of the Appalachian Regional Council ([ARC, 2021](https://www.arc.gov/appalachian-counties-served-by-arc/)). Accordingly, our units of observation for this study are counties, with the representative population being people living in the Appalachian region. We focus on counties as units of observation because the Appalachian region is defined at the county-level and to avoid potential selection bias and small sample size issues that would confound state-level analysis. 
+
+Identification of state-level Medicaid Expansion is based on tracking done by the Kaiser Family Foundation ([KFF, 2022](https://www.kff.org/medicaid/issue-brief/status-of-state-medicaid-expansion-decisions-interactive-map/)). Due to the fact that Pennsylvania implemented Medicaid expansion a year after other expansion states, we exclude Pennsylvania counties from our analysis to ensure that there is a distinct time-based differential in treatment (i.e., pre- and post-2014 periods). Similarly, we consider Virginia to be a non-expansion state for the purposes of this study, because it only enacted Medicaid expansion after the end of our study period.
 
 Data on drug overdose deaths comes from estimates modeled by the National Center for Health Statistics (NCHS), which are available at the county-level for the period 2003-2020. Unfortunately, county-level statistics on overdose deaths based on final counts of cause of death reporting only became available in 2020, outside of the time frame of this study.
 
-[TK, sources currently found in the Appendices]
+County-level demographic covariates are taken from the US Census Bureau American Community Survey (ACS). Using these covariates, we hope to control for omitted variable bias stemming from county-level factors such as median income, median age, and sex and race compositions. In particular, we expect that median income would relate negatively to overdose deaths, as higher income communities would be better able to avoid drug addiction treatment, all else equal. We include controls for median age as drug overdose death incidence tends to vary by age group ([KFF, 2022](https://www.kff.org/other/state-indicator/opioid-overdose-deaths-by-age-group/?dataView=1&currentTimeframe=6&selectedDistributions=0-24--25-34--35-44--45-54&sortModel=%7B%22colId%22:%22Location%22,%22sort%22:%22asc%22%7D)). Drug overdose deaths are also more common among individuals identified as male than female ([CDC, 2022](https://www.cdc.gov/nchs/hus/topics/drug-overdose-deaths.htm)).
 
 # Preliminary Exploratory Analysis
 
-Summary statistics for counties in expansion states and for counties in non-expansion states.
+Descriptive statistics for counties in expansion states and for counties in non-expansion states.
 
 ```{r}
 year_county_panel <- readRDS("yearly_panel.rds")
@@ -68,19 +72,16 @@ year_county_panel %>%
     facet_wrap(~ Year, nrow = 4)
 ```
 
-
 # Empirical Strategy
 
 To evaluate the effect of Medicaid expansion on drug overdose deaths in Appalachian counties, we would like to estimate the following "differences-in-differences" specification:
 
-$Overdose~Death~Rate_{it} =  Medicaid~Expansion_{it} + Medicaid~Expansion_{it}*Post~Expansion_{t} + Male~Share_{it} + Average ~Age_{it} + Black~Share_{it} + Median~Income_{it} + Post~Expansion_{t} + \Gamma_{i}  + u_{it}$
+$Overdose~Death~Rate_{it} =  Medicaid~Expansion_{it} + Medicaid~Expansion_{it}*Post~Expansion_{t} + Median~Income_{it} +Average~Age_{it} + Male~Share_{it} + Black~Share_{it} + White~Share_{it} + Hispanic~Share_{it} + Asian~Share_{it} + Post~Expansion_{t} + \Gamma_{i} + u_{it}$
 
 [Explanation of why we use fixed effects]
 
 
-Key limitations — 1). both overdose data and ACS data are estimates, which are subject to error, 2). potential imbalance between pseudo "treatment" and "control" groups.
-
-To address the first limitation, we compile two years of data for the pre- and post-"treatment" periods, to smooth out any potential irregularities in single-year estimates.
+Key limitations are the potential imbalance between pseudo "treatment" and "control" groups.
 
 # Appendix
 
@@ -106,9 +107,9 @@ We add a dummy variable into our data to reflect this policy difference. Informa
 # Create dummy variable for medicaid expansion and a variable for date of expansion
 
 expansion <- c("Kentucky", "Maryland", "New York", "Ohio", "West Virginia",
-                     "Pennsylvania", "Virginia")
+                     "Pennsylvania")
 no_expansion <- c("Alabama", "Georgia", "Mississippi", "North Carolina", 
-                  "South Carolina", "Tennessee")
+                  "South Carolina", "Tennessee", "Virginia")
 
 appalachian_counties <- appalachian_counties %>% 
   mutate(medicaid_expansion = as.numeric(STATE %in% expansion),
