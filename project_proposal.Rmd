@@ -77,8 +77,9 @@ expansion_count_no_PA <- as.numeric(table(appalachian_counties$medicaid_expansio
 # Overdose histogram
 county_overdose_histogram <- year_county_panel %>% 
     ggplot(aes(x = estimated_overdose_death_rate, 
+               weight = population,
                fill = medicaid_expansion)) +
-    geom_histogram() + 
+    geom_histogram(aes(y=..density..)) + 
     facet_wrap(~ Year, nrow = 4) +
     labs(x = "Drug Overdose Deaths per 100,000", 
          fill = "Medicaid Expansion Status",
