@@ -22,12 +22,12 @@ urlcolor: blue
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
-install.packages("psych")
 library(tidyverse) 
 library(tidycensus)
 library(readxl)
 library(lubridate)
 library(psych)
+library(kableExtra)
 ```
 
 # Research Question and Motivations
@@ -48,7 +48,7 @@ In our study, we identify this policy adoption discrepancy as a "treatment" (i.e
 
 # Data Description
 
-Our data is a panel dataset, which we use to examine drug overdose deaths in Appalachian counties over the period 2012-2015. The subset of US counties defined as "Appalachian" is based on the jurisdiction of the Appalachian Regional Council ([ARC, 2021](https://www.arc.gov/appalachian-counties-served-by-arc/)). Accordingly, our units of observation for this study are counties, with the representative population being people living in the Appalachian region. We focus on counties as units of observation because the Appalachian region is defined at the county-level and to avoid potential selection bias and small sample size issues that would confound state-level analysis. We intentionally focus on Appalachian counties to both increase sample size and to construct pseudo “control” and “treatment”, assuming that Appalachian counties are largely similar in terms on non-measurable, unobserved characteristics across state lines.
+Our data is a county-year panel dataset, which we use to examine drug overdose deaths in Appalachian counties over the period 2012-2015. The subset of US counties defined as "Appalachian" is based on the jurisdiction of the Appalachian Regional Council ([ARC, 2021](https://www.arc.gov/appalachian-counties-served-by-arc/)). Accordingly, our units of observation for this study are counties, with the representative population being people living in the Appalachian region. We focus on counties as units of observation because the Appalachian region is defined at the county-level and to avoid potential selection bias and small sample size issues that would confound state-level analysis. We intentionally focus on Appalachian counties to both increase sample size and to construct pseudo “control” and “treatment”, assuming that Appalachian counties are largely similar in terms on non-measurable, unobserved characteristics across state lines.
 
 Identification of state-level Medicaid expansion is based on tracking done by the Kaiser Family Foundation ([KFF, 2022](https://www.kff.org/medicaid/issue-brief/status-of-state-medicaid-expansion-decisions-interactive-map/)). Due to the fact that Pennsylvania implemented Medicaid expansion a year after other expansion states, we exclude Pennsylvania counties from our analysis to ensure that there is a distinct time-based differential in treatment (i.e., pre- and post-2014 periods). Similarly, we consider Virginia to be a non-expansion state for the purposes of this study, because it only enacted Medicaid expansion in 2019, well after the end of our study period.
 
@@ -95,7 +95,7 @@ In total, `r expansion_count[2]` Appalachian counties are located in expansion s
 
 ## Variation in Drug Overdose Death Rate
 
-In the histogram below, it is clear that the distribution of county-level drug overdose rates — our outcome variable of interest — differs considerably between counties in expansion states and counties in non-expansion states. Distributions also change year over year, and the distribution "spread" shows that there is considerable variation in overdose death rates within expansion and non-expansion counties.
+In the histogram below, it is clear that the distribution of county-level drug overdose rates — our outcome variable of interest — differs considerably between counties in expansion states and counties in non-expansion states. Distributions also change year over year, indicating that overdose death rates vary within counties as well, and the distribution "spread" shows that there is considerable variation in overdose death rates among expansion and non-expansion counties.
 
 From a purely visual standpoint, it is not immediately evident whether Medicaid expansion had any effect on drug overdose death rates.
 
@@ -129,43 +129,105 @@ post_2014_non_expansion_county_panel <- non_expansion_county_panel %>%
 
 ### Pre-Expansion Descriptive Statistics in Expansion States
 
-```{r, include = FALSE}
+```{r, include =FALSE}
+table1 <- describe(pre_2014_expansion_county_panel[, c('estimated_overdose_death_rate',
+                                                       'med_income', 
+                                                       'med_age',
+                                                       'male_share', 
+                                                       'black_share', 
+                                                       'hisp_share',
+                                                       'white_share', 
+                                                       'asian_share')], fast=TRUE)
 
-describe(pre_2014_expansion_county_panel[, c('med_income', 'med_age', 'black_share', 'male_share')], fast=TRUE)
-
+table1 <- table1 %>% 
+  select(mean, sd, min, max, range) %>% 
+  kable(digits = 2)
+  
 ```
+
+```{r}
+table1
+```
+
 
 ### Post-Expansion Descriptive Statistics in Expansion States
 
+```{r, include = FALSE}
+table2 <- describe(post_2014_expansion_county_panel[, c('estimated_overdose_death_rate',
+                                                       'med_income', 
+                                                       'med_age',
+                                                       'male_share', 
+                                                       'black_share', 
+                                                       'hisp_share',
+                                                       'white_share', 
+                                                       'asian_share')], fast=TRUE)
+
+table2 <- table2 %>% 
+  select(mean, sd, min, max, range) %>% 
+  kable(digits = 2)
+```
+
 ```{r}
-describe(post_2014_expansion_county_panel[, c('med_income', 'med_age', 'black_share', 'male_share')], fast=TRUE)
+table2
 ```
 
 ### Pre-Expansion Descriptive Statistics in Non-Expansion States
 
+```{r, include = FALSE}
+table3 <- describe(pre_2014_non_expansion_county_panel[, c('estimated_overdose_death_rate',
+                                                       'med_income', 
+                                                       'med_age',
+                                                       'male_share', 
+                                                       'black_share', 
+                                                       'hisp_share',
+                                                       'white_share', 
+                                                       'asian_share')], fast=TRUE)
+
+table3 <- table3 %>% 
+  select(mean, sd, min, max, range) %>% 
+  kable(digits = 2)
+```
+
 ```{r}
-describe(pre_2014_non_expansion_county_panel[, c('med_income', 'med_age', 'black_share', 'male_share')], fast=TRUE)
+table3
 ```
 
 ### Post-Expansion Descriptive Statistics in Non-Expansion States
 
-```{r}
-describe(post_2014_non_expansion_county_panel[, c('med_income', 'med_age', 'black_share', 'male_share')], fast=TRUE)
+```{r, include = FALSE}
+table4 <- describe(post_2014_non_expansion_county_panel[, c('estimated_overdose_death_rate',
+                                                       'med_income', 
+                                                       'med_age',
+                                                       'male_share', 
+                                                       'black_share', 
+                                                       'hisp_share',
+                                                       'white_share', 
+                                                       'asian_share')], fast=TRUE)
+
+table4 <- table4 %>% 
+  select(mean, sd, min, max, range) %>% 
+  kable(digits = 2)
 ```
 
-[It is noteworthy that the mean of black share in non-expansion states is much higher than that in expansion-states regardless of years. The means of black share in non-expansion states for both pre-expansion and post-expansion are both over 10%, but the means of black share in expansion states for both pre and post-expansion are 2.19% and 2.21%, respectively. Moreover, the range of median income for non-expansion states is much higher than that in expansion states regardless of years. Specifically, the rage of median income in non-expansion states for pre and post expansion are 65380 and 62585, respectively, and the range of median income in expansion states for pre and post expansion are 45680 and 47531. it means that the gap between the rich counties and the poor counties is larger in non-expansion states than in expansion states.]
+```{r}
+table4
+```
+
+It is noteworthy that the mean of black share of counties in non-expansion states is much higher than that of counties in expansion states regardless of time period. The means of black share of counties in non-expansion states for both pre-expansion and post-expansion are both over 10%, but the means of black share of counties in expansion states for both pre and post-expansion are 2.19% and 2.21%, respectively. Moreover, the range of median income for counties in non-expansion states is much higher than that of counties in expansion states regardless of years. Specifically, the range of median income of counties in non-expansion states for pre- and post-expansion are 65380 and 62585, respectively, and the range of median income of counties in expansion states for pre- and post-expansion are 45680 and 47531. This means that the gap between the rich counties and the poor counties is larger in non-expansion states than in expansion states.
+
+It is also of interest that variation between counties across each variable of interest appears to be fairly substantial, with the possible exception of male share, based on measured standard deviations. Further exploratory analysis will need to consider whether this is sufficient "within" county variation, in addition to "between" county variation, to support a panel data analysis.
 
 # Empirical Strategy
 
-The primary variation that we seek to exploit through our analysis is the differential state-level adoption of Medicaid expansion in the Appalachian region, with policy variation thus filtering down to the county-level. To evaluate the effect of Medicaid expansion on drug overdose deaths in Appalachian counties, we would like to estimate the following "differences-in-differences" specification:
+The primary variation that we seek to exploit through our analysis is the differential in state-level adoption of Medicaid expansion across the Appalachian region, with policy variation at the state-level thus filtering down to the county-level. To evaluate the effect of Medicaid expansion on drug overdose deaths in Appalachian counties, we compress our county-year panel data into a panel of counties in "pre-" and "post-expansion" time periods, which would like to utilize estimate the following "differences-in-differences" specification:
 
 $Overdose~Death~Rate_{it} =  Medicaid~Expansion_{i} + Medicaid~Expansion_{i}*Post~Expansion_{t} + Median~Income_{it} + Median~Age_{it} + Male~Share_{it} + Black~Share_{it} + White~Share_{it} + Hispanic~Share_{it} + Asian~Share_{it} + Post~Expansion_{t} + \Gamma_{i} + u_{it}$
 
-where $Overdose~Death~Rate_{it}$ is deaths attributed to drug overdose per 100,000 county residents for county $i$ at time $t$, $Medicaid~Expansion_{i}$ is an indicator (0-1) for if the county is located in an expansion state, $Median~Income_{it}$ is the median income of the county, $Median~Age_{it}$ is the median age of county residents, $Male~Share_{it}$ is the male share (0-100) of county residents, $Black~Share_{it}$, $White~Share_{it}$, $Hispanic~Share_{it}$, and $Asian~Share_{it}$ measure county-level racial composition (0-100).
+where $Overdose~Death~Rate_{it}$ is deaths attributed to drug overdose per 100,000 county residents for county $i$ at time $t$, $Medicaid~Expansion_{i}$ is an indicator (0-1) for if the county is located in an expansion state, $Median~Income_{it}$ is the median income of the county, $Median~Age_{it}$ is the median age of county residents, $Male~Share_{it}$ is the male share (0-100) of county residents, $Black~Share_{it}$, $White~Share_{it}$, $Hispanic~Share_{it}$, and $Asian~Share_{it}$ measure county-level racial composition (0-100). We include time-variant, county-variant factors such as median income, median age, male share, and racial composition to control for potential determinants of overdose death rates outside of our policy variation of interest.
 
-Additionally, we include the term $Post~Expansion_{t}$, which indicates (0-1) observations measured prior to 2014 Medicaid Expansion, to control for unobserved county-invariant factors that might have changed between the pre- and post-expansion time periods (i.e., "time fixed effects"). Such factors would include events such as periodic economic shocks that affect the entire Appalachian region in certain years, which potentially affect the rate of overdose deaths. We further include an array of county-specific dummy variables $\Gamma_{i}$ that control for unobserved time-invariant factors that are specific to individuals counties (i.e., "county fixed effects"). An example of one such factor would be if, throughout the entire 2012-2015 period, a specific county had its own drug treatment program that reduced drug overdose deaths compared to other counties, all else equal.
+Additionally, we include the term $Post~Expansion_{t}$, which indicates (0-1) observations measured prior to 2014 Medicaid Expansion, to control for unobserved county-invariant factors that might have changed between the pre- and post-expansion time periods (i.e., "time fixed effects"). Such factors would include events such as periodic economic shocks that affect the entire Appalachian region in certain years, which potentially could be deterministic of the rate of overdose deaths. We further include an array of county-specific dummy variables $\Gamma_{i}$ that control for unobserved time-invariant factors that are specific to individuals counties (i.e., "county fixed effects"). An example of one such factor would be if, throughout the entire 2012-2015 period, a specific county had its own drug treatment program that reduced drug overdose deaths compared to other counties, all else equal.
 
-To support this analysis, we compile publicly-available data from the Appalachian Regional Council (ARC), Kaiser Family Foundation (KFF), National Center for Health Statistics (NCHS), and the US Census Bureau. From the sources, data is largely already available at the county-level, thus we are not required to perform any aggregation or dis-aggregation steps to make the data suitable for use. Furthermore, variables of interest are entirely quantitative, thus cleaning needs are minimal. All source datasets include county-specific FIPS codes as merging indices. The only intermediate data transformation we perform is the calculation of county-level racial composition shares, based on Census Bureau population data.
+To support this analysis, we compile publicly-available data from the Appalachian Regional Council (ARC), Kaiser Family Foundation (KFF), National Center for Health Statistics (NCHS), and the US Census Bureau. From the sources, data is largely already available at the county-level, thus we are not required to perform any aggregation or dis-aggregation steps to make the data suitable for use. Furthermore, variables of interest are entirely quantitative, thus cleaning needs are minimal. All source data include county-specific FIPS codes as merging indices. The only intermediate data transformation we perform is the calculation of county-level racial composition shares, based on Census Bureau population data.
 
 We note two key limitations to the internal validity of our study, the first being potential imbalance between pseudo "treatment" (i.e., counties in expansion states) and "control" (i.e., counties in non-expansion states) groups and the second being possible omitted variable bias due to differential county-level availability of drug treatment facilities. On the first issue, we are considering employing a matching strategy to pair "treatment" counties in expansion states with "control" counties in non-expansion states in a way that mimics random assignment. On the second issue, we will attempt to collect additional data that allows us to control for the number of drug treatment facilities per 100,000 residents at the county-level. If this data is not directly available, we will also look for potential proxy measures.
 
