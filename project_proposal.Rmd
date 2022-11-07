@@ -21,10 +21,13 @@ urlcolor: blue
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+
+install.packages("psych")
 library(tidyverse) 
 library(tidycensus)
 library(readxl)
 library(lubridate)
+library(psych)
 ```
 
 # Research Question and Motivations
@@ -51,7 +54,7 @@ Identification of state-level Medicaid expansion is based on tracking done by th
 
 Data on drug overdose death rates (i.e., deaths per 100,000 residents) comes from estimates modeled by the National Center for Health Statistics (NCHS), which are available at the county-level for the period 2003-2020. Unfortunately, county-level statistics on overdose deaths based on final counts of cause of death reporting only became available in 2020, outside of the time frame of this study.
 
-County-level demographic covariates are taken from the US Census Bureau American Community Survey (ACS). Using these covariates, we hope to control for omitted variable bias stemming from county-level factors such as median income, median age, and sex and race compositions. In particular, we expect that median income would relate negatively to overdose deaths, as higher income communities would be better able to avoid drug addiction treatment, all else equal. We include controls for median age as drug overdose death incidence tends to vary by age group ([KFF, 2022](https://www.kff.org/other/state-indicator/opioid-overdose-deaths-by-age-group/?dataView=1&currentTimeframe=6&selectedDistributions=0-24--25-34--35-44--45-54&sortModel=%7B%22colId%22:%22Location%22,%22sort%22:%22asc%22%7D)). Drug overdose deaths are also more common among individuals identified as male than female ([CDC, 2022](https://www.cdc.gov/nchs/hus/topics/drug-overdose-deaths.htm)). Furthermore, access to drug treatment has been shown to differ according to race ([NIDA, 2019](https://nida.nih.gov/about-nida/noras-blog/2019/07/access-to-addiction-services-differs-by-race-gender)), potentially leading to differentials in drug overdose deaths depending on racial composition of counties.
+County-level demographic covariates are taken from the US Census Bureau American Community Survey (ACS). Using these covariates, we hope to control for omitted variable bias stemming from county-level factors such as median income, median age, and sex and race compositions. In particular, we expect that median income would relate negatively to overdose deaths, as higher income communities would be better able to provide drug addiction treatment, all else equal. We include controls for median age as drug overdose death incidence tends to vary by age group ([KFF, 2022](https://www.kff.org/other/state-indicator/opioid-overdose-deaths-by-age-group/?dataView=1&currentTimeframe=6&selectedDistributions=0-24--25-34--35-44--45-54&sortModel=%7B%22colId%22:%22Location%22,%22sort%22:%22asc%22%7D)). Drug overdose deaths are also more common among individuals identified as male than female ([CDC, 2022](https://www.cdc.gov/nchs/hus/topics/drug-overdose-deaths.htm)). Furthermore, access to drug treatment has been shown to differ according to race ([NIDA, 2019](https://nida.nih.gov/about-nida/noras-blog/2019/07/access-to-addiction-services-differs-by-race-gender)), potentially leading to differentials in drug overdose deaths depending on racial composition of counties.
 
 Given that both the NCHS data on overdose death rates and ACS control variables are estimated at the county-level, we expand our study period to the two years prior to Medicaid expansion and the two years after (i.e., 2012-2015), in order to smooth over any potential estimation errors. We also hope that this larger time frame will capture any lags in treatment effects, given that reductions in drug overdose deaths due to expanded access to health care may not be reflected in the data until more than a year after Medicaid expansion.
 
@@ -77,8 +80,9 @@ expansion_count_no_PA <- as.numeric(table(appalachian_counties$medicaid_expansio
 # Overdose histogram
 county_overdose_histogram <- year_county_panel %>% 
     ggplot(aes(x = estimated_overdose_death_rate, 
+               weight = population,
                fill = medicaid_expansion)) +
-    geom_histogram() + 
+    geom_histogram(aes(y=..density..)) + 
     facet_wrap(~ Year, nrow = 4) +
     labs(x = "Drug Overdose Deaths per 100,000", 
          fill = "Medicaid Expansion Status",
@@ -104,10 +108,6 @@ county_overdose_histogram
 We also explore descriptive statistics key variables across counties in expansion states and counties in non-expansion states, both before and after expansion occurs.
 
 ```{r, include = FALSE}
-
-# @ Nicole I think we can create four tables, for counties in expansion states and for counties in non-expansion states, before and after expansion occurs
-
-# @ Nicole, this should prepare the data to generate the descriptive statistics!
 expansion_county_panel <- year_county_panel %>% 
   filter(medicaid_expansion == "Expansion")
 
@@ -130,66 +130,30 @@ post_2014_non_expansion_county_panel <- non_expansion_county_panel %>%
 ### Pre-Expansion Descriptive Statistics in Expansion States
 
 ```{r, include = FALSE}
-# @ Nicole, you can use this dataframe to write the code for descriptive statistics in this code chunk
-pre_2014_expansion_county_panel
+
+describe(pre_2014_expansion_county_panel[, c('med_income', 'med_age', 'black_share', 'male_share')], fast=TRUE)
+
 ```
-
-```{r}
-# @ Nicole, then use this chunk to display the table of descriptive statistics
-
-# e.g., for each x variable (median income, median age, male share, black share, etc.) calculate and display
-# basic descriptive statistics (median, median, standard error, min, max)
-```
-
-[@ Nicole, maybe try to summarize each table here in 1-2 sentences, noting if any of the variables seem to lack variation (i.e., small min-max spread, small standard errors). Also worth noting skew (i.e., mean-median spread)]
 
 ### Post-Expansion Descriptive Statistics in Expansion States
 
-```{r, include = FALSE}
-# @ Nicole, you can use this dataframe to write the code for descriptive statistics in this code chunk
-post_2014_expansion_county_panel
-```
-
 ```{r}
-# @ Nicole, then use this chunk to display the table of descriptive statistics
-
-# e.g., for each x variable (median income, median age, male share, black share, etc.) calculate and display
-# basic descriptive statistics (median, median, standard error, min, max)
+describe(post_2014_expansion_county_panel[, c('med_income', 'med_age', 'black_share', 'male_share')], fast=TRUE)
 ```
-
-[@ Nicole, maybe try to summarize each table here in 1-2 sentences, noting if any of the variables seem to lack variation (i.e., small min-max spread, small standard errors). Also worth noting skew (i.e., mean-median spread)]
 
 ### Pre-Expansion Descriptive Statistics in Non-Expansion States
 
-```{r, include = FALSE}
-# @ Nicole, you can use this dataframe to write the code for descriptive statistics in this code chunk
-pre_2014_non_expansion_county_panel
-```
-
 ```{r}
-# @ Nicole, then use this chunk to display the table of descriptive statistics
-
-# e.g., for each x variable (median income, median age, male share, black share, etc.) calculate and display
-# basic descriptive statistics (median, median, standard error, min, max)
+describe(pre_2014_non_expansion_county_panel[, c('med_income', 'med_age', 'black_share', 'male_share')], fast=TRUE)
 ```
-
-[@ Nicole, maybe try to summarize each table here in 1-2 sentences, noting if any of the variables seem to lack variation (i.e., small min-max spread, small standard errors). Also worth noting skew (i.e., mean-median spread)]
 
 ### Post-Expansion Descriptive Statistics in Non-Expansion States
 
-```{r, include = FALSE}
-# @ Nicole, you can use this dataframe to write the code for descriptive statistics in this code chunk
-post_2014_non_expansion_county_panel
-```
-
 ```{r}
-# @ Nicole, then use this chunk to display the table of descriptive statistics
-
-# e.g., for each x variable (median income, median age, male share, black share, etc.) calculate and display
-# basic descriptive statistics (median, median, standard error, min, max)
+describe(post_2014_non_expansion_county_panel[, c('med_income', 'med_age', 'black_share', 'male_share')], fast=TRUE)
 ```
 
-[@ Nicole, maybe try to summarize each table here in 1-2 sentences, noting if any of the variables seem to lack variation (i.e., small min-max spread, small standard errors). Also worth noting skew (i.e., mean-median spread)]
+[It is noteworthy that the mean of black share in non-expansion states is much higher than that in expansion-states regardless of years. The means of black share in non-expansion states for both pre-expansion and post-expansion are both over 10%, but the means of black share in expansion states for both pre and post-expansion are 2.19% and 2.21%, respectively. Moreover, the range of median income for non-expansion states is much higher than that in expansion states regardless of years. Specifically, the rage of median income in non-expansion states for pre and post expansion are 65380 and 62585, respectively, and the range of median income in expansion states for pre and post expansion are 45680 and 47531. it means that the gap between the rich counties and the poor counties is larger in non-expansion states than in expansion states.]
 
 # Empirical Strategy
 

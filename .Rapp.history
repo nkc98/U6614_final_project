@@ -1,0 +1,2 @@
+load("/Users/yahuiwu/Desktop/R/final project /github clone/U6614_final_project/appalachian_counties.rds")
+load("/Users/yahuiwu/Desktop/R/final project /github clone/U6614_final_project/yearly_panel.rds")
