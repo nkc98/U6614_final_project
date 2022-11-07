@@ -36,7 +36,7 @@ library(kableExtra)
 
 Deaths due to drug overdose are a pressing problem facing United States policymakers, with reportedly more than 932,000 people dying due to overdose since 1999 ([CDC, 2022](https://www.cdc.gov/drugoverdose/deaths/index.html)). Rate of overdose deaths increased in nearly every US state from 2013-2017, with particularly severe incidence in the Appalachian region ([CDC, 2020](https://www.cdc.gov/drugoverdose/deaths/2013-2017-increase.html); [CDC, 2021](https://www.cdc.gov/drugoverdose/deaths/2014.html)). The increase in deaths is driven primarily by the ongoing US  opioid crisis, with the vast majority (>80%) of overdose deaths associated with opioid use ([CDC, 2022](https://www.cdc.gov/drugoverdose/deaths/index.html)).
 
-In this context, we hope to assess whether expansion of the social safety net through government policy can be causally linked to reductions in drug overdose death rates. Specifically, we propose to estimate the effects of the 2014 expansion of the US Medicaid program, which increased income-based eligibility for healthcare (including drug addiction treatment) in some Appalachian states, on drug overdose deaths. We hope that the findings from this study can assist policymakers in determining whether expanding access to healthcare in low-income areas is a viable policy mechanism for addressing the ongoing drug overdose crisis.
+In this context, we hope to assess whether expansion of the social safety net through government policy can be causally linked to reductions in drug overdose death rates. Specifically, we propose to estimate the effects of the 2014 expansion of the US Medicaid program using a panel dataset of Appalachian counties, which increased income-based eligibility for healthcare (including drug addiction treatment) in some Appalachian states, on drug overdose deaths. We hope that the findings from this study can assist policymakers in determining whether expanding access to healthcare in low-income areas is a viable policy mechanism for addressing the ongoing drug overdose crisis.
 
 # Policy Background
 
@@ -78,7 +78,7 @@ appalachian_counties <- appalachian_counties %>%
 expansion_count_no_PA <- as.numeric(table(appalachian_counties$medicaid_expansion))
 
 # Overdose histogram
-county_overdose_histogram <- year_county_panel %>% 
+figure1 <- year_county_panel %>% 
     ggplot(aes(x = estimated_overdose_death_rate, 
                weight = population,
                fill = medicaid_expansion)) +
@@ -100,7 +100,7 @@ In the histogram below, it is clear that the distribution of county-level drug o
 From a purely visual standpoint, it is not immediately evident whether Medicaid expansion had any effect on drug overdose death rates.
 
 ```{r}
-county_overdose_histogram
+figure1
 ```
 
 ## Variation in Key Control Variables
@@ -213,7 +213,9 @@ table4 <- table4 %>%
 table4
 ```
 
-It is noteworthy that the mean of black share of counties in non-expansion states is much higher than that of counties in expansion states regardless of time period. The means of black share of counties in non-expansion states for both pre-expansion and post-expansion are both over 10%, but the means of black share of counties in expansion states for both pre and post-expansion are 2.19% and 2.21%, respectively. Moreover, the range of median income for counties in non-expansion states is much higher than that of counties in expansion states regardless of years. Specifically, the range of median income of counties in non-expansion states for pre- and post-expansion are 65380 and 62585, respectively, and the range of median income of counties in expansion states for pre- and post-expansion are 45680 and 47531. This means that the gap between the rich counties and the poor counties is larger in non-expansion states than in expansion states.
+We observe that mean drug overdose death rates are higher in expansion counties than non-expansion counties, both before and after Medicaid expansion. However, both groups of counties experience a relative increase in drug overdose death rates over the period 2012-2015.
+
+It is further noteworthy that the mean of black share of counties in non-expansion states is much higher than that of counties in expansion states regardless of time period. The means of black share of counties in non-expansion states for both pre-expansion and post-expansion are both over 10%, but the means of black share of counties in expansion states for both pre and post-expansion are 2.19% and 2.21%, respectively. Moreover, the range of median income for counties in non-expansion states is much higher than that of counties in expansion states regardless of years. Specifically, the range of median income of counties in non-expansion states for pre- and post-expansion are 65380 and 62585, respectively, and the range of median income of counties in expansion states for pre- and post-expansion are 45680 and 47531. This means that the gap between the rich counties and the poor counties is larger in non-expansion states than in expansion states.
 
 It is also of interest that variation between counties across each variable of interest appears to be fairly substantial, with the possible exception of male share, based on measured standard deviations. Further exploratory analysis will need to consider whether this is sufficient "within" county variation, in addition to "between" county variation, to support a panel data analysis.
 
