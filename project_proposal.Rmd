@@ -103,7 +103,7 @@ From a purely visual standpoint, it is not immediately evident whether Medicaid 
 figure1
 ```
 
-## Variation in Key Control Variables
+## Variation in Key Continuous Variables
 
 We also explore descriptive statistics key variables across counties in expansion states and counties in non-expansion states, both before and after expansion occurs.
 
