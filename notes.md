@@ -5,7 +5,7 @@
 
 We could widen the study period to 2008-2013 and 2014-2019, allowing us to use those two sets of survey data. This would require some back-end reconfiguration of the panel dataset, but not too tricky.
  
-## Sex/Race subsamples
+## Sex/Race sub-samples
 
 Doesn't seem possible because this is county-level data?
 
