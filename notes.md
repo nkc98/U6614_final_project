@@ -7,7 +7,7 @@ We could widen the study period to 2008-2013 and 2014-2019, allowing us to use t
  
 ## Sex/Race sub-samples
 
-Doesn't seem possible because this is county-level data?
+Doesn't seem possible because this is county-level data? Could try limiting to majority Black or majority Male counties, but would imagine that sample size issues could make things challenging here.
 
 ## Should we look outside of Appalachia?
 
