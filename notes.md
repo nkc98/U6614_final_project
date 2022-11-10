@@ -3,7 +3,7 @@
 
 ## ACS only available in five-year samples, single year ACS has a lot of missing data. Should we expand the sample in a wider direction?
 
-We could widen the study period to 2009-2013 and 2014-2018, allowing us to use those two sets of survey data. This would require some back-end reconfiguration of the panel dataset, but not too tricky.
+We could widen the study period to 2009-2013 and 2014-2018, allowing us to use those two sets of survey data. This would require some back-end reconfiguration of the panel dataset, but not too tricky. Would mean that overdose death rates are period averages, rather than single-year estimates.
  
 ## Sex/Race sub-samples
 
