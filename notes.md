@@ -19,7 +19,7 @@ Would prefer to have a discrete treatment dummy?
 
 ## Should we attempt to do matching?
 
-
+Not a ton of differences between treatment and control groups outside of overdose death rates and racial composition. Still worth trying to match?
 
 ## Should we control for number of drug addiction clinics by county?
 
