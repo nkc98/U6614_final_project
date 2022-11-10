@@ -4,6 +4,8 @@
 ## ACS only available in five-year samples, single year ACS has a lot of missing data. Should we expand the sample in a wider direction?
 
 We could widen the study period to 2009-2013 and 2014-2018, allowing us to use those two sets of survey data. This would require some back-end reconfiguration of the panel dataset, but not too tricky. Would mean that overdose death rates are period averages, rather than single-year estimates.
+
+Harold: try to find ACS1 microdata and aggregate up, 
  
 ## Sex/Race sub-samples
 
@@ -16,6 +18,8 @@ I worry a bit about defining proper scope here. Also probably exposes us to addi
 ## Should we drop Pennsylvania?
 
 Would prefer to have a discrete treatment dummy?
+
+Harold: Keep Pennsylvania for staggered implementation; create time-staggered treatment variable.
 
 ## Should we attempt to do matching?
 
