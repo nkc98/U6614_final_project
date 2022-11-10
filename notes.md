@@ -16,3 +16,8 @@ Doesn't seem possible because this is county-level data?
 
 
 ## Should we attempt to do matching?
+
+
+## Should we control for number of drug addiction clinics by county?
+
+Is this data even available?
