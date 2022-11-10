@@ -28,3 +28,5 @@ Not a ton of differences between treatment and control groups outside of overdos
 ## Should we control for number of drug addiction clinics by county?
 
 Is this data even available?
+
+Harold: Try to see what's out there.
