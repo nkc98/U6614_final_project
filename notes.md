@@ -3,7 +3,7 @@
 
 ## ACS only available in five-year samples, single year ACS has a lot of missing data. Should we expand the sample in a wider direction?
 
-We could widen the study period to 2008-2013 and 2014-2019
+We could widen the study period to 2008-2013 and 2014-2019.
 
 ## Sex/Race subsamples
 
