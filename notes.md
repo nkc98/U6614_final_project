@@ -5,7 +5,7 @@
 
 We could widen the study period to 2009-2013 and 2014-2018, allowing us to use those two sets of survey data. This would require some back-end reconfiguration of the panel dataset, but not too tricky. Would mean that overdose death rates are period averages, rather than single-year estimates.
 
-Harold: try to find ACS1 microdata and aggregate up, 
+Harold: try to find ACS1 microdata and aggregate up from smaller subdivisions. (From tidycensus, ACS1 data is only available for geographies of population 65,000 and above).
  
 ## Sex/Race sub-samples
 
