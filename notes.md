@@ -27,6 +27,6 @@ Not a ton of differences between treatment and control groups outside of overdos
 
 ## Should we control for number of drug addiction clinics by county?
 
-Is this data even available?
+Is this data even available? IT IS [here](https://www.samhsa.gov/data/data-we-collect/n-ssats-national-survey-substance-abuse-treatment-services) but they don't include county FIPS codes :(
 
 Harold: Try to see what's out there.
