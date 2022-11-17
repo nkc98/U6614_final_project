@@ -267,14 +267,10 @@ appalachian_counties <- appalachian_counties %>%
   mutate(medicaid_expansion = as.numeric(STATE %in% expansion),
          expansion_date = make_date(2014, 1, 1))
 
-# Re-code dates for non-expansion and late expansion states
+# Re-code dates for Pennsylvania (late expansion)
 
-appalachian_counties$expansion_date[appalachian_counties$STATE %in% no_expansion] <-
-  NA 
 appalachian_counties$expansion_date[appalachian_counties$STATE == "Pennsylvania"] <-
   make_date(2015,1,1)
-appalachian_counties$expansion_date[appalachian_counties$STATE == "Virginia"] <-
-  make_date(2019,1,1)
 
 ```
 
@@ -421,6 +417,13 @@ appalachian_counties_panel <- rbind(appalachian_counties_12,
                                     appalachian_counties_13,
                                     appalachian_counties_14,
                                     appalachian_counties_15)
+
+# Create post-expansion dummy variable (delay by one year for PA)
+
+appalachian_counties_panel <- appalachian_counties_panel %>% 
+  mutate(post_expansion = as.numeric(Year >= 2014))
+
+appalachian_counties_panel$post_expansion[appalachian_counties_panel$Year == 2014 & appalachian_counties$STATE == "Pennsylvania"] <- 0 
 
 # Merge panel with overdose data
 
