@@ -7,7 +7,7 @@ We could widen the study period to 2009-2013 and 2014-2018, allowing us to use t
 
 Harold: try to find ACS1 microdata and aggregate up from smaller subdivisions (from the [Census Bureau website](https://www.census.gov/data/developers/data-sets/acs-1year.html), ACS1 data is only available for geographies of population 65,000 and above). Looks like we will need to proceed with a county-five year period panel.
 
-See if we can aggregrate up to PUMAs to get the controls. How often do PUMAs change? According to this [handbook](https://www.census.gov/content/dam/Census/library/publications/2020/acs/acs_pums_handbook_2020_ch02.pdf), PUMAs only are redrawn every 10 years, so this is actually a potential solution! We would just need a crosswalk between 2010 PUMAs and counties. According to this [source](https://iecam.illinois.edu/browse/about-public-use-microdata-areas-pumas), PUMAs and county lines are fairly consistent.
+See if we can aggregrate up to PUMAs to get the controls. How often do PUMAs change? According to this [handbook](https://www.census.gov/content/dam/Census/library/publications/2020/acs/acs_pums_handbook_2020_ch02.pdf), PUMAs only are redrawn every 10 years, so this is actually a potential solution! We would just need a crosswalk between 2010 PUMAs and counties. According to this [source](https://iecam.illinois.edu/browse/about-public-use-microdata-areas-pumas), PUMAs and county lines are fairly consistent. RIIPPPPPP actually counties do not map to PUMA well, sometimes multiple counties are included in one PUMA, othertimes one county is split into multiple PUMAs.
  
 ## Sex/Race sub-samples
 
