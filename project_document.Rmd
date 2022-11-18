@@ -28,6 +28,8 @@ library(readxl)
 library(lubridate)
 library(psych)
 library(kableExtra)
+library(panelr)
+library(plm)
 ```
 
 # Research Question and Motivations
@@ -65,8 +67,8 @@ Given that both the NCHS data on overdose death rates and ACS control variables 
 year_county_panel <- readRDS("yearly_panel.rds")
 
 # Exclude PA observations
-year_county_panel <- year_county_panel %>% 
-  filter(STATE != "Pennsylvania")
+#year_county_panel <- year_county_panel %>% 
+#  filter(STATE != "Pennsylvania")
 
 # Load county data
 appalachian_counties <- readRDS("appalachian_counties.rds")
@@ -232,6 +234,21 @@ Additionally, we include the term $Post~Expansion_{t}$, which indicates (0-1) ob
 To support this analysis, we compile publicly-available data from the Appalachian Regional Council (ARC), Kaiser Family Foundation (KFF), National Center for Health Statistics (NCHS), and the US Census Bureau. From the sources, data is largely already available at the county-level, thus we are not required to perform any aggregation or dis-aggregation steps to make the data suitable for use. Furthermore, variables of interest are entirely quantitative, thus cleaning needs are minimal. All source data include county-specific FIPS codes as merging indices. The only intermediate data transformation we perform is the calculation of county-level racial composition shares, based on Census Bureau population data.
 
 We note two key limitations to the internal validity of our study, the first being potential imbalance between pseudo "treatment" (i.e., counties in expansion states) and "control" (i.e., counties in non-expansion states) groups and the second being possible omitted variable bias due to differential county-level availability of drug treatment facilities. On the first issue, we are considering employing a matching strategy to pair "treatment" counties in expansion states with "control" counties in non-expansion states in a way that mimics random assignment. On the second issue, we will attempt to collect additional data that allows us to control for the number of drug treatment facilities per 100,000 residents at the county-level. If this data is not directly available, we will also look for potential proxy measures.
+
+# Estimation Results
+
+```{r, include = FALSE}
+year_county_panel <- panel_data(year_county_panel, id = "COUNTY", wave = "post_expansion")
+
+fel <- plm(estimated_overdose_death_rate ~ medicaid_expansion + medicaid_expansion * post_expansion + med_income + med_age + male_pop + black_pop + hisp_pop + asian_pop, 
+                data = year_county_panel,
+                index = c("COUNTY", "post_expansion"),
+                model = "within",
+                effect = "twoways")
+
+summary(fel) 
+```
+
 
 # Appendix
 
