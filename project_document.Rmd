@@ -3,6 +3,10 @@ title: "U6614 Final Project Document"
 author: "Neil Chin (nkc2124) & Nicole Yahui Wu (yw3551)"
 date: '`r Sys.Date()`'
 output:
+  pdf_document:
+    toc: no
+    toc_depth: '3'
+    number_sections: yes
   html_document:
     toc: yes
     toc_depth: 3
@@ -12,10 +16,6 @@ output:
     theme: default
     fig_caption: yes
     df_print: tibble
-  pdf_document:
-    toc: no
-    toc_depth: '3'
-    number_sections: yes
 urlcolor: blue
 ---
 
