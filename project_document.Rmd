@@ -1,5 +1,5 @@
 ---
-title: "U6614 Final Project Document — Deliverable #"
+title: "U6614 Final Project Document"
 author: "Neil Chin (nkc2124) & Nicole Yahui Wu (yw3551)"
 date: '`r Sys.Date()`'
 output:
@@ -30,6 +30,9 @@ library(psych)
 library(kableExtra)
 library(panelr)
 library(plm)
+library(modelsummary)
+library(sf)
+library(tmap)
 ```
 
 # Research Question and Motivations
@@ -81,7 +84,35 @@ expansion_count <- as.numeric(table(appalachian_counties$medicaid_expansion))
 
 In total, `r expansion_count[2]` Appalachian counties are located in expansion states and `r expansion_count[1]` Appalachian counties are located in non-expansion states.
 
-ADD MAP BELOW
+We map Appalachian counties by Medicaid expansion status in the figure below:
+
+```{r, include = FALSE}
+county_shapes <- read_sf(dsn = 'data/cb_2021_us_county_5m/cb_2021_us_county_5m.shp')
+
+county_shapes <- county_shapes %>% 
+  mutate(FIPS = GEOID)
+
+appalachian_counties_map <- appalachian_counties %>% 
+  left_join(county_shapes, by = 'FIPS') %>% 
+  select(FIPS, geometry, medicaid_expansion)
+
+appalachian_counties_map$medicaid_expansion <- factor(appalachian_counties_map$medicaid_expansion,
+                                    levels = c(0,1),
+                                    labels = c("Non-Expansion", "Expansion"))
+
+appalachian_counties_map <- st_as_sf(appalachian_counties_map)
+
+expansion_map <- tm_shape(appalachian_counties_map) + 
+  tm_polygons("medicaid_expansion",
+              title = "Medicaid Expansion Status") +
+  tm_borders()
+```
+
+```{r}
+expansion_map
+```
+
+Note that Virginia did enact Medicaid expansion in 2019, after the end of our study period, and thus counties in Virginia are considered to be "non-expansion" in our analysis. 
 
 ## Variation in Drug Overdose Death Rate
 
@@ -102,10 +133,10 @@ figure1 <- line_plot_panel %>%
                group = medicaid_expansion)) +
     geom_line(aes(linetype = medicaid_expansion, color = medicaid_expansion)) +
     geom_point(aes(shape = medicaid_expansion, color = medicaid_expansion)) +
-    geom_vline(aes(xintercept = 0)) +
+    geom_vline(aes(xintercept = -1)) +
     labs(x = "Years since Medicaid Expansion",
          y = "Drug Overdose Deaths per 100,000",
-         fill = "Medicaid Expansion Status",
+         group = "Medicaid Expansion Status",
          title = "County-Level Drug Overdose Death Rates by Medicaid Expansion Status")
 ```
 
@@ -250,6 +281,8 @@ We note two key limitations to the internal validity of our study, the first bei
 
 # Estimation Results
 
+The estimation results of our specification are displayed below:
+
 ```{r, include = FALSE}
 YC_panel <- panel_data(year_county_panel, id = "COUNTY", wave = "Year")
 
@@ -260,8 +293,16 @@ fel <- plm(estimated_overdose_death_rate ~ D + medicaid_expansion + med_income +
                 model = "within",
                 effect = "twoways")
 
-summary(fel) 
+estimation_resuts <- modelsummary(fel,
+                      coef_omit = "Intercept",
+                      gof_omit = 'DF|Deviance|R2 Pseudo|AIC|BIC|Log.Lik.',
+                      stars = c('*' = .1, '**' = .05, '***' = .01))  
 ```
+
+```{r}
+estimation_resuts
+```
+
 
 \medspace
 
