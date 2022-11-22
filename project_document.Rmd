@@ -293,14 +293,14 @@ fel <- plm(estimated_overdose_death_rate ~ D + medicaid_expansion + med_income +
                 model = "within",
                 effect = "twoways")
 
-estimation_resuts <- modelsummary(fel,
+estimation_results <- modelsummary(fel,
                       coef_omit = "Intercept",
                       gof_omit = 'DF|Deviance|R2 Pseudo|AIC|BIC|Log.Lik.',
                       stars = c('*' = .1, '**' = .05, '***' = .01))  
 ```
 
 ```{r}
-estimation_resuts
+estimation_results
 ```
 
 
