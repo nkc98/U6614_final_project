@@ -38,8 +38,6 @@ library(tmap)
 
 # Research Question and Motivations
 
-hi sameer
-
 **Did Medicaid expansion reduce drug overdose deaths in Appalachia?**
 
 Deaths due to drug overdose are a pressing problem facing United States policymakers, with reportedly more than 932,000 people dying due to overdose since 1999 ([CDC, 2022](https://www.cdc.gov/drugoverdose/deaths/index.html)). Rate of overdose deaths increased in nearly every US state from 2013-2017, with particularly severe incidence in the Appalachian region ([CDC, 2020](https://www.cdc.gov/drugoverdose/deaths/2013-2017-increase.html); [CDC, 2021](https://www.cdc.gov/drugoverdose/deaths/2014.html)). The increase in deaths is driven primarily by the ongoing US  opioid crisis, with the vast majority (>80%) of overdose deaths associated with opioid use ([CDC, 2022](https://www.cdc.gov/drugoverdose/deaths/index.html)).
