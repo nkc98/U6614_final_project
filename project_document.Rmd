@@ -38,9 +38,9 @@ library(tmap)
 
 # Research Question and Motivations
 
-**Did Medicaid expansion reduce drug overdose deaths in Appalachia?**
+**Did Medicaid expansion affect drug overdose deaths in Appalachia?**
 
-Deaths due to drug overdose are a pressing problem facing United States policymakers, with reportedly more than 932,000 people dying due to overdose since 1999 ([CDC, 2022](https://www.cdc.gov/drugoverdose/deaths/index.html)). Rate of overdose deaths increased in nearly every US state from 2013-2017, with particularly severe incidence in the Appalachian region ([CDC, 2020](https://www.cdc.gov/drugoverdose/deaths/2013-2017-increase.html); [CDC, 2021](https://www.cdc.gov/drugoverdose/deaths/2014.html)). The increase in deaths is driven primarily by the ongoing US  opioid crisis, with the vast majority (>80%) of overdose deaths associated with opioid use ([CDC, 2022](https://www.cdc.gov/drugoverdose/deaths/index.html)).
+Deaths due to drug overdose are a pressing problem facing United States policymakers and society at large, with reportedly more than 932,000 people dying due to overdose since 1999 ([CDC, 2022](https://www.cdc.gov/drugoverdose/deaths/index.html)). Rates of overdose deaths increased in nearly every US state from 2013-2017, with particularly severe incidence in the Appalachian region ([CDC, 2020](https://www.cdc.gov/drugoverdose/deaths/2013-2017-increase.html); [CDC, 2021](https://www.cdc.gov/drugoverdose/deaths/2014.html)). The increase in deaths is driven primarily by the ongoing US opioid crisis, with the vast majority (>80%) of overdose deaths associated with opioid use ([CDC, 2022](https://www.cdc.gov/drugoverdose/deaths/index.html)).
 
 In this context, we hope to assess whether expansion of the social safety net through government policy can be causally linked to reductions in drug overdose death rates. Specifically, we propose to estimate the effects of the expansion of the US Medicaid program using a panel dataset of Appalachian counties, which increased income-based eligibility for healthcare (including drug addiction treatment) in some Appalachian states, on drug overdose deaths. We hope that the findings from this study can assist policymakers in determining whether expanding access to healthcare in low-income areas is a viable policy mechanism for addressing the ongoing drug overdose crisis.
 
@@ -58,17 +58,17 @@ In our study, we identify this policy adoption discrepancy as a "treatment" (i.e
 
 # Data Description
 
-Our data is a county-year panel dataset, which we use to examine drug overdose deaths in Appalachian counties over the period 2011-2016. In total, this represents 2,538 county-year observations (i.e., 423 counties across six years).
+Our data is a county-year panel dataset, which we use to examine drug overdose deaths in Appalachian counties over the period 2011-2016. In total, this panel dataset is constituted by 2,538 county-year observations (i.e., 423 counties across six years).
 
-The subset of US counties defined as "Appalachian" is based on the jurisdiction of the Appalachian Regional Council ([ARC, 2021](https://www.arc.gov/appalachian-counties-served-by-arc/)). Accordingly, our units of observation for this study are counties, with the representative population being people living in the Appalachian region. We focus on counties as units of observation because the Appalachian region is defined at the county-level and to avoid potential selection bias and small sample size issues that would confound state-level analysis. We intentionally focus on Appalachian counties to both increase sample size and to construct pseudo “control” and “treatment”, assuming that Appalachian counties are largely similar in terms on non-measurable, unobserved characteristics across state lines.
+The subset of US counties defined as "Appalachian" is based on the jurisdiction of the Appalachian Regional Council ([ARC, 2021](https://www.arc.gov/appalachian-counties-served-by-arc/)). Accordingly, our units of observation for this study are counties, with the representative population being people living in the Appalachian region. We focus on counties as units of observation because the Appalachian region is defined at the county-level and to avoid potential selection bias and small sample size issues that would confound state-level analysis. We intentionally focus on Appalachian counties to both increase sample size and to construct pseudo “control” and “treatment”, assuming that Appalachian counties are largely similar in terms on non-measurable, unobserved characteristics across state lines. That is to say, any given Appalachian county should not be significantly more likely to have benefited from state-level adoption of Medicaid expansion than any other, based on its inate characteristics.
 
-Identification of state-level Medicaid expansion is based on tracking done by the Kaiser Family Foundation ([KFF, 2022](https://www.kff.org/medicaid/issue-brief/status-of-state-medicaid-expansion-decisions-interactive-map/)). Due to the fact that Pennsylvania implemented Medicaid expansion a year after other expansion states, we exclude Pennsylvania counties from our analysis to ensure that there is a distinct time-based differential in treatment (i.e., pre- and post-2014 periods). Similarly, we consider Virginia to be a non-expansion state for the purposes of this study, because it only enacted Medicaid expansion in 2019, well after the end of our study period.
+Identification of state-level Medicaid expansion is based on tracking done by the Kaiser Family Foundation ([KFF, 2022](https://www.kff.org/medicaid/issue-brief/status-of-state-medicaid-expansion-decisions-interactive-map/)). Note that, due to the fact that Pennsylvania implemented Medicaid expansion a year after other expansion states, the timing of "treatment" for Appalachian counties in Pennsylvania is delayed by one year relative to other counties in expansion states. Additionally, we consider Virginia to be a non-expansion state for the purposes of this study, because it only enacted Medicaid expansion in 2019, well after the end of our study period.
 
-Data on drug overdose death rates (i.e., deaths per 100,000 residents) comes from estimates modeled by the National Center for Health Statistics (NCHS), which are available at the county-level for the period 2003-2020. Unfortunately, county-level statistics on overdose deaths based on final counts of cause of death reporting only became available in 2020, outside of the time frame of this study.
+Data on drug overdose death rates (i.e., deaths per 100,000 residents) comes from estimates modeled by the National Center for Health Statistics (NCHS), which are available at the county-level for the period 2003-2020. Unfortunately, county-level statistics on overdose deaths based on final counts of cause of death reporting only became available starting in 2020, outside of the time frame of this study.
 
 County-level demographic covariates are taken from the US Census Bureau American Community Survey (ACS). Using these covariates, we hope to control for omitted variable bias stemming from county-level factors such as median income, median age, and sex and race compositions. In particular, we expect that median income would relate negatively to overdose deaths, as higher income communities would be better able to provide drug addiction treatment, all else equal. We include controls for median age as drug overdose death incidence tends to vary by age group ([KFF, 2022](https://www.kff.org/other/state-indicator/opioid-overdose-deaths-by-age-group/?dataView=1&currentTimeframe=6&selectedDistributions=0-24--25-34--35-44--45-54&sortModel=%7B%22colId%22:%22Location%22,%22sort%22:%22asc%22%7D)). Drug overdose deaths are also more common among individuals identified as male than female ([CDC, 2022](https://www.cdc.gov/nchs/hus/topics/drug-overdose-deaths.htm)). Furthermore, access to drug treatment has been shown to differ according to race ([NIDA, 2019](https://nida.nih.gov/about-nida/noras-blog/2019/07/access-to-addiction-services-differs-by-race-gender)), potentially leading to differentials in drug overdose deaths depending on racial composition of counties.
 
-Given that both the NCHS data on overdose death rates and ACS control variables are estimated at the county-level, we expand our study period to the two years prior to Medicaid expansion and the two years after (i.e., 2012-2015), in order to smooth over any potential estimation errors. We also hope that this larger time frame will capture any lags in treatment effects, given that reductions in drug overdose deaths due to expanded access to health care may not be reflected in the data until more than a year after Medicaid expansion.
+Given that both the NCHS data on overdose death rates and ACS control variables are estimated at the county-level, we expand our study period to the three years prior to Medicaid expansion and the three years after (i.e., 2011-2016), in order to smooth over any potential estimation errors. We also hope that this larger time frame will capture any lags in treatment effects, given that reductions in drug overdose deaths due to expanded access to health care may not be reflected in the data until more than a year after Medicaid expansion.
 
 \medspace
 
@@ -118,7 +118,7 @@ expansion_map <- tm_shape(appalachian_counties_map) +
 expansion_map
 ```
 
-Note that Virginia did enact Medicaid expansion in 2019, after the end of our study period, and thus Appalachian counties in Virginia are considered to be "non-expansion" in our analysis. Clearly, at the state level there is a degree of "North-South" bias in terms of which states elected to expand Medicaid. However, our empirical strategy (as disucssed in the next section) aims to minimize any associated omitted variable bias with county-level fixed effects.
+Note that Virginia did eventually enact Medicaid expansion in 2019, well after the end of our study period, and thus Appalachian counties in Virginia are considered to be "non-expansion" in our analysis. Clearly, at the state level there is a degree of "North-South" bias in terms of which states elected to expand Medicaid. However, our empirical strategy (as disucssed in the next section) aims to minimize any associated omitted variable bias with county-level fixed effects.
 
 ## Variation in Drug Overdose Death Rate
 
@@ -261,7 +261,7 @@ table4 <- table4 %>%
 table4
 ```
 
-We observe that mean drug overdose death rates are higher in expansion counties than non-expansion counties, both before and after Medicaid expansion. However, both groups of counties experience a relative increase in drug overdose death rates over the period 2011-2016.
+We confirm the prior observation that mean drug overdose death rates are higher in expansion counties than non-expansion counties, both before and after Medicaid expansion. Additionally, we confirm that both groups of counties experience a relative increase in drug overdose death rates over the period 2011-2016.
 
 It is further noteworthy that the mean of black share of counties in non-expansion states is much higher than that of counties in expansion states regardless of time period. The means of black share of counties in non-expansion states for both pre-expansion and post-expansion are both over 10%, but the means of black share of counties in expansion states for both pre and post-expansion are 2.19% and 2.21%, respectively. Moreover, the range of median income for counties in non-expansion states is much higher than that of counties in expansion states regardless of years. Specifically, the range of median income of counties in non-expansion states for pre- and post-expansion are 65380 and 62585, respectively, and the range of median income of counties in expansion states for pre- and post-expansion are 45680 and 47531. This means that the gap between the rich counties and the poor counties is larger in non-expansion states than in expansion states.
 
@@ -318,7 +318,6 @@ event_study <- feols(
   data = YC_panel, 
   weight = YC_panel$population)
 
-
 ```
 
 Note that estimates are weighted by county population.
@@ -333,7 +332,7 @@ TL;DR Medicaid expansion had some pretty awful unintended consequences. Most lik
 
 # Appendix
 
-## Data Sourcing and Cleaning
+## Data Sourcing, Cleaning, and Compilation
 
 We compile publicly-available data from the Appalachian Regional Council (ARC), Kaiser Family Foundation (KFF), National Center for Health Statistics (NCHS), and the US Census Bureau into a single county-year panel data set.
 
