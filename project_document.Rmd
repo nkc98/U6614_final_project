@@ -122,7 +122,7 @@ Note that Virginia did enact Medicaid expansion in 2019, after the end of our st
 
 ## Variation in Drug Overdose Death Rate
 
-In the figure below, we plot the weighted-average of county-level overdose death rate over time (i.e., "Years since Medicaid Expansion"), separating counties in expansion states from counties in non-expansion states. It appears that expansion counties and non-expansion counties experience near-parallel trends prior to Medicaid expansion. Following expansion, however, we observe an *steepening trend* of overdose death rates in *expansion counties* relative to *non-expansion counties*, indicating that Medicaid expansion had a *positive* effect on overdose death rates, contradicting the direction of our hypothesized causal effect.
+In the figure below, we plot the weighted-average of county-level drug overdose death rate over time (i.e., "Years since Medicaid Expansion"), separating counties in expansion states from counties in non-expansion states. While overdose death rates are persistently higher in expansion counties than in non-expansion counties, it appears that expansion counties and non-expansion counties experience near-parallel trends prior to Medicaid expansion. Following expansion, however, we observe an *steepening trend* of overdose death rates in *expansion counties* relative to *non-expansion counties*, indicating that Medicaid expansion had a *positive* effect on overdose death rates, contradicting the direction of our hypothesized causal effect.
 
 ```{r, include = FALSE}
 # Overdose line plot
