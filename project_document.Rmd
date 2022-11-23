@@ -3,10 +3,6 @@ title: "U6614 Final Project Document"
 author: "Neil Chin (nkc2124) & Nicole Yahui Wu (yw3551)"
 date: '`r Sys.Date()`'
 output:
-  pdf_document:
-    toc: no
-    toc_depth: '3'
-    number_sections: yes
   html_document:
     toc: yes
     toc_depth: 3
@@ -16,6 +12,10 @@ output:
     theme: default
     fig_caption: yes
     df_print: tibble
+  pdf_document:
+    toc: no
+    toc_depth: '3'
+    number_sections: yes
 urlcolor: blue
 ---
 
@@ -275,7 +275,7 @@ The primary variation that we seek to exploit through our analysis is the differ
 
 $$Overdose~Death~Rate_{it} = \beta Treat_{it} + X_{it} \gamma + \nu_{i} + \tau_{t} + \varepsilon_{it}$$
 
-where $Overdose~Death~Rate_{it}$ is deaths attributed to drug overdose per 100,000 county residents for county $i$ at time $t$, $Treat_{it}$ is a binary variable that indicates "treatment" status (i.e., Medicaid expansion) for a county-year, $X_{it}$ is a vector of time varying controls (e.g., median income, median age, male population share, racial composition) for potential determinants of overdose death rates outside of our policy variation of interest.
+where $Overdose~Death~Rate_{it}$ is deaths attributed to drug overdose per 100,000 county residents for county $i$ at time $t$, $Treat_{it}$ is a binary variable that indicates "treatment" status (i.e., enactment of Medicaid expansion) for a county-year, $X_{it}$ is a vector of time varying controls (e.g., median income, median age, male population share, racial composition) for potential determinants of overdose death rates outside of our policy variation of interest.
 
 Additionally, we include an array of county fixed effects, $\nu_{i}$, that control for unobserved time-invariant factors that are specific to individuals counties. An example of one such factor would be if, throughout the entire 2012-2015 period, a specific county had its own drug treatment program that reduced drug overdose deaths compared to other counties, all else equal. We further include $\tau_{t}$, a year fixed effect, to control for unobserved county-invariant factors that might have changed between each year included in our panel. Such factors would include events such as periodic economic shocks that affect the entire Appalachian region in certain years, which potentially could be deterministic of the rate of overdose deaths. Finally, $\varepsilon_{it}$ is the idiosyncratic error term.
 
