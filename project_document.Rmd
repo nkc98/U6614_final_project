@@ -3,6 +3,10 @@ title: "U6614 Final Project Document"
 author: "Neil Chin (nkc2124) & Nicole Yahui Wu (yw3551)"
 date: '`r Sys.Date()`'
 output:
+  pdf_document:
+    toc: no
+    toc_depth: '3'
+    number_sections: yes
   html_document:
     toc: yes
     toc_depth: 3
@@ -12,10 +16,6 @@ output:
     theme: default
     fig_caption: yes
     df_print: tibble
-  pdf_document:
-    toc: no
-    toc_depth: '3'
-    number_sections: yes
 urlcolor: blue
 ---
 
@@ -72,7 +72,7 @@ Given that both the NCHS data on overdose death rates and ACS control variables 
 
 \medspace
 
-# Preliminary Exploratory Analysis
+# Exploratory Analysis
 
 ```{r, include = FALSE}
 # Load panel data
@@ -327,6 +327,8 @@ Note that estimates are weighted by county population.
 # Discussion
 
 TL;DR Medicaid expansion had some pretty awful unintended consequences. Most likely explanation: Medicaid expansion increased access to prescription opioids, resulting in higher rates of drug overdose deaths.
+
+OVB is fairly likely, but the direction of bias is not clear.
 
 \medspace
 
