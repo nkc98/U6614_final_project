@@ -39,4 +39,4 @@ Harold: Try to see what's out there.
 
 ## Diff-in-Means for descriptive statistics and weights for population
 
-## Model for longer time frame ('16 and '18) also unweighted
+## Model for longer time frame ('16 and '18)
