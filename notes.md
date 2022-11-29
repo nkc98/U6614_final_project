@@ -37,6 +37,6 @@ Harold: Try to see what's out there.
 
 - Education?
 
-## Diff-in-Means for descriptive statistics
+## Diff-in-Means for descriptive statistics and weights for population
 
-## Model for longer time frame ('16 and '18)
+## Model for longer time frame ('16 and '18) also unweighted
