@@ -273,7 +273,7 @@ It is also of interest that variation between counties across each variable of i
 
 The primary variation that we seek to exploit through our analysis is the differential in state-level adoption of Medicaid expansion across the Appalachian region, with policy variation at the state-level thus filtering down to the county-level. To evaluate the effect of Medicaid expansion on drug overdose deaths in Appalachian counties, we estimate the following "differences-in-differences" specification:
 
-$$Overdose~Death~Rate_{it} = \beta Treat_{it} + X_{it} \gamma + \nu_{i} + \tau_{t} + \varepsilon_{it}$$
+$$Overdose~Death~Rate_{it} = \beta Treat_{it} + \textbf{X}_{it} \gamma + \nu_{i} + \tau_{t} + \varepsilon_{it}$$
 
 where $Overdose~Death~Rate_{it}$ is deaths attributed to drug overdose per 100,000 county residents for county $i$ at time $t$, $Treat_{it}$ is a binary variable that indicates "treatment" status (i.e., enactment of Medicaid expansion) for a county-year, $X_{it}$ is a vector of time varying controls (e.g., median income, median age, male population share, racial composition) for potential determinants of overdose death rates outside of our policy variation of interest.
 
