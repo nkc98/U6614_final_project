@@ -15,6 +15,8 @@ output:
     highlight: tango
     theme: default
     fig_caption: yes
+    includes:  
+      in_header: my_header.tex
     df_print: tibble
 urlcolor: blue
 editor_options: 
@@ -156,7 +158,6 @@ While drug overdose death rates are persistently higher in expansion counties th
 
 Yet, we also observe that this steepening trend of overdose death rates in expansion counties *declines* following the first two years after Medicaid expansion. Between years three and four after Medicaid expansion, it even appears that parallel trends in overdose deaths have resumed. This suggests that, to the extent Medicaid expansion has increased overdose death rates in expansion counties, this effect was short-lived. 
 
-
 ## Variation in Key Continuous Variables
 
 We also explore the balance across key continuous variables between counties in expansion states and counties in non-expansion states, at the time when Medicaid expansion occurs (i.e., Jan. 1st, 2014 for all states expect PA, Jan 1st, 2015 for PA).
@@ -164,8 +165,15 @@ We also explore the balance across key continuous variables between counties in 
 ```{r, include = FALSE}
 t_expansion_county_panel <- year_county_panel %>% 
   filter(t_expansion == 0) %>% 
-  rename(weights = population) %>%
-  select('medicaid_expansion', 'med_income', 'med_age', 'male_share', 'black_share', 'hisp_share', 'white_share', 'asian_share')
+  rename(weights = population,
+         `Median Income ($)` = med_income,
+         `Median Age` = med_age,
+         `Male Share` = male_share,
+         `Black Share` = black_share,
+         `Hispanic Share` = hisp_share,
+         `White Share` = white_share,
+         `Asian Share` = asian_share) %>%
+  select('medicaid_expansion', 'Median Income ($)', 'Median Age', 'Male Share', 'Black Share', 'Hispanic Share', 'White Share', 'Asian Share')
 
 #show diff between treatment and control groups 
 diff_in_means_table <- datasummary_balance(~medicaid_expansion,
@@ -173,14 +181,16 @@ diff_in_means_table <- datasummary_balance(~medicaid_expansion,
                     fmt = 2,
                     dinm_statistic = "p.value",
                     title = "Difference-in-means during year of Medicaid expansion by county expansion status",
-                    notes = "Note: Observations are weighted by county population.")
+                    notes = "Note: Observations are weighted by the population in each county.",
+                    ) %>% 
+  kable_styling(latex_options = "HOLD_position")
 ```
 
 ```{r}
 diff_in_means_table
 ```
 
-Table 1 shows difference-in-means between "treatment" (i.e., Medicaid expansion) counties and "control" counties in the year of Medicaid expansion. We observe statistically significant differences between "treatment" and "control" groups for male share of population and racial composition (i.e., Black, White, and Hispanic share of population). This suggests that these factors are unbalanced between the two groups of counties, which would lead to omitted variable bias if they are not controlled for in our estimation specification.
+Table 1 above shows difference-in-means between "treatment" (i.e., Medicaid expansion) counties and "control" counties in the year of Medicaid expansion. We observe statistically significant differences between "treatment" and "control" groups for male share of population and racial composition (i.e., Black, White, and Hispanic share of population). This suggests that these factors are unbalanced between the two groups of Appalachian counties, which would lead to omitted variable bias if they are not controlled for in our estimation specification.
 
 \medspace
 
@@ -188,11 +198,11 @@ Table 1 shows difference-in-means between "treatment" (i.e., Medicaid expansion)
 
 The primary variation that we seek to exploit through our analysis is the differential in state-level adoption of Medicaid expansion across the Appalachian region, with policy variation at the state-level thus filtering down to the county-level. To evaluate the effect of Medicaid expansion on drug overdose deaths in Appalachian counties, we estimate the following "differences-in-differences" specification:
 
-$$Overdose~Death~Rate_{it} = \beta Treat_{it} + \textbf{X}_{it} \gamma + \nu_{i} + \tau_{t} + \varepsilon_{it}$$
+$$Overdose~Death~Rate_{it} = \beta Medicaid~Expansion_{it} + \textbf{X}_{it} \gamma + \nu_{i} + \tau_{t} + \varepsilon_{it}$$
 
-where $Overdose~Death~Rate_{it}$ is deaths attributed to drug overdose per 100,000 county residents for county $i$ at time $t$, $Treat_{it}$ is a binary variable that indicates "treatment" status (i.e., enactment of Medicaid expansion) for a county-year, $X_{it}$ is a vector of time varying controls (e.g., median income, median age, male population share, racial composition) for potential determinants of overdose death rates outside of our policy variation of interest.
+where $Overdose~Death~Rate_{it}$ is deaths attributed to drug overdose per 100,000 county residents for county $i$ at time $t$, $Medicaid~Expansion_{it}$ is a binary variable that indicates "treatment" status (i.e., enactment of Medicaid expansion) for a county-year, $\textbf{X}_{it}$ is a vector of time varying controls (e.g., median income, median age, male population share, racial composition) for potential county-level determinants of overdose death rates outside of our policy variation of interest.
 
-Additionally, we include an array of county fixed effects, $\nu_{i}$, that control for unobserved time-invariant factors that are specific to individuals counties. An example of one such factor would be if, throughout the entire 2012-2015 period, a specific county had its own drug treatment program that reduced drug overdose deaths compared to other counties, all else equal. We further include $\tau_{t}$, a year fixed effect, to control for unobserved county-invariant factors that might have changed between each year included in our panel. Such factors would include events such as periodic economic shocks that affect the entire Appalachian region in certain years, which potentially could be deterministic of the rate of overdose deaths. Finally, $\varepsilon_{it}$ is the idiosyncratic error term.
+Additionally, we include an array of county fixed effects, $\nu_{i}$, that control for unobserved time-invariant factors that are specific to individuals counties. An example of one such factor would be if, throughout the entire 2011-2018 period, a specific county had its own drug treatment program that reduced drug overdose deaths compared to other counties, all else equal. We further include $\tau_{t}$, a year fixed effect, to control for unobserved county-invariant factors that might have changed between each year included in our panel. Such factors would include events such as periodic economic shocks that affect the entire Appalachian region in certain years, which potentially could be deterministic of the rate of overdose deaths. Finally, $\varepsilon_{it}$ is the idiosyncratic error term.
 
 To support this analysis, we compile publicly-available data from the Appalachian Regional Council (ARC), Kaiser Family Foundation (KFF), National Center for Health Statistics (NCHS), and the US Census Bureau. From the sources, data is largely already available at the county-level, thus we are not required to perform any aggregation or dis-aggregation steps to make the data suitable for use. Furthermore, variables of interest are entirely quantitative, thus cleaning needs are minimal. All source data include county-specific FIPS codes as merging indices. The only intermediate data transformation we perform is the calculation of county-level racial composition shares, based on Census Bureau population data.
 
@@ -202,7 +212,9 @@ We note two key limitations to the internal validity of our study, the first bei
 
 # Difference-in-Difference Estimation Results
 
-The estimation results of our specification are displayed below:
+We test two model specifications to estimate difference-in-difference effects. The first considers effects up to two years following Medicaid expansion, while the second considers effects up to four years following Medicaid expansion. We evaluate both of these specifications to determine if the effect of Medicaid expansion on drug overdose death rates was short-lived (i.e., only significant in the period two years after expansion), or if the effect persisted for a longer period.
+
+The estimation results of our model specifications are displayed below:
 
 ```{r, include = FALSE}
 YC_panel <- panel_data(year_county_panel, id = "COUNTY", wave = "Year")
@@ -247,7 +259,7 @@ estimation_results <- modelsummary(models,
              fmt = "%.4f",
              coef_omit = 'Intercept',
              coef_rename = c("treat" = "Medicaid Expansion", 
-                             "med_income" = "Median Income",
+                             "med_income" = "Median Income ($)",
                              "med_age" = "Median Age",
                              "male_pop" = "Male Population Share (0-100)",
                              "black_pop" = "Black Population Share",
@@ -258,7 +270,7 @@ estimation_results <- modelsummary(models,
              stars = c('*' = .1, '**' = .05, '***' = .01),
              notes = 'Robust standard errors clustered by county are shown in parentheses.
                       Observations are weighted by the population in each county.') %>% 
-  kable_styling(latex_options = "scale_down")
+  kable_styling(latex_options = c("hold_position", "scale_down"))
 
 ```
 
@@ -266,13 +278,17 @@ estimation_results <- modelsummary(models,
 estimation_results
 ```
 
+Table 2 above displays difference-in-difference estimation results for "treatment" effects two- and four-years following Medicaid expansion. In both cases, we find evidence that Medicaid Expansion had a positive and statistically significant (p < 0.01) effect on drug overdose deaths, holding constant an array of time- and county-variant factors (e.g., income, age, male population share, and racial composition), and controlling for county and year fixed effects.
+
+In particular, our estimates suggest that we can causally attribute Medicaid expansion in Appalachian counties to an *increase* in drug overdose death rates of *nearly 7 deaths per 100,000* in the two years following expansion. When expanding timeframe used to estimate the effect of Medicaid expansion to the four years following expansion, we find an *even greater* attributable increase in overdose death rates due to Medicaid expansion of *over 8 deaths per 100,000*. As such, we find that the effect of Medicaid expansion on overdose death rates in Appalachian counties not only persisted over time, but actually grew larger.
+
 \medspace
 
 # Discussion
 
 TL;DR Medicaid expansion had some pretty awful unintended consequences. Most likely explanation: Medicaid expansion increased access to prescription opioids, resulting in higher rates of drug overdose deaths.
 
-OVB is fairly likely, but the direction of bias is not clear.
+OVB is fairly likely, but the direction of bias is not clear. Tried to control for SUDs treatment centers but could not.
 
 \medspace
 
@@ -333,7 +349,7 @@ overdose_data <- overdose_data %>%
 
 ### ACS Data
 
-To control for time-variant, county-variant factors, we pull demographic data from the US Census Bureau's American Community Survey (ACS), for years 2011-2016. Data is downloaded from the US Census Bureau API using the package tidycensus.
+To control for time-variant, county-variant factors, we pull demographic data from the US Census Bureau's American Community Survey (ACS), for years 2011-2018. Data is downloaded from the US Census Bureau API using the package tidycensus.
 
 ```{r}
 census_api_key("b79b301dc87bb0fd551147883a8141dca4e2823e")
