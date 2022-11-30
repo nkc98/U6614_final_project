@@ -1,0 +1,152 @@
+---
+title: "Did Medicaid Expansion Affect Drug Overdose Deaths in Appalachia?"
+author: "Neil Chin (nkc2124) & Nicole Yahui Wu (yw3551)"
+date: '`r Sys.Date()`'
+output:
+  ioslides_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+
+library(tidyverse) 
+library(tidycensus)
+library(readxl)
+library(lubridate)
+library(kableExtra)
+library(sf)
+library(tmap)
+library(panelr)
+library(fixest)
+library(modelsummary)
+```
+
+
+```{css, echo = FALSE}
+table, td, th {
+  border: none;
+  padding-left: 1em;
+  padding-right: 1em;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+```
+
+```{r load date, include = FALSE}
+# Load panel data
+year_county_panel <- readRDS("yearly_panel.rds")
+
+# Load county data
+appalachian_counties <- readRDS("appalachian_counties.rds")
+expansion_count <- as.numeric(table(appalachian_counties$medicaid_expansion))
+
+# Turn panel into panel format, limit to 3 years prior and 5 years after
+YC_panel <- panel_data(year_county_panel, id = "COUNTY", wave = "Year") %>% 
+  filter(between(t_expansion, -3, 4))
+```
+
+## Research Motivations {.build}
+<div>
+* Deaths due to drug overdose are a pressing problem facing United States policymakers and society at large, with reportedly more than 932,000 people dying due to overdose since 1999 ([CDC, 2022](https://www.cdc.gov/drugoverdose/deaths/index.html)).
+<div>
+* Rates of overdose deaths increased in nearly every US state from 2013-2017, with particularly severe incidence in the Appalachian region ([CDC, 2020](https://www.cdc.gov/drugoverdose/deaths/2013-2017-increase.html); [CDC, 2021](https://www.cdc.gov/drugoverdose/deaths/2014.html)). 
+<div>
+* The increase in deaths is driven primarily by the ongoing US opioid crisis, with the vast majority (>80%) of overdose deaths associated with opioid use ([CDC, 2022](https://www.cdc.gov/drugoverdose/deaths/index.html)).
+<div>
+* **In this context, we hope to assess whether expansion of the social safety net through government policy can be causally linked to reductions in drug overdose death rates.**
+
+## Policy Background {.smaller .build}
+<div>
+* The Affordable Care Act (ACA) was passed by the United States Congress and signed into law by President Barack Obama in 2010, drastically changing the policy landscape for health care in the United States. 
+<div>
+* **Among the major provisions in the ACA was expanded eligibility for Medicaid (i.e., "Medicaid Expansion"), which allowed states to raise the income-eligibility threshold to 138% of the federal poverty level ([KFF, 2022](https://www.kff.org/medicaid/issue-brief/status-of-state-medicaid-expansion-decisions-interactive-map/)).** 
+<div>
+* Of the **13 states** whose boundaries overlap with the broad geographical definition of Appalachia, **five states** (Kentucky, Maryland, New York, Ohio, and West Virginia) passed legislation mandating the expansion of Medicaid as of January 1st, 2014 ([KFF, 2022](https://www.kff.org/medicaid/issue-brief/status-of-state-medicaid-expansion-decisions-interactive-map/)). **Two additional states**, Pennsylvania and Virginia, would later expand Medicaid, with the former in 2015 and the latter in 2019. 
+<div>
+* **Six states** (Alabama, Georgia, Mississippi, North Carolina, South Carolina, and Tennessee) have not expanded Medicaid to-date. 
+
+## Policy Background {.smaller .build}
+
+* In total, `r expansion_count[2]` Appalachian counties are located in expansion states and `r expansion_count[1]` Appalachian counties are located in non-expansion states.
+
+```{r create map, include = FALSE}
+
+# Shape file pulled from the Census Bureau: https://www.census.gov/geographies/mapping-files/time-series/geo/cartographic-boundary.html
+county_shapes <- read_sf(dsn = 'data/cb_2021_us_county_5m/cb_2021_us_county_5m.shp')
+
+county_shapes <- county_shapes %>% 
+  mutate(FIPS = GEOID)
+
+appalachian_counties_map <- appalachian_counties %>% 
+  left_join(county_shapes, by = 'FIPS') %>% 
+  select(FIPS, geometry, medicaid_expansion)
+
+appalachian_counties_map$medicaid_expansion <- factor(appalachian_counties_map$medicaid_expansion,
+                                    levels = c(0,1),
+                                    labels = c("Non-Expansion", "Expansion"))
+
+appalachian_counties_map <- st_as_sf(appalachian_counties_map)
+
+expansion_map <- tm_shape(appalachian_counties_map) + 
+  tm_polygons("medicaid_expansion",
+              title = "Medicaid Expansion Status",
+              palette = 'Pastel1') +
+  tm_borders()
+```
+
+```{r display map, echo = FALSE}
+expansion_map
+```
+
+## Research Hypothesis
+<div>
+* In our study, we identify the discrepancy in Medicaid expansion as a policy "treatment" (i.e., "differential exposure between entities over time") affecting drug overdose incidence in Appalachian communities. 
+<div>
+* Our ***hypothesized*** causal mechanism is that expanded Medicaid eligibility allowed for greater access to low-cost health care among Appalachian counties in expansion states, therefore enabling people struggling with drug addiction to receive treatment, reducing overall deaths from drug overdose in these areas.
+
+## Data Description {.smaller .build}
+<div>
+* Our data is a county-year panel dataset, comprised of Appalachian counties over the period 2011-2019. For analysis, we restrict the panel to the three years prior to Medicaid expansion and the five years after, resulting in a final dataset of `r nrow(YC_panel)` observations.
+<div>
+* Data on drug overdose death rates (i.e., deaths per 100,000 residents) comes from estimates modeled by the National Center for Health Statistics (NCHS), which are available at the county-level for the period 2003-2020.
+<div>
+* County-level demographic covariates are taken from the US Census Bureau American Community Survey (ACS).
+
+## Data Description {.smaller}
+
+* Exploring the balance across key continuous variables between counties in expansion states and counties in non-expansion states at the time when Medicaid expansion occurs (i.e., Jan. 1st, 2014 for all states expect PA, Jan 1st, 2015 for PA), we find that observable characteristics of the expansion and non-expansion counties are broadly similar.
+<div>
+```{r create diif in means, include = FALSE}
+t_expansion_county_panel <- year_county_panel %>% 
+  filter(t_expansion == 0) %>% 
+  rename(weights = population,
+         `Median Income ($)` = med_income,
+         `Median Age` = med_age,
+         `Male Share` = male_share,
+         `Black Share` = black_share,
+         `Hispanic Share` = hisp_share,
+         `White Share` = white_share,
+         `Asian Share` = asian_share) %>%
+  select('medicaid_expansion', 'Median Income ($)', 'Median Age', 'Male Share', 'Black Share', 'Hispanic Share', 'White Share', 'Asian Share')
+
+#show diff between treatment and control groups 
+diff_in_means_table <- datasummary_balance(~medicaid_expansion,
+                    data = t_expansion_county_panel,
+                    fmt = 2,
+                    dinm_statistic = "p.value",
+                    title = "Difference-in-means during year of Medicaid expansion by county expansion status",
+                    notes = "Note: Observations are weighted by the population in each county.",
+                    ) %>% 
+  kable_styling(latex_options = "scale_down")
+```
+
+```{r display diff in means, echo = FALSE}
+diff_in_means_table
+```
+<div>
+
+
+
+
