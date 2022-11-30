@@ -15,8 +15,6 @@ output:
     highlight: tango
     theme: default
     fig_caption: yes
-    includes:  
-      in_header: my_header.tex
     df_print: tibble
 urlcolor: blue
 editor_options: 
@@ -36,7 +34,6 @@ library(tmap)
 library(panelr)
 library(fixest)
 library(modelsummary)
-library(gt)
 ```
 
 # Research Question and Motivations
@@ -61,18 +58,22 @@ In our study, we identify this policy adoption discrepancy as a "treatment" (i.e
 
 # Data Description
 
-```{r, include = FALSE}
+```{r load date, include = FALSE}
 # Load panel data
 year_county_panel <- readRDS("yearly_panel.rds")
 
 # Load county data
 appalachian_counties <- readRDS("appalachian_counties.rds")
 expansion_count <- as.numeric(table(appalachian_counties$medicaid_expansion))
+
+# Turn panel into panel format, limit to 3 years prior and 5 years after
+YC_panel <- panel_data(year_county_panel, id = "COUNTY", wave = "Year") %>% 
+  filter(between(t_expansion, -3, 4))
 ```
 
-Our data is a county-year panel dataset, which we use to examine drug overdose deaths in Appalachian counties over the period 2011-2018. In total, this panel dataset is constituted by `r nrow(year_county_panel)` county-year observations (i.e., `r nrow(appalachian_counties)` counties across eight years).
+Our data is a county-year panel dataset, which we use to examine drug overdose deaths in Appalachian counties over the period 2011-2019. In total, this panel dataset is constituted by `r nrow(year_county_panel)` county-year observations (i.e., `r nrow(appalachian_counties)` counties across nine years). For analysis, however, we restrict the panel to the three years prior to Medicaid expansion and the five years after, resulting in a final dataset of `r nrow(YC_panel)` observations. The discrepancy between these two datasets is due to Pennsylvania's delayed adoption of Medicaid.
 
-The subset of US counties defined as "Appalachian" is based on the jurisdiction of the Appalachian Regional Council ([ARC, 2021](https://www.arc.gov/appalachian-counties-served-by-arc/)). Accordingly, our units of observation for this study are counties, with the representative population being people living in the Appalachian region. We focus on counties as units of observation because the Appalachian region is defined at the county-level and to avoid potential selection bias and small sample size issues that would confound state-level analysis. We intentionally focus on Appalachian counties to both increase sample size and to construct pseudo “control” and “treatment”, assuming that Appalachian counties are largely similar in terms on non-measurable, unobserved characteristics across state lines. That is to say, any given Appalachian county should not be significantly more likely to have benefited from state-level adoption of Medicaid expansion than any other, based on its inate characteristics.
+The subset of US counties defined as "Appalachian" is based on the jurisdiction of the Appalachian Regional Council ([ARC, 2021](https://www.arc.gov/appalachian-counties-served-by-arc/)). Accordingly, our units of observation for this study are counties, with the representative population being people living in the Appalachian region. We focus on counties as units of observation because the Appalachian region is defined at the county-level and to avoid potential selection bias and small sample size issues that would confound state-level analysis. We intentionally focus on Appalachian counties to both increase sample size and to construct pseudo “control” and “treatment” groups, assuming that Appalachian counties are largely similar in terms on non-measurable, unobserved characteristics across state lines. That is to say, any given Appalachian county should not be significantly more likely to have benefited from state-level adoption of Medicaid expansion than any other, based on its inate characteristics.
 
 Identification of state-level Medicaid expansion is based on tracking done by the Kaiser Family Foundation ([KFF, 2022](https://www.kff.org/medicaid/issue-brief/status-of-state-medicaid-expansion-decisions-interactive-map/)). Note that, due to the fact that Pennsylvania implemented Medicaid expansion a year after other expansion states, the timing of "treatment" for Appalachian counties in Pennsylvania is delayed by one year relative to other counties in expansion states. Additionally, we consider Virginia to be a non-expansion state for the purposes of this study, because it only enacted Medicaid expansion in 2019, well after the end of our study period.
 
@@ -92,7 +93,7 @@ In total, `r expansion_count[2]` Appalachian counties are located in expansion s
 
 We map Appalachian counties by Medicaid expansion status below:
 
-```{r, include = FALSE}
+```{r create map, include = FALSE}
 
 # Shape file pulled from the Census Bureau: https://www.census.gov/geographies/mapping-files/time-series/geo/cartographic-boundary.html
 county_shapes <- read_sf(dsn = 'data/cb_2021_us_county_5m/cb_2021_us_county_5m.shp')
@@ -117,26 +118,26 @@ expansion_map <- tm_shape(appalachian_counties_map) +
   tm_borders()
 ```
 
-```{r}
+```{r display map, echo = FALSE}
 expansion_map
 ```
 
-Note that Virginia did eventually enact Medicaid expansion in 2019, well after the end of our study period, and thus Appalachian counties in Virginia are considered to be "non-expansion" in our analysis. Clearly, at the state level there is a degree of "North-South" bias in terms of which states elected to expand Medicaid. However, our empirical strategy (as disucssed in the next section) aims to minimize any associated omitted variable bias with county-level fixed effects.
+Note that Virginia did eventually enact Medicaid expansion in 2019, but these observations are not included in our analytical sample (2019 observations are only analyzed for Pennsylvania), and thus Appalachian counties in Virginia are considered to be "non-expansion" in our analysis. Clearly, at the state level there is a degree of "North-South" bias in terms of which states elected to expand Medicaid. However, our empirical strategy (as disucssed in the next section) aims to minimize any associated omitted variable bias with county-level fixed effects.
 
 ## Variation in Drug Overdose Death Rate
 
 In the figure below, we plot the weighted-average of county-level drug overdose death rate over time (i.e., "Years since Medicaid Expansion"), separating counties in expansion states from counties in non-expansion states. 
 
-```{r, include = FALSE}
+```{r create line plot, include = FALSE}
 # Overdose line plot
 
 line_plot_panel <- year_county_panel %>% 
     group_by(t_expansion, medicaid_expansion) %>% 
     summarize(estimated_overdose_death_rate = weighted.mean(
     estimated_overdose_death_rate, w = population, na.rm = T), .groups = 'drop') %>% 
-    filter(t_expansion >= -3)
+    filter(between(t_expansion, -3, 4))
 
-figure1 <- line_plot_panel %>% 
+overdose_line_plot <- line_plot_panel %>% 
     ggplot(aes(x = t_expansion,
                y = estimated_overdose_death_rate,
                color = medicaid_expansion)) +
@@ -149,9 +150,8 @@ figure1 <- line_plot_panel %>%
          title = "County-Level Drug Overdose Death Rates by Medicaid Expansion Status")
 ```
 
-
-```{r}
-figure1
+```{r display line plot, echo = FALSE}
+overdose_line_plot
 ```
 
 While drug overdose death rates are persistently higher in expansion counties than in non-expansion counties, it appears that expansion counties and non-expansion counties experience near-parallel trends prior to Medicaid expansion. In the first few years following expansion, however, we observe an *steepening trend* of overdose death rates in *expansion counties* relative to *non-expansion counties*, indicating that Medicaid expansion had a *positive* effect on overdose death rates, contradicting the direction of our hypothesized causal effect.
@@ -162,7 +162,7 @@ Yet, we also observe that this steepening trend of overdose death rates in expan
 
 We also explore the balance across key continuous variables between counties in expansion states and counties in non-expansion states, at the time when Medicaid expansion occurs (i.e., Jan. 1st, 2014 for all states expect PA, Jan 1st, 2015 for PA).
 
-```{r, include = FALSE}
+```{r create diif in means, include = FALSE}
 t_expansion_county_panel <- year_county_panel %>% 
   filter(t_expansion == 0) %>% 
   rename(weights = population,
@@ -186,11 +186,13 @@ diff_in_means_table <- datasummary_balance(~medicaid_expansion,
   kable_styling(latex_options = "HOLD_position")
 ```
 
-```{r}
+```{r display diff in means, echo = FALSE}
 diff_in_means_table
 ```
 
 Table 1 above shows difference-in-means between "treatment" (i.e., Medicaid expansion) counties and "control" counties in the year of Medicaid expansion. We observe statistically significant differences between "treatment" and "control" groups for male share of population and racial composition (i.e., Black, White, and Hispanic share of population). This suggests that these factors are unbalanced between the two groups of Appalachian counties, which would lead to omitted variable bias if they are not controlled for in our estimation specification.
+
+Among control variables, we note some statistically significant associations that link county-level overdose death rates with median income, male population share and racial composition. Outside of income, however, where statistically significant, the size of these estimates are too small to provide much inferential value (e.g., a 100 percentage-point increase in Black population share decreases the overdose death rate by less than 1 death per 100,000, all else held constant).
 
 \medspace
 
@@ -202,7 +204,7 @@ $$Overdose~Death~Rate_{it} = \beta Medicaid~Expansion_{it} + \textbf{X}_{it} \ga
 
 where $Overdose~Death~Rate_{it}$ is deaths attributed to drug overdose per 100,000 county residents for county $i$ at time $t$, $Medicaid~Expansion_{it}$ is a binary variable that indicates "treatment" status (i.e., enactment of Medicaid expansion) for a county-year, $\textbf{X}_{it}$ is a vector of time varying controls (e.g., median income, median age, male population share, racial composition) for potential county-level determinants of overdose death rates outside of our policy variation of interest.
 
-Additionally, we include an array of county fixed effects, $\nu_{i}$, that control for unobserved time-invariant factors that are specific to individuals counties. An example of one such factor would be if, throughout the entire 2011-2018 period, a specific county had its own drug treatment program that reduced drug overdose deaths compared to other counties, all else equal. We further include $\tau_{t}$, a year fixed effect, to control for unobserved county-invariant factors that might have changed between each year included in our panel. Such factors would include events such as periodic economic shocks that affect the entire Appalachian region in certain years, which potentially could be deterministic of the rate of overdose deaths. Finally, $\varepsilon_{it}$ is the idiosyncratic error term.
+Additionally, we include an array of county fixed effects, $\nu_{i}$, that control for unobserved time-invariant factors that are specific to individuals counties. An example of one such factor would be if, throughout the entire 2011-2019 period, a specific county had its own drug treatment program that reduced drug overdose deaths compared to other counties, all else equal. We further include $\tau_{t}$, a year fixed effect, to control for unobserved county-invariant factors that might have changed between each year included in our panel. Such factors would include events such as periodic economic shocks that affect the entire Appalachian region in certain years, which potentially could be deterministic of the rate of overdose deaths. Finally, $\varepsilon_{it}$ is the idiosyncratic error term.
 
 To support this analysis, we compile publicly-available data from the Appalachian Regional Council (ARC), Kaiser Family Foundation (KFF), National Center for Health Statistics (NCHS), and the US Census Bureau. From the sources, data is largely already available at the county-level, thus we are not required to perform any aggregation or dis-aggregation steps to make the data suitable for use. Furthermore, variables of interest are entirely quantitative, thus cleaning needs are minimal. All source data include county-specific FIPS codes as merging indices. The only intermediate data transformation we perform is the calculation of county-level racial composition shares, based on Census Bureau population data.
 
@@ -212,37 +214,34 @@ We note two key limitations to the internal validity of our study, the first bei
 
 # Difference-in-Difference Estimation Results
 
-We test two model specifications to estimate difference-in-difference effects. The first considers effects up to two years following Medicaid expansion, while the second considers effects up to four years following Medicaid expansion. We evaluate both of these specifications to determine if the effect of Medicaid expansion on drug overdose death rates was short-lived (i.e., only significant in the period two years after expansion), or if the effect persisted for a longer period.
+We test two model specifications to estimate difference-in-difference effects. The first considers effects up to two years following Medicaid expansion, while the second considers effects up to five years following Medicaid expansion. We evaluate both of these specifications to determine if the effect of Medicaid expansion on drug overdose death rates was short-lived (i.e., only significant in the period two years after expansion), or if the effect persisted for a longer period.
 
 The estimation results of our model specifications are displayed below:
 
-```{r, include = FALSE}
-YC_panel <- panel_data(year_county_panel, id = "COUNTY", wave = "Year")
-
+```{r estimate models, include = FALSE}
 # Estimate two models, one for the period up until two years after expansion, another for the period up to four years after expansion
 
 panel_t_2 <- YC_panel %>%
-  filter(t_expansion <= 2)
+  filter(t_expansion < 2)
 
 panel_t_4 <- YC_panel
 
-
 models <- list(
   
-  "Two Years Post-Treatment" <- feols(estimated_overdose_death_rate ~ 
+  "Two Years Post-Expansion" <- feols(estimated_overdose_death_rate ~ 
                                          treat + med_income + med_age + male_pop + black_pop + hisp_pop + asian_pop | COUNTY + Year, 
                 data = panel_t_2,
                 weights = panel_t_2$population,
                 cluster = panel_t_2$COUNTY),
   
-  "Four Years Post-Treatment" <- feols(estimated_overdose_death_rate ~ 
+  "Five Years Post-Expansion" <- feols(estimated_overdose_death_rate ~ 
                                          treat + med_income + med_age + male_pop + black_pop + hisp_pop + asian_pop | COUNTY + Year, 
                 data = panel_t_4,
                 weights = panel_t_4$population,
                 cluster = panel_t_4$COUNTY)
 )
 
-names(models) <- c("Two Years Post-Treatment", "Four Years Post-Treatment")
+names(models) <- c("Two Years Post-Expansion", "Five Years Post-Expansion")
 
 #set up an object to customize your regression table goodness-of-fit statistics
 gm <- tibble::tribble(
@@ -274,13 +273,13 @@ estimation_results <- modelsummary(models,
 
 ```
 
-```{r}
+```{r display estimates, echo = FALSE}
 estimation_results
 ```
 
 Table 2 above displays difference-in-difference estimation results for "treatment" effects two- and four-years following Medicaid expansion. In both cases, we find evidence that Medicaid Expansion had a positive and statistically significant (p < 0.01) effect on drug overdose deaths, holding constant an array of time- and county-variant factors (e.g., income, age, male population share, and racial composition), and controlling for county and year fixed effects.
 
-In particular, our estimates suggest that we can causally attribute Medicaid expansion in Appalachian counties to an *increase* in drug overdose death rates of *nearly 7 deaths per 100,000* in the two years following expansion. When expanding timeframe used to estimate the effect of Medicaid expansion to the four years following expansion, we find an *even greater* attributable increase in overdose death rates due to Medicaid expansion of *over 8 deaths per 100,000*. As such, we find that the effect of Medicaid expansion on overdose death rates in Appalachian counties not only persisted over time, but actually grew larger.
+In particular, our estimates suggest that we can causally attribute Medicaid expansion in Appalachian counties to an *increase* in drug overdose death rates of *roughly 4 deaths per 100,000* in the two years following expansion. When expanding timeframe used to estimate the effect of Medicaid expansion to the four years following expansion, we find an *even greater* attributable increase in overdose death rates due to Medicaid expansion of *nearly 8 deaths per 100,000*. As such, we find that the effect of Medicaid expansion on overdose death rates in Appalachian counties not only persisted over time, but actually grew larger.
 
 \medspace
 
@@ -304,7 +303,7 @@ The Appalachian Regional Commission defines 423 counties in 13 states (West Virg
 
 More information available at: https://www.arc.gov/appalachian-counties-served-by-arc/.
 
-```{r results='asis'}
+```{r load county data}
 appalachian_counties <- read_excel('data/appalachian_counties_ARC_2021.xlsx')
 ```
 
@@ -314,7 +313,7 @@ Of the 13 states, five states (Kentucky, Maryland, New York, Ohio, and West Virg
 
 We add a dummy variable into our data to reflect this policy difference. Information on state-level Medicaid expansion available at: https://www.kff.org/medicaid/issue-brief/status-of-state-medicaid-expansion-decisions-interactive-map/.
 
-```{r}
+```{r code policy variables}
 # Create dummy variable for medicaid expansion and a variable for date of expansion
 
 expansion <- c("Kentucky", "Maryland", "New York", "Ohio", "West Virginia",
@@ -337,7 +336,7 @@ appalachian_counties$expansion_date[appalachian_counties$STATE == "Pennsylvania"
 
 Our data on drug overdose deaths comes from estimates modeled by the National Center for Health Statistics (NCHS), which are available at the county-level for the period 2003-2020. Source link: https://www.cdc.gov/nchs/data-visualization/drug-poisoning-mortality/.
 
-```{r}
+```{r load overdose data}
 overdose_data <- read_csv("data/NCHS_-_Drug_Poisoning_Mortality_by_County__United_States.csv")
 
 # Keep columns for FIPS codes, year, and modeled overdose deaths
@@ -349,9 +348,9 @@ overdose_data <- overdose_data %>%
 
 ### ACS Data
 
-To control for time-variant, county-variant factors, we pull demographic data from the US Census Bureau's American Community Survey (ACS), for years 2011-2018. Data is downloaded from the US Census Bureau API using the package tidycensus.
+To control for time-variant, county-variant factors, we pull demographic data from the US Census Bureau's American Community Survey (ACS), for years 2011-2019. Data is downloaded from the US Census Bureau API using the package tidycensus.
 
-```{r}
+```{r load ACS data}
 census_api_key("b79b301dc87bb0fd551147883a8141dca4e2823e")
 
 # Pull 2011 ACS county-level data 
@@ -539,10 +538,33 @@ acs_2018 <- acs_2018 %>%
          black_share = 100 * (black_pop/population),
          male_share = 100 * (male_pop/population))
 
+# Pull 2019 ACS county-level data 
+
+acs_2019 <- get_acs(geography = "county",
+                   variables = c(population = "B01001_001",
+                                 white_pop = "B01001H_001",
+                                 hisp_pop = "B01001I_001",
+                                 asian_pop = "B02001_005",
+                                 black_pop = "B02001_003",
+                                 male_pop = "B01001_002",
+                                 med_income = "B19013_001",
+                                 med_age = "B01002_001"),
+                   year = 2019)
+
+acs_2019 <- acs_2019 %>% 
+  select(-moe, -NAME) %>% 
+  spread(key = variable, value = estimate) %>% 
+  mutate(Year = 2019,
+         white_share = 100 * (white_pop/population),
+         hisp_share = 100 * (hisp_pop/population),
+         asian_share = 100 * (asian_pop/population),
+         black_share = 100 * (black_pop/population),
+         male_share = 100 * (male_pop/population))
+
 # Append into single ACS data frame, rename GEOID as FIPS
 
-acs_11_to_18 <- rbind(acs_2011, acs_2012, acs_2013, acs_2014, acs_2015, acs_2016, acs_2017, acs_2018)
-acs_11_to_18 <- acs_11_to_18 %>% 
+acs_11_to_19 <- rbind(acs_2011, acs_2012, acs_2013, acs_2014, acs_2015, acs_2016, acs_2017, acs_2018, acs_2019)
+acs_11_to_19 <- acs_11_to_19 %>% 
   mutate(GEOID = as.numeric(GEOID)) %>% 
   rename(FIPS = GEOID)
 ```
@@ -551,7 +573,7 @@ acs_11_to_18 <- acs_11_to_18 %>%
 
 We merge the Appalachian counties data, overdose data, and ACS data into a single data set. We save the resulting panel dataframe and county-level dataframe as .rds files, so that they can be loaded at the beginning of this file and elsewhere.
 
-```{r}
+```{r merge data}
 
 # Create four versions of the Appalachian counties data, one for each year in our study, 
 # merge with other data, then append into a panel
@@ -572,6 +594,8 @@ appalachian_counties_17 <- appalachian_counties %>%
   mutate(Year = 2017)
 appalachian_counties_18 <- appalachian_counties %>% 
   mutate(Year = 2018)
+appalachian_counties_19 <- appalachian_counties %>% 
+  mutate(Year = 2019)
 
 appalachian_counties_panel <- rbind(appalachian_counties_11,
                                     appalachian_counties_12,
@@ -580,7 +604,8 @@ appalachian_counties_panel <- rbind(appalachian_counties_11,
                                     appalachian_counties_15,
                                     appalachian_counties_16,
                                     appalachian_counties_17,
-                                    appalachian_counties_18)
+                                    appalachian_counties_18,
+                                    appalachian_counties_19)
 
 # Create variable for time since expansion and treatment variable
 
@@ -597,7 +622,7 @@ appalachian_counties_overdose_panel <- appalachian_counties_panel %>%
 # Merge panel with ACS data (save as an RDS file)
 
 yearly_counties_panel_overdose_acs <- appalachian_counties_overdose_panel %>% 
-  left_join(acs_11_to_18, by = c("FIPS", "Year"))
+  left_join(acs_11_to_19, by = c("FIPS", "Year"))
 
 # Turn expansion dummy variable into a factor
 
