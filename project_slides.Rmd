@@ -100,7 +100,7 @@ expansion_map <- tm_shape(appalachian_counties_map) +
 expansion_map
 ```
 
-## Research Hypothesis
+## Research Hypothesis {.smaller .build}
 <div>
 * In our study, we identify the discrepancy in Medicaid expansion as a policy "treatment" (i.e., "differential exposure between entities over time") affecting drug overdose incidence in Appalachian communities. 
 <div>
@@ -113,8 +113,16 @@ expansion_map
 * Data on drug overdose death rates (i.e., deaths per 100,000 residents) comes from estimates modeled by the National Center for Health Statistics (NCHS), which are available at the county-level for the period 2003-2020.
 <div>
 * County-level demographic covariates are taken from the US Census Bureau American Community Survey (ACS).
+<div>
+```{r, echo = FALSE}
+panel_head <- YC_panel %>% 
+  select(COUNTY, Year, FIPS, STATE, medicaid_expansion, expansion_date, treat)
+  
+kable(panel_head[1:4,], "simple")
+```
 
-## Data Description {.smaller}
+
+## Data Description {.smaller .build}
 
 * Exploring the balance across key continuous variables between counties in expansion states and counties in non-expansion states at the time when Medicaid expansion occurs (i.e., Jan. 1st, 2014 for all states expect PA, Jan 1st, 2015 for PA), we find that observable characteristics of the expansion and non-expansion counties are broadly similar.
 <div>
@@ -145,8 +153,77 @@ diff_in_means_table <- datasummary_balance(~medicaid_expansion,
 ```{r display diff in means, echo = FALSE}
 diff_in_means_table
 ```
-<div>
 
+## Empirical Strategy {.smaller .build}
 
+To evaluate the effect of Medicaid expansion on drug overdose deaths in Appalachian counties, we estimate the following "differences-in-differences" specification:
 
+$$Overdose~Death~Rate_{it} = \beta Medicaid~Expansion_{it} + \textbf{X}_{it} \gamma + \nu_{i} + \tau_{t} + \varepsilon_{it}$$
 
+where $Overdose~Death~Rate_{it}$ is deaths attributed to drug overdose per 100,000 county residents for county $i$ at time $t$, $Medicaid~Expansion_{it}$ indicates "treatment" status (i.e., enactment of Medicaid expansion) for a county-year, $\textbf{X}_{it}$ is a vector of time varying controls (e.g., median income, median age, male population share, racial composition) for potential county-level determinants of overdose death rates outside of our policy variation of interest.
+
+Additionally, we include an array of county fixed effects, $\nu_{i}$, that control for unobserved time-invariant factors specific to individual counties. We further include $\tau_{t}$, year fixed effects, to control for unobserved county-invariant factors that might have changed between each year included in our panel. Finally, $\varepsilon_{it}$ is the idiosyncratic error term.
+
+## Estimation Results {.smaller}
+
+We test two model specifications to estimate difference-in-difference effects. The first considers effects up to two years following Medicaid expansion, while the second considers effects up to five years following Medicaid expansion.
+```{r estimate models, include = FALSE}
+# Estimate two models, one for the period up until two years after expansion, another for the period up to four years after expansion
+
+panel_t_2 <- YC_panel %>%
+  filter(t_expansion < 2)
+
+panel_t_4 <- YC_panel
+
+models <- list(
+  
+  "Two Years Post-Expansion" <- feols(estimated_overdose_death_rate ~ 
+                                         treat + med_income + med_age + male_pop + black_pop + hisp_pop + asian_pop | COUNTY + Year, 
+                data = panel_t_2,
+                weights = panel_t_2$population,
+                cluster = panel_t_2$COUNTY),
+  
+  "Five Years Post-Expansion" <- feols(estimated_overdose_death_rate ~ 
+                                         treat + med_income + med_age + male_pop + black_pop + hisp_pop + asian_pop | COUNTY + Year, 
+                data = panel_t_4,
+                weights = panel_t_4$population,
+                cluster = panel_t_4$COUNTY)
+)
+
+names(models) <- c("Two Years Post-Expansion", "Five Years Post-Expansion")
+
+#set up an object to customize your regression table goodness-of-fit statistics
+gm <- tibble::tribble(
+    ~raw,        ~clean,          ~fmt,
+    "nobs",               "N",                  0,
+    "r.squared",          "R-squared",      3,
+    "adj.r.squared",      "Adj. R-squared", 3,
+    "FE: COUNTY",         "County FEs",          0,
+    "FE: Year",    "Year FEs",    0
+    )
+
+#display results with added formatting options    
+estimation_results <- modelsummary(models,
+             fmt = "%.4f",
+             coef_omit = 'Intercept',
+             coef_rename = c("treat" = "Medicaid Expansion", 
+                             "med_income" = "Median Income ($)",
+                             "med_age" = "Median Age",
+                             "male_pop" = "Male Population Share (0-100)",
+                             "black_pop" = "Black Population Share",
+                             "hisp_pop" = "Hispanic Population Share",
+                             "asian_pop" = "Asian Population Share"),
+             gof_map = gm,
+             title = 'Effect of Medicaid Expansion on Drug Overdose Death Rates',
+             stars = c('*' = .1, '**' = .05, '***' = .01),
+             notes = 'Robust standard errors clustered by county are shown in parentheses.
+                      Observations are weighted by the population in each county.') %>% 
+  kable_styling(latex_options = c("hold_position", "scale_down"))
+
+```
+
+```{r display estimates, echo = FALSE}
+estimation_results
+```
+
+## Discussion
