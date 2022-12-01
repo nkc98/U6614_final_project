@@ -47,7 +47,7 @@ YC_panel <- panel_data(year_county_panel, id = "COUNTY", wave = "Year") %>%
   filter(between(t_expansion, -3, 4))
 ```
 
-## Research Motivations {.build}
+## Research Motivations {.smaller .build}
 <div>
 * Deaths due to drug overdose are a pressing problem facing United States policymakers and society at large, with reportedly more than 932,000 people dying due to overdose since 1999 ([CDC, 2022](https://www.cdc.gov/drugoverdose/deaths/index.html)).
 <div>
@@ -55,13 +55,13 @@ YC_panel <- panel_data(year_county_panel, id = "COUNTY", wave = "Year") %>%
 <div>
 * The increase in deaths is driven primarily by the ongoing US opioid crisis, with the vast majority (>80%) of overdose deaths associated with opioid use ([CDC, 2022](https://www.cdc.gov/drugoverdose/deaths/index.html)).
 <div>
-* **In this context, we hope to assess whether expansion of the social safety net through government policy can be causally linked to reductions in drug overdose death rates.**
+* **In this context, we aim to assess whether expansion of the social safety net through government policy can be causally linked to reductions in drug overdose death rates.**
 
 ## Policy Background {.smaller .build}
 <div>
 * The Affordable Care Act (ACA) was passed by the United States Congress and signed into law by President Barack Obama in 2010, drastically changing the policy landscape for health care in the United States. 
 <div>
-* **Among the major provisions in the ACA was expanded eligibility for Medicaid (i.e., "Medicaid Expansion"), which allowed states to raise the income-eligibility threshold to 138% of the federal poverty level ([KFF, 2022](https://www.kff.org/medicaid/issue-brief/status-of-state-medicaid-expansion-decisions-interactive-map/)).** 
+* **Among the major provisions in the ACA was expanded eligibility for Medicaid (i.e., "Medicaid Expansion"), which allowed states the option to raise the income-eligibility threshold to 138% of the federal poverty level ([KFF, 2022](https://www.kff.org/medicaid/issue-brief/status-of-state-medicaid-expansion-decisions-interactive-map/)).** 
 <div>
 * Of the **13 states** whose boundaries overlap with the broad geographical definition of Appalachia, **five states** (Kentucky, Maryland, New York, Ohio, and West Virginia) passed legislation mandating the expansion of Medicaid as of January 1st, 2014 ([KFF, 2022](https://www.kff.org/medicaid/issue-brief/status-of-state-medicaid-expansion-decisions-interactive-map/)). **Two additional states**, Pennsylvania and Virginia, would later expand Medicaid, with the former in 2015 and the latter in 2019. 
 <div>
