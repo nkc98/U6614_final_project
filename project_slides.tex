@@ -1,0 +1,397 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+  ignorenonframetext,
+]{beamer}
+\usepackage{pgfpages}
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{caption label separator}{: }
+\setbeamercolor{caption name}{fg=normal text.fg}
+\beamertemplatenavigationsymbolsempty
+% Prevent slide breaks in the middle of a paragraph
+\widowpenalties 1 10000
+\raggedbottom
+\setbeamertemplate{part page}{
+  \centering
+  \begin{beamercolorbox}[sep=16pt,center]{part title}
+    \usebeamerfont{part title}\insertpart\par
+  \end{beamercolorbox}
+}
+\setbeamertemplate{section page}{
+  \centering
+  \begin{beamercolorbox}[sep=12pt,center]{part title}
+    \usebeamerfont{section title}\insertsection\par
+  \end{beamercolorbox}
+}
+\setbeamertemplate{subsection page}{
+  \centering
+  \begin{beamercolorbox}[sep=8pt,center]{part title}
+    \usebeamerfont{subsection title}\insertsubsection\par
+  \end{beamercolorbox}
+}
+\AtBeginPart{
+  \frame{\partpage}
+}
+\AtBeginSection{
+  \ifbibliography
+  \else
+    \frame{\sectionpage}
+  \fi
+}
+\AtBeginSubsection{
+  \frame{\subsectionpage}
+}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\newif\ifbibliography
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+\usepackage{caption}
+% Make caption package work with longtable
+\makeatletter
+\def\fnum@table{\tablename~\thetable}
+\makeatother
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same} % disable monospaced font for URLs
+\hypersetup{
+  pdftitle={Did Medicaid Expansion Affect Drug Overdose Deaths in Appalachia?},
+  pdfauthor={Neil Chin (nkc2124) \& Nicole Yahui Wu (yw3551)},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Did Medicaid Expansion Affect Drug Overdose Deaths in
+Appalachia?}
+\author{Neil Chin (nkc2124) \& Nicole Yahui Wu (yw3551)}
+\date{2022-12-05}
+
+\begin{document}
+\frame{\titlepage}
+
+\begin{frame}{Research Motivations}
+\protect\hypertarget{research-motivations}{}
+\begin{itemize}
+\tightlist
+\item
+  Deaths due to drug overdose are a pressing problem facing United
+  States policymakers and society at large, with reportedly more than
+  932,000 people dying due to overdose since 1999
+  (\href{https://www.cdc.gov/drugoverdose/deaths/index.html}{CDC,
+  2022}).
+\item
+  Rates of overdose deaths increased in nearly every US state from
+  2013-2017, with particularly severe incidence in the Appalachian
+  region
+  (\href{https://www.cdc.gov/drugoverdose/deaths/2013-2017-increase.html}{CDC,
+  2020}; \href{https://www.cdc.gov/drugoverdose/deaths/2014.html}{CDC,
+  2021}).
+\item
+  The increase in deaths is driven primarily by the ongoing US opioid
+  crisis, with the vast majority (\textgreater80\%) of overdose deaths
+  associated with opioid use
+  (\href{https://www.cdc.gov/drugoverdose/deaths/index.html}{CDC,
+  2022}).
+\item
+  \textbf{In this context, we aim to assess whether expansion of the
+  social safety net through government policy can be causally linked to
+  reductions in drug overdose death rates.}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Policy Background}
+\protect\hypertarget{policy-background}{}
+\begin{itemize}
+\tightlist
+\item
+  The Affordable Care Act (ACA) was passed by the United States Congress
+  and signed into law by President Barack Obama in 2010, drastically
+  changing the policy landscape for health care in the United States.
+\item
+  \textbf{Among the major provisions in the ACA was expanded eligibility
+  for Medicaid (i.e., ``Medicaid Expansion''), which allowed states the
+  option to raise the income-eligibility threshold to 138\% of the
+  federal poverty level
+  (\href{https://www.kff.org/medicaid/issue-brief/status-of-state-medicaid-expansion-decisions-interactive-map/}{KFF,
+  2022}).}
+\item
+  Of the \textbf{13 states} whose boundaries overlap with the broad
+  geographical definition of Appalachia, \textbf{five states} (Kentucky,
+  Maryland, New York, Ohio, and West Virginia) passed legislation
+  mandating the expansion of Medicaid as of January 1st, 2014
+  (\href{https://www.kff.org/medicaid/issue-brief/status-of-state-medicaid-expansion-decisions-interactive-map/}{KFF,
+  2022}). \textbf{Two additional states}, Pennsylvania and Virginia,
+  would later expand Medicaid, with the former in 2015 and the latter in
+  2019.
+\item
+  \textbf{Six states} (Alabama, Georgia, Mississippi, North Carolina,
+  South Carolina, and Tennessee) have not expanded Medicaid to-date.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Policy Background}
+\protect\hypertarget{policy-background-1}{}
+\begin{itemize}
+\tightlist
+\item
+  In total, 210 Appalachian counties are located in expansion states and
+  213 Appalachian counties are located in non-expansion states.
+\end{itemize}
+
+\includegraphics{project_slides_files/figure-beamer/display map-1.pdf}
+\end{frame}
+
+\begin{frame}{Research Hypothesis}
+\protect\hypertarget{research-hypothesis}{}
+\begin{itemize}
+\tightlist
+\item
+  In our study, we identify the discrepancy in Medicaid expansion as a
+  policy ``treatment'' (i.e., ``differential exposure between entities
+  over time'') affecting drug overdose incidence in Appalachian
+  communities.
+\item
+  Our \textbf{\emph{hypothesized}} causal mechanism is that expanded
+  Medicaid eligibility allowed for greater access to low-cost health
+  care among Appalachian counties in expansion states, therefore
+  enabling people struggling with drug addiction to receive treatment,
+  \textbf{\emph{reducing}} overall deaths from drug overdose in these
+  areas.
+\item
+  Existing literature has also examined the counter-hypothesis that
+  Medicaid expansion may have actually \textbf{\emph{increased}} drug
+  overdose rates by increasing access to prescription opioids.
+  \href{https://onlinelibrary.wiley.com/doi/epdf/10.1111/add.14741}{Swartz
+  and Beltran (2019)} find that, while Medicaid expansion did increase
+  prescription opioid availability, there was no accompanying increase
+  in overdose mortality.
+  \href{https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6318168/}{Venkataramani
+  and Chatterjee (2018)} examine early 2000s Medicaid expansion in
+  Arizona, Maine, and New York, and find that expansion did in fact
+  \textbf{\emph{decrease}} overdose death rates relative to neighboring
+  non-expansion states.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Data Description}
+\protect\hypertarget{data-description}{}
+\begin{itemize}
+\tightlist
+\item
+  Our data is a county-year panel dataset, comprised of Appalachian
+  counties over the period 2011-2019. For analysis, we restrict the
+  panel to the three years prior to Medicaid expansion and the five
+  years after, resulting in a final dataset of 3384 observations.
+\item
+  Data on drug overdose death rates (i.e., deaths per 100,000 residents)
+  comes from estimates modeled by the National Center for Health
+  Statistics (NCHS), which are available at the county-level for the
+  period 2003-2020.
+\item
+  County-level demographic covariates are taken from the US Census
+  Bureau American Community Survey (ACS).
+\end{itemize}
+
+\begin{longtable}[]{@{}lrrlllr@{}}
+\toprule()
+COUNTY & Year & FIPS & STATE & medicaid\_expansion & expansion\_date &
+treat \\
+\midrule()
+\endhead
+Adair & 2011 & 21001 & Kentucky & Expansion & 2014-01-01 & 0 \\
+Adair & 2012 & 21001 & Kentucky & Expansion & 2014-01-01 & 0 \\
+Adair & 2013 & 21001 & Kentucky & Expansion & 2014-01-01 & 0 \\
+Adair & 2014 & 21001 & Kentucky & Expansion & 2014-01-01 & 1 \\
+\bottomrule()
+\end{longtable}
+\end{frame}
+
+\begin{frame}{Data Description}
+\protect\hypertarget{data-description-1}{}
+\begin{itemize}
+\tightlist
+\item
+  Exploring the balance across key continuous variables between counties
+  in expansion states and counties in non-expansion states at the time
+  when Medicaid expansion occurs (i.e., Jan.~1st, 2014 for all states
+  expect PA, Jan 1st, 2015 for PA), we find that observable
+  characteristics of the expansion and non-expansion counties are
+  broadly similar.
+\end{itemize}
+
+\begin{table}
+
+\caption{\label{tab:create diif in means}Difference-in-means during year of Medicaid expansion by county expansion status}
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}[t]{lrrrrrr}
+\toprule
+\multicolumn{1}{c}{ } & \multicolumn{2}{c}{Non-Expansion (N=213)} & \multicolumn{2}{c}{Expansion (N=210)} & \multicolumn{2}{c}{ } \\
+\cmidrule(l{3pt}r{3pt}){2-3} \cmidrule(l{3pt}r{3pt}){4-5}
+  & Mean & Std. Dev. & Mean & Std. Dev. & Diff. in Means & p\\
+\midrule
+Median Income (\$) & 39623.55 & 7786.51 & 40245.98 & 8272.65 & 622.43 & 0.43\\
+Median Age & 41.54 & 4.18 & 42.05 & 3.26 & 0.50 & 0.17\\
+Male Share & 49.19 & 1.35 & 49.97 & 2.32 & 0.78 & <0.001\\
+Black Share & 10.62 & 14.52 & 2.49 & 3.05 & -8.14 & <0.001\\
+Hispanic Share & 4.09 & 4.14 & 1.60 & 1.66 & -2.48 & <0.001\\
+White Share & 82.72 & 14.76 & 93.89 & 4.81 & 11.17 & <0.001\\
+Asian Share & 0.71 & 1.12 & 0.57 & 0.94 & -0.14 & 0.16\\
+\bottomrule
+\multicolumn{7}{l}{\rule{0pt}{1em}Note: Observations are weighted by the population in each county.}\\
+\end{tabular}}
+\end{table}
+\end{frame}
+
+\begin{frame}{Exploratory Analaysis}
+\protect\hypertarget{exploratory-analaysis}{}
+Examining overdose death rates over time for expansion and non-expansion
+counties in Appalachia, it appears that Medicaid expansion had a
+\textbf{\emph{positive}} effect on overdose death rates, contradicting
+the direction of our hypothesized causal effect.
+
+\includegraphics{project_slides_files/figure-beamer/display line plot-1.pdf}
+\end{frame}
+
+\begin{frame}{Empirical Strategy}
+\protect\hypertarget{empirical-strategy}{}
+To evaluate the effect of Medicaid expansion on drug overdose deaths in
+Appalachian counties, we estimate the following
+``differences-in-differences'' specification:
+
+\[Overdose~Death~Rate_{it} = \beta Medicaid~Expansion_{it} + \textbf{X}_{it} \gamma + \nu_{i} + \tau_{t} + \varepsilon_{it}\]
+
+where \(Overdose~Death~Rate_{it}\) is deaths attributed to drug overdose
+per 100,000 county residents for county \(i\) at time \(t\),
+\(Medicaid~Expansion_{it}\) indicates ``treatment'' status (i.e.,
+enactment of Medicaid expansion) for a county-year, \(\textbf{X}_{it}\)
+is a vector of time varying controls (e.g., median income, median age,
+male population share, racial composition) for potential county-level
+determinants of overdose death rates outside of our policy variation of
+interest.
+
+Additionally, we include an array of county fixed effects, \(\nu_{i}\),
+that control for unobserved time-invariant factors specific to
+individual counties. We further include \(\tau_{t}\), year fixed
+effects, to control for unobserved county-invariant factors that might
+have changed between each year included in our panel. Finally,
+\(\varepsilon_{it}\) is the idiosyncratic error term.
+\end{frame}
+
+\begin{frame}{Estimation Results}
+\protect\hypertarget{estimation-results}{}
+We test two model specifications to estimate difference-in-difference
+effects. The first considers effects up to two years following Medicaid
+expansion, while the second considers effects up to five years following
+Medicaid expansion.
+
+\begin{table}[!h]
+
+\caption{\label{tab:estimate models}Effect of Medicaid Expansion on Drug Overdose Death Rates}
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}[t]{lcc}
+\toprule
+  & Two Years Post-Expansion & Five Years Post-Expansion\\
+\midrule
+Medicaid Expansion & \num{4.0803}*** & \num{7.8280}***\\
+ & (\num{0.6920}) & (\num{1.1228})\\
+Median Income (\$) & \num{-0.0004}*** & \num{-0.0004}***\\
+ & (\num{0.0001}) & \vphantom{1} (\num{0.0001})\\
+Median Age & \num{0.0365} & \num{0.0113}\\
+ & (\num{0.2306}) & (\num{0.2591})\\
+Male Population Share (0-100) & \num{0.0000} & \num{0.0001}*\\
+ & (\num{0.0001}) & (\num{0.0000})\\
+Black Population Share & \num{-0.0001}* & \num{-0.0001}**\\
+ & (\num{0.0001}) & (\num{0.0001})\\
+Hispanic Population Share & \num{-0.0002} & \num{-0.0001}\\
+ & (\num{0.0002}) & (\num{0.0001})\\
+Asian Population Share & \num{0.0009}*** & \num{0.0005}\\
+ & (\num{0.0003}) & (\num{0.0003})\\
+\midrule
+N & \num{2115} & \num{3384}\\
+R-squared & \num{0.779} & \num{0.766}\\
+Adj. R-squared & \num{0.738} & \num{0.741}\\
+County FEs & X & X\\
+Year FEs & X & X\\
+\bottomrule
+\multicolumn{3}{l}{\rule{0pt}{1em}Robust standard errors clustered by county are shown in parentheses.
+                      Observations are weighted by the population in each county.}\\
+\multicolumn{3}{l}{\rule{0pt}{1em}* p $<$ 0.1, ** p $<$ 0.05, *** p $<$ 0.01}\\
+\end{tabular}}
+\end{table}
+\end{frame}
+
+\begin{frame}{Discussion}
+\protect\hypertarget{discussion}{}
+\begin{itemize}
+\item
+  Our estimates provide significant evidence for the conclusion that
+  Medicaid expansion in Appalachian states had the unintended
+  consequence of \textbf{\emph{increasing}} deaths from drug overdose. A
+  possible mechanism for this result is increased access to prescription
+  opioids.
+\item
+  Our findings differ from previous studies on the effect of Medicaid
+  expansion on overdose deaths. However, one of these studies
+  \href{https://onlinelibrary.wiley.com/doi/epdf/10.1111/add.14741}{Swartz
+  and Beltran (2019)}, did find that expansion increased the supply of
+  prescription opioids and that there could be a lagged increase in
+  overdose deaths.
+\item
+  Key limitations include potential OVB due to county-year variation in
+  number of Substance Use Disorder (SUD) treatment facilities and lack
+  of external validity outside of Appalachia. The latter limitation
+  could explain why our results differ from previous studies.
+\end{itemize}
+\end{frame}
+
+\end{document}

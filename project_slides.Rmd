@@ -1,9 +1,10 @@
 ---
 title: "Did Medicaid Expansion Affect Drug Overdose Deaths in Appalachia?"
 author: "Neil Chin (nkc2124) & Nicole Yahui Wu (yw3551)"
-date: '`r Sys.Date()`'
+date: "`r Sys.Date()`"
 output:
   ioslides_presentation: default
+  beamer_presentation: default
 ---
 
 ```{r setup, include=FALSE}
@@ -20,7 +21,6 @@ library(panelr)
 library(fixest)
 library(modelsummary)
 ```
-
 
 ```{css, echo = FALSE}
 table, td, th {
@@ -104,7 +104,9 @@ expansion_map
 <div>
 * In our study, we identify the discrepancy in Medicaid expansion as a policy "treatment" (i.e., "differential exposure between entities over time") affecting drug overdose incidence in Appalachian communities. 
 <div>
-* Our ***hypothesized*** causal mechanism is that expanded Medicaid eligibility allowed for greater access to low-cost health care among Appalachian counties in expansion states, therefore enabling people struggling with drug addiction to receive treatment, reducing overall deaths from drug overdose in these areas.
+* Our ***hypothesized*** causal mechanism is that expanded Medicaid eligibility allowed for greater access to low-cost health care among Appalachian counties in expansion states, therefore enabling people struggling with drug addiction to receive treatment, ***reducing*** overall deaths from drug overdose in these areas.
+<div>
+* Existing literature has also examined the counter-hypothesis that Medicaid expansion may have actually ***increased*** drug overdose rates by increasing access to prescription opioids. [Swartz and Beltran (2019)](https://onlinelibrary.wiley.com/doi/epdf/10.1111/add.14741) find that, while Medicaid expansion did increase prescription opioid availability, there was no accompanying increase in overdose mortality. [Venkataramani and Chatterjee (2018)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6318168/) examine early 2000s Medicaid expansion in Arizona, Maine, and New York, and find that expansion did in fact ***decrease*** overdose death rates relative to neighboring non-expansion states.
 
 ## Data Description {.smaller .build}
 <div>
@@ -154,6 +156,36 @@ diff_in_means_table <- datasummary_balance(~medicaid_expansion,
 diff_in_means_table
 ```
 
+## Exploratory Analaysis {.smaller .build}
+
+Examining overdose death rates over time for expansion and non-expansion counties in Appalachia, it appears that Medicaid expansion had a ***positive*** effect on overdose death rates, contradicting the direction of our hypothesized causal effect.
+
+```{r create line plot, include = FALSE}
+# Overdose line plot
+
+line_plot_panel <- year_county_panel %>% 
+    group_by(t_expansion, medicaid_expansion) %>% 
+    summarize(estimated_overdose_death_rate = weighted.mean(
+    estimated_overdose_death_rate, w = population, na.rm = T), .groups = 'drop') %>% 
+    filter(between(t_expansion, -3, 4))
+
+overdose_line_plot <- line_plot_panel %>% 
+    ggplot(aes(x = t_expansion,
+               y = estimated_overdose_death_rate,
+               color = medicaid_expansion)) +
+    geom_line() +
+    geom_point() +
+    geom_vline(aes(xintercept = -1)) +
+    scale_color_brewer(palette = "Pastel1", name = "Medicaid Expansion Status") +
+    labs(x = "Years since Medicaid Expansion",
+         y = "Drug Overdose Deaths per 100,000",
+         title = "County-Level Drug Overdose Death Rates by Medicaid Expansion Status")
+```
+
+```{r display line plot, echo = FALSE}
+overdose_line_plot
+```
+
 ## Empirical Strategy {.smaller .build}
 
 To evaluate the effect of Medicaid expansion on drug overdose deaths in Appalachian counties, we estimate the following "differences-in-differences" specification:
@@ -167,6 +199,7 @@ Additionally, we include an array of county fixed effects, $\nu_{i}$, that contr
 ## Estimation Results {.smaller}
 
 We test two model specifications to estimate difference-in-difference effects. The first considers effects up to two years following Medicaid expansion, while the second considers effects up to five years following Medicaid expansion.
+
 ```{r estimate models, include = FALSE}
 # Estimate two models, one for the period up until two years after expansion, another for the period up to four years after expansion
 
@@ -226,4 +259,20 @@ estimation_results <- modelsummary(models,
 estimation_results
 ```
 
-## Discussion
+## Discussion {.smaller .build}
+
+* Our estimates provide significant evidence for the conclusion that Medicaid expansion in Appalachian states had the unintended consequence of ***increasing*** deaths from drug overdose. A possible mechanism for this result is increased access to prescription opioids.
+
+* Our findings differ from previous studies on the effect of Medicaid expansion on overdose deaths. However, one of these studies [Swartz and Beltran (2019)](https://onlinelibrary.wiley.com/doi/epdf/10.1111/add.14741), did find that expansion increased the supply of prescription opioids and that there could be a lagged increase in overdose deaths.
+
+* Key limitations include potential OVB due to county-year variation in number of Substance Use Disorder (SUD) treatment facilities and lack of external validity outside of Appalachia. The latter limitation could explain why our results differ from previous studies.
+
+
+
+
+
+
+
+
+
+
