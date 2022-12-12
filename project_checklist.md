@@ -10,7 +10,7 @@ rates. Will need to take a closer look at the distribution of overdose deaths pr
 # Write Up for Findings and Conclusion
 
 Basically just need to put our findings into words. Conclusion section needs a lot of work, especially discussion of limitations and implications of
-findings. See (feedback document){Feedback-Neil-Nicole.docx} for specifics.
+findings. See [feedback document](Feedback-Neil-Nicole.docx) for specifics.
 
 # Change Regression Specification to Event-Study (Opposed to Diff-in-Diff)
 
