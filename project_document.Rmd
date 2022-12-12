@@ -106,7 +106,6 @@ We map Appalachian counties by Medicaid expansion status below:
 
 ```{r create map, include = FALSE}
 
-# Shape file pulled from the Census Bureau: https://www.census.gov/geographies/mapping-files/time-series/geo/cartographic-boundary.html
 county_shapes <- read_sf(dsn = 'data/cb_2021_us_county_5m/cb_2021_us_county_5m.shp')
 
 county_shapes <- county_shapes %>% 
@@ -140,8 +139,6 @@ Note that Virginia did eventually enact Medicaid expansion in 2019, but these ob
 In the figure below, we plot the weighted-average of county-level drug overdose death rate over time (i.e., "Years since Medicaid Expansion"), separating counties in expansion states from counties in non-expansion states. 
 
 ```{r create line plot, include = FALSE}
-# Overdose line plot
-
 line_plot_panel <- year_county_panel %>% 
     group_by(t_expansion, medicaid_expansion) %>% 
     summarize(estimated_overdose_death_rate = weighted.mean(
@@ -194,7 +191,7 @@ diff_in_means_table <- datasummary_balance(~medicaid_expansion,
                     data = t_expansion_county_panel,
                     fmt = 2,
                     dinm_statistic = "p.value",
-                    title = "Difference-in-means during year of Medicaid expansion by county expansion status",
+                    title = "Difference-in-means between Expansion and Non-Expansion Counties, in the Year of Medicaid Expansion",
                     notes = "Note: Observations are weighted by the population in each county.",
                     ) %>% 
   kable_styling(latex_options = "HOLD_position")
@@ -303,9 +300,9 @@ OVB is fairly likely, but the direction of bias is not clear. Tried to control f
 
 \medspace
 
-# Appendix
+# Appendices
 
-## Data Sources
+## Appendix I: Data Sources
 
 We compile publicly-available data from the Appalachian Regional Council (ARC), Kaiser Family Foundation (KFF), National Center for Health Statistics (NCHS), and the US Census Bureau into a single county-year panel data set.
 
@@ -358,9 +355,9 @@ overdose_data <- overdose_data %>%
   rename(estimated_overdose_death_rate = `Model-based Death Rate`)
 ```
 
-### ACS Data
+### County-Level Demographics
 
-To control for time-variant, county-variant factors, we pull demographic data from the US Census Bureau's American Community Survey (ACS), for years 2011-2019. Data is downloaded from the US Census Bureau API using the package tidycensus.
+To control for time-variant, county-variant factors, we pull demographic data from the US Census Bureau's American Community Survey (ACS), for years 2011-2019. Data is downloaded from the US Census Bureau API using the R package tidycensus.
 
 ```{r load ACS data}
 census_api_key("b79b301dc87bb0fd551147883a8141dca4e2823e")
@@ -581,6 +578,10 @@ acs_11_to_19 <- acs_11_to_19 %>%
   rename(FIPS = GEOID)
 ```
 
+### Geographic Boundaries
+
+In addition to county-level demographics, we pull county shapefiles from the Census Bureau for mapping visuals: https://www.census.gov/geographies/mapping-files/time-series/geo/cartographic-boundary.html
+
 ## Merge Data into Consolidated Data Set
 
 We merge the Appalachian counties data, overdose data, and ACS data into a single data set. We save the resulting panel dataframe and county-level dataframe as .rds files, so that they can be loaded at the beginning of this file and elsewhere.
@@ -649,7 +650,7 @@ saveRDS(yearly_counties_panel_overdose_acs, file = "yearly_panel.rds")
 saveRDS(appalachian_counties, file = "appalachian_counties.rds")
 ```
 
-## Defining "High" and "Low" Risk Counties
+## Appendix II: Defining "High" and "Low" Risk Counties
 
 
 

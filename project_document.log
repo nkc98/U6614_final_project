@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2019.5.8)  12 DEC 2022 15:10
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2019.5.8)  12 DEC 2022 16:30
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1043,18 +1043,18 @@ LaTeX Warning: `!h' float specifier changed to `!ht'.
                                                   \fi \fi 
 l.525 
       ]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 571.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 580.
 [8]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 571.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 580.
 (./project_document.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 571.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 571.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 580.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 580.
  ) 
 Here is how much of TeX's memory you used:
- 26982 strings out of 492616
- 472782 string characters out of 6129482
- 568237 words of memory out of 5000000
- 30393 multiletter control sequences out of 15000+600000
+ 26986 strings out of 492616
+ 472991 string characters out of 6129482
+ 569401 words of memory out of 5000000
+ 30395 multiletter control sequences out of 15000+600000
  577127 words of font info for 217 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  40i,14n,63p,815b,739s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1066,10 +1066,10 @@ ve/2019/texmf-dist/fonts/type1/public/mathpazo/fplmri.pfb></usr/local/texlive/2
 019/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></usr/local/texlive/2019/tex
 mf-dist/fonts/type1/urw/palatino/uplr8a.pfb></usr/local/texlive/2019/texmf-dist
 /fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on project_document.pdf (8 pages, 235892 bytes).
+Output written on project_document.pdf (8 pages, 237959 bytes).
 PDF statistics:
- 211 PDF objects out of 1000 (max. 8388607)
- 186 compressed objects within 2 object streams
- 49 named destinations out of 1000 (max. 500000)
- 24731 words of extra memory for PDF output out of 24883 (max. 10000000)
+ 218 PDF objects out of 1000 (max. 8388607)
+ 193 compressed objects within 2 object streams
+ 51 named destinations out of 1000 (max. 500000)
+ 24739 words of extra memory for PDF output out of 24883 (max. 10000000)
 
