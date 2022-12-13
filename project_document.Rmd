@@ -90,9 +90,11 @@ Identification of state-level Medicaid expansion is based on tracking done by th
 
 Data on drug overdose death rates (i.e., deaths per 100,000 residents) comes from estimates modeled by the National Center for Health Statistics (NCHS), which are available at the county-level for the period 2003-2020. Unfortunately, county-level statistics on overdose deaths based on final counts of cause of death reporting only became available starting in 2020, outside of the time frame of this study.
 
-County-level demographic covariates are taken from the US Census Bureau American Community Survey (ACS). Using these covariates, we hope to control for omitted variable bias stemming from county-level factors such as median income, median age, and sex and race compositions. In particular, we expect that median income would relate negatively to overdose deaths, as higher income communities would be better able to provide drug addiction treatment, all else equal. We include controls for median age as drug overdose death incidence tends to vary by age group ([KFF, 2022](https://www.kff.org/other/state-indicator/opioid-overdose-deaths-by-age-group/?dataView=1&currentTimeframe=6&selectedDistributions=0-24--25-34--35-44--45-54&sortModel=%7B%22colId%22:%22Location%22,%22sort%22:%22asc%22%7D)). Drug overdose deaths are also more common among individuals identified as male than female ([CDC, 2022](https://www.cdc.gov/nchs/hus/topics/drug-overdose-deaths.htm)). Furthermore, access to drug treatment has been shown to differ according to race ([NIDA, 2019](https://nida.nih.gov/about-nida/noras-blog/2019/07/access-to-addiction-services-differs-by-race-gender)), potentially leading to differentials in drug overdose deaths depending on racial composition of counties.
+County-level demographic covariates are taken from the US Census Bureau American Community Survey (ACS). Using these covariates, we hope to control for omitted variable bias stemming from county-level factors such as poverty rates, median age, and sex and race compositions. In particular, we expect that poverty rates would relate positively to overdose deaths, as poverty levels and overdose deaths have been previously linked ([Pear et al, 2019](https://pubmed.ncbi.nlm.nih.gov/30592998/)). We include controls for median age as drug overdose death incidence tends to vary by age group ([KFF, 2022](https://www.kff.org/other/state-indicator/opioid-overdose-deaths-by-age-group/?dataView=1&currentTimeframe=6&selectedDistributions=0-24--25-34--35-44--45-54&sortModel=%7B%22colId%22:%22Location%22,%22sort%22:%22asc%22%7D)). Drug overdose deaths are also more common among individuals identified as male than female ([CDC, 2022](https://www.cdc.gov/nchs/hus/topics/drug-overdose-deaths.htm)). Furthermore, access to drug treatment has been shown to differ according to race ([NIDA, 2019](https://nida.nih.gov/about-nida/noras-blog/2019/07/access-to-addiction-services-differs-by-race-gender)), potentially leading to differentials in drug overdose deaths depending on racial composition of counties.
 
-Given that both the NCHS data on overdose death rates and ACS control variables are estimated at the county-level, we expand our study period to the three years prior to Medicaid expansion and the five years after (i.e., 2011-2018), in order to smooth over any potential estimation errors. We also hope that this larger time frame will capture any lags in treatment effects, given that reductions in drug overdose deaths due to expanded access to health care may not be reflected in the data until more than a year after Medicaid expansion.
+Given that both the NCHS data on overdose death rates and ACS control variables are estimated at the county-level, we expand our study period to the three years prior to Medicaid expansion and the five years after (i.e., 2011-2019), in order to smooth over any potential estimation errors. We also hope that this larger time frame will capture any lags in treatment effects, given that reductions in drug overdose deaths due to expanded access to health care may not be reflected in the data until more than a year after Medicaid expansion.
+
+From the sources, data is largely already available at the county-level, thus we are not required to perform any aggregation or dis-aggregation steps to make the data suitable for use. Furthermore, variables of interest are entirely quantitative, thus cleaning needs are minimal. All source data include county-specific FIPS codes as merging indices. The only intermediate data transformation we perform is the calculation of county-level racial composition shares and poverty rates, based on Census Bureau population data.
 
 \medspace
 
@@ -177,14 +179,14 @@ We also explore the balance across key continuous variables between counties in 
 t_expansion_county_panel <- year_county_panel %>% 
   filter(t_expansion == 0) %>% 
   rename(weights = population,
-         `Median Income ($)` = med_income,
+         `Poverty Rate` = poverty_rate,
          `Median Age` = med_age,
          `Male Share` = male_share,
          `Black Share` = black_share,
          `Hispanic Share` = hisp_share,
          `White Share` = white_share,
          `Asian Share` = asian_share) %>%
-  select('medicaid_expansion', 'Median Income ($)', 'Median Age', 'Male Share', 'Black Share', 'Hispanic Share', 'White Share', 'Asian Share')
+  select('medicaid_expansion', 'Poverty Rate', 'Median Age', 'Male Share', 'Black Share', 'Hispanic Share', 'White Share', 'Asian Share')
 
 #show diff between treatment and control groups 
 diff_in_means_table <- datasummary_balance(~medicaid_expansion,
@@ -203,27 +205,28 @@ diff_in_means_table
 
 Table 1 above shows difference-in-means between "treatment" (i.e., Medicaid expansion) counties and "control" counties in the year of Medicaid expansion. We observe statistically significant differences between "treatment" and "control" groups for male share of population and racial composition (i.e., Black, White, and Hispanic share of population). This suggests that these factors are unbalanced between the two groups of Appalachian counties, which would lead to omitted variable bias if they are not controlled for in our estimation specification.
 
-Among control variables, we note some statistically significant associations that link county-level overdose death rates with median income, male population share and racial composition. Outside of income, however, where statistically significant, the size of these estimates are too small to provide much inferential value (e.g., a 100 percentage-point increase in Black population share decreases the overdose death rate by less than 1 death per 100,000, all else held constant).
 
 \medspace
 
 # Empirical Strategy
 
+## Difference-in-Differences
+
 The primary variation that we seek to exploit through our analysis is the differential in state-level adoption of Medicaid expansion across the Appalachian region, with policy variation at the state-level thus filtering down to the county-level. To evaluate the effect of Medicaid expansion on drug overdose deaths in Appalachian counties, we estimate the following "differences-in-differences" specification:
 
 $$Overdose~Death~Rate_{it} = \beta Medicaid~Expansion_{it} + \textbf{X}_{it} \gamma + \nu_{i} + \tau_{t} + \varepsilon_{it}$$
 
-where $Overdose~Death~Rate_{it}$ is deaths attributed to drug overdose per 100,000 county residents for county $i$ at time $t$, $Medicaid~Expansion_{it}$ is a binary variable that indicates "treatment" status (i.e., enactment of Medicaid expansion) for a county-year, $\textbf{X}_{it}$ is a vector of time varying controls (e.g., median income, median age, male population share, racial composition) for potential county-level determinants of overdose death rates outside of our policy variation of interest.
+where $Overdose~Death~Rate_{it}$ is deaths attributed to drug overdose per 100,000 county residents for county $i$ at time $t$, $Medicaid~Expansion_{it}$ is a binary variable that indicates "treatment" status (i.e., enactment of Medicaid expansion) for a county-year, $\textbf{X}_{it}$ is a vector of time varying controls (e.g., poverty rates, median age, male population share, racial composition) for potential county-level determinants of overdose death rates outside of our policy variation of interest.
 
 Additionally, we include an array of county fixed effects, $\nu_{i}$, that control for unobserved time-invariant factors that are specific to individual counties. An example of one such factor would be if, throughout the entire 2011-2019 period, a specific county had its own drug treatment program that reduced drug overdose deaths compared to other counties, all else equal. We further include $\tau_{t}$, year fixed effects, to control for unobserved county-invariant factors that might have changed between each year included in our panel. Such factors would include events such as periodic economic shocks that affect the entire Appalachian region in certain years, which potentially could be deterministic of the rate of overdose deaths. Finally, $\varepsilon_{it}$ is the idiosyncratic error term.
 
-To support this analysis, we compile publicly-available data from the Appalachian Regional Council (ARC), Kaiser Family Foundation (KFF), National Center for Health Statistics (NCHS), and the US Census Bureau. From the sources, data is largely already available at the county-level, thus we are not required to perform any aggregation or dis-aggregation steps to make the data suitable for use. Furthermore, variables of interest are entirely quantitative, thus cleaning needs are minimal. All source data include county-specific FIPS codes as merging indices. The only intermediate data transformation we perform is the calculation of county-level racial composition shares, based on Census Bureau population data.
-
-We note two key limitations to the internal validity of our study, the first being potential imbalance between pseudo "treatment" (i.e., counties in expansion states) and "control" (i.e., counties in non-expansion states) groups and the second being possible omitted variable bias due to differential county-level availability of drug treatment facilities. On the first issue, we are considering employing a matching strategy to pair "treatment" counties in expansion states with "control" counties in non-expansion states in a way that mimics random assignment. On the second issue, we will attempt to collect additional data that allows us to control for the number of drug treatment facilities per 100,000 residents at the county-level. If this data is not directly available, we will also look for potential proxy measures.
+## Event Study
 
 \medspace
 
 # Findings
+
+## Difference-in-Difference Results
 
 We test two model specifications to estimate difference-in-difference effects. The first considers effects up to two years following Medicaid expansion, while the second considers effects up to five years following Medicaid expansion. We evaluate both of these specifications to determine if the effect of Medicaid expansion on drug overdose death rates was short-lived (i.e., only significant in the period two years after expansion), or if the effect persisted for a longer period.
 
@@ -233,24 +236,22 @@ We test two model specifications to estimate difference-in-difference effects. T
 panel_t_2 <- YC_panel %>%
   filter(t_expansion < 2)
 
-panel_t_4 <- YC_panel
-
-models <- list(
+did_models <- list(
   
   "Two Years Post-Expansion" <- feols(estimated_overdose_death_rate ~ 
-                                         treat + med_income + med_age + male_pop + black_pop + hisp_pop + asian_pop | COUNTY + Year, 
+                                         treat + poverty_rate + med_age + male_pop + black_pop + hisp_pop + asian_pop | COUNTY + Year, 
                 data = panel_t_2,
                 weights = panel_t_2$population,
                 cluster = panel_t_2$COUNTY),
   
   "Five Years Post-Expansion" <- feols(estimated_overdose_death_rate ~ 
-                                         treat + med_income + med_age + male_pop + black_pop + hisp_pop + asian_pop | COUNTY + Year, 
-                data = panel_t_4,
-                weights = panel_t_4$population,
-                cluster = panel_t_4$COUNTY)
+                                         treat + poverty_rate + med_age + male_pop + black_pop + hisp_pop + asian_pop | COUNTY + Year, 
+                data = YC_panel,
+                weights = YC_panel$population,
+                cluster = YC_panel$COUNTY)
 )
 
-names(models) <- c("Two Years Post-Expansion", "Five Years Post-Expansion")
+names(did_models) <- c("Two Years Post-Expansion", "Five Years Post-Expansion")
 
 #set up an object to customize your regression table goodness-of-fit statistics
 gm <- tibble::tribble(
@@ -263,11 +264,11 @@ gm <- tibble::tribble(
     )
 
 #display results with added formatting options    
-estimation_results <- modelsummary(models,
+did_estimation_results <- modelsummary(did_models,
              fmt = "%.4f",
              coef_omit = 'Intercept',
              coef_rename = c("treat" = "Medicaid Expansion", 
-                             "med_income" = "Median Income ($)",
+                             "poverty_rate" = "Poverty Rate (0-100)",
                              "med_age" = "Median Age",
                              "male_pop" = "Male Population Share (0-100)",
                              "black_pop" = "Black Population Share",
@@ -283,12 +284,40 @@ estimation_results <- modelsummary(models,
 ```
 
 ```{r display estimates, echo = FALSE}
-estimation_results
+did_estimation_results
 ```
 
-Table 2 displays difference-in-difference estimation results for "treatment" effects two- and four-years following Medicaid expansion. In both cases, we find evidence that Medicaid Expansion had a positive and statistically significant (p < 0.01) effect on drug overdose deaths, holding constant an array of time- and county-variant factors (e.g., income, age, male population share, and racial composition), and controlling for county and year fixed effects.
+Table 2 displays difference-in-difference estimation results for "treatment" effects two- and four-years following Medicaid expansion. In both cases, we find evidence that Medicaid Expansion had a positive and statistically significant (p < 0.01) effect on drug overdose deaths, holding constant an array of time- and county-variant factors (e.g., poverty rates, age, male population share, and racial composition), and controlling for county and year fixed effects.
 
 In particular, our estimates suggest that we can causally attribute Medicaid expansion in Appalachian counties to an *increase* in drug overdose death rates of *roughly 4 deaths per 100,000* in the two years following expansion. When expanding the time frame used to estimate the effect of Medicaid expansion to the four years following expansion, we find an *even greater* attributable increase in overdose death rates due to Medicaid expansion of *nearly 8 deaths per 100,000*. As such, we find that the effect of Medicaid expansion on overdose death rates in Appalachian counties not only persisted over time, but actually grew larger.
+
+Among control variables, we note some statistically significant associations that link county-level overdose death rates with poverty rates, male population share, Black population share, and Asian population share. Outside of poverty rates, however, where statistically significant, the size of these estimates are too small to provide much inferential value (e.g., a 100 percentage-point increase in Black population share decreases the overdose death rate by less than 1 death per 100,000, all else held constant).
+
+## Event Study
+
+```{r}
+ES_mod <- feols(
+  estimated_overdose_death_rate ~ i(factor(t_expansion), as.numeric(medicaid_expansion), ref = -1) 
+  + poverty_rate + med_age + male_pop + black_pop + hisp_pop + asian_pop
+  | COUNTY + Year,
+  data = YC_panel, 
+  weight = YC_panel$population,
+  cluster = YC_panel$COUNTY)
+
+```
+
+```{r}
+# Plot event study
+iplot(
+  ES_mod,
+  pt.join = TRUE,
+  ci.join = TRUE,
+  ci.lwd = 0,
+  grid.par = list(vert = FALSE),
+  main = "Medicaid Expansion and Drug Overdose Death Rates",
+  ylab = "Overdose Death Rates",
+  xlab = "Years since Medicaid Expansion")
+```
 
 \medspace
 
@@ -372,7 +401,8 @@ acs_2011 <- get_acs(geography = "county",
                                  black_pop = "B02001_003",
                                  male_pop = "B01001_002",
                                  med_income = "B19013_001",
-                                 med_age = "B01002_001"),
+                                 med_age = "B01002_001",
+                                 pov = "B17025_002"),
                    year = 2011)
 
 acs_2011 <- acs_2011 %>% 
@@ -383,7 +413,8 @@ acs_2011 <- acs_2011 %>%
          hisp_share = 100 * (hisp_pop/population),
          asian_share = 100 * (asian_pop/population),
          black_share = 100 * (black_pop/population),
-         male_share = 100 * (male_pop/population))
+         male_share = 100 * (male_pop/population),
+         poverty_rate = 100 * (pov/population))
 
 
 # Pull 2012 ACS county-level data 
@@ -396,7 +427,8 @@ acs_2012 <- get_acs(geography = "county",
                                  black_pop = "B02001_003",
                                  male_pop = "B01001_002",
                                  med_income = "B19013_001",
-                                 med_age = "B01002_001"),
+                                 med_age = "B01002_001",
+                                 pov = "B17025_002"),
                    year = 2012)
 
 acs_2012 <- acs_2012 %>% 
@@ -407,7 +439,8 @@ acs_2012 <- acs_2012 %>%
          hisp_share = 100 * (hisp_pop/population),
          asian_share = 100 * (asian_pop/population),
          black_share = 100 * (black_pop/population),
-         male_share = 100 * (male_pop/population))
+         male_share = 100 * (male_pop/population),
+         poverty_rate = 100 * (pov/population))
 
 # Pull 2013 ACS county-level data 
 
@@ -419,7 +452,8 @@ acs_2013 <- get_acs(geography = "county",
                                  black_pop = "B02001_003",
                                  male_pop = "B01001_002",
                                  med_income = "B19013_001",
-                                 med_age = "B01002_001"),
+                                 med_age = "B01002_001",
+                                 pov = "B17025_002"),
                    year = 2013)
 
 acs_2013 <- acs_2013 %>% 
@@ -430,7 +464,8 @@ acs_2013 <- acs_2013 %>%
          hisp_share = 100 * (hisp_pop/population),
          asian_share = 100 * (asian_pop/population),
          black_share = 100 * (black_pop/population),
-         male_share = 100 * (male_pop/population))
+         male_share = 100 * (male_pop/population),
+         poverty_rate = 100 * (pov/population))
 
 # Pull 2014 ACS county-level data 
 
@@ -442,7 +477,8 @@ acs_2014 <- get_acs(geography = "county",
                                  black_pop = "B02001_003",
                                  male_pop = "B01001_002",
                                  med_income = "B19013_001",
-                                 med_age = "B01002_001"),
+                                 med_age = "B01002_001",
+                                 pov = "B17025_002"),
                    year = 2014)
 
 acs_2014 <- acs_2014 %>% 
@@ -453,7 +489,8 @@ acs_2014 <- acs_2014 %>%
          hisp_share = 100 * (hisp_pop/population),
          asian_share = 100 * (asian_pop/population),
          black_share = 100 * (black_pop/population),
-         male_share = 100 * (male_pop/population))
+         male_share = 100 * (male_pop/population),
+         poverty_rate = 100 * (pov/population))
 
 # Pull 2015 ACS county-level data 
 
@@ -465,7 +502,8 @@ acs_2015 <- get_acs(geography = "county",
                                  black_pop = "B02001_003",
                                  male_pop = "B01001_002",
                                  med_income = "B19013_001",
-                                 med_age = "B01002_001"),
+                                 med_age = "B01002_001",
+                                 pov = "B17025_002"),
                    year = 2015)
 
 acs_2015 <- acs_2015 %>% 
@@ -476,7 +514,8 @@ acs_2015 <- acs_2015 %>%
          hisp_share = 100 * (hisp_pop/population),
          asian_share = 100 * (asian_pop/population),
          black_share = 100 * (black_pop/population),
-         male_share = 100 * (male_pop/population))
+         male_share = 100 * (male_pop/population),
+         poverty_rate = 100 * (pov/population))
 
 # Pull 2016 ACS county-level data 
 
@@ -488,7 +527,8 @@ acs_2016 <- get_acs(geography = "county",
                                  black_pop = "B02001_003",
                                  male_pop = "B01001_002",
                                  med_income = "B19013_001",
-                                 med_age = "B01002_001"),
+                                 med_age = "B01002_001",
+                                 pov = "B17025_002"),
                    year = 2016)
 
 acs_2016 <- acs_2016 %>% 
@@ -499,7 +539,8 @@ acs_2016 <- acs_2016 %>%
          hisp_share = 100 * (hisp_pop/population),
          asian_share = 100 * (asian_pop/population),
          black_share = 100 * (black_pop/population),
-         male_share = 100 * (male_pop/population))
+         male_share = 100 * (male_pop/population),
+         poverty_rate = 100 * (pov/population))
 
 # Pull 2017 ACS county-level data 
 
@@ -511,7 +552,8 @@ acs_2017 <- get_acs(geography = "county",
                                  black_pop = "B02001_003",
                                  male_pop = "B01001_002",
                                  med_income = "B19013_001",
-                                 med_age = "B01002_001"),
+                                 med_age = "B01002_001",
+                                 pov = "B17025_002"),
                    year = 2017)
 
 acs_2017 <- acs_2017 %>% 
@@ -522,7 +564,8 @@ acs_2017 <- acs_2017 %>%
          hisp_share = 100 * (hisp_pop/population),
          asian_share = 100 * (asian_pop/population),
          black_share = 100 * (black_pop/population),
-         male_share = 100 * (male_pop/population))
+         male_share = 100 * (male_pop/population),
+         poverty_rate = 100 * (pov/population))
 
 # Pull 2018 ACS county-level data 
 
@@ -534,7 +577,8 @@ acs_2018 <- get_acs(geography = "county",
                                  black_pop = "B02001_003",
                                  male_pop = "B01001_002",
                                  med_income = "B19013_001",
-                                 med_age = "B01002_001"),
+                                 med_age = "B01002_001",
+                                 pov = "B17025_002"),
                    year = 2018)
 
 acs_2018 <- acs_2018 %>% 
@@ -545,7 +589,8 @@ acs_2018 <- acs_2018 %>%
          hisp_share = 100 * (hisp_pop/population),
          asian_share = 100 * (asian_pop/population),
          black_share = 100 * (black_pop/population),
-         male_share = 100 * (male_pop/population))
+         male_share = 100 * (male_pop/population),
+         poverty_rate = 100 * (pov/population))
 
 # Pull 2019 ACS county-level data 
 
@@ -557,7 +602,8 @@ acs_2019 <- get_acs(geography = "county",
                                  black_pop = "B02001_003",
                                  male_pop = "B01001_002",
                                  med_income = "B19013_001",
-                                 med_age = "B01002_001"),
+                                 med_age = "B01002_001",
+                                 pov = "B17025_002"),
                    year = 2019)
 
 acs_2019 <- acs_2019 %>% 
@@ -568,7 +614,8 @@ acs_2019 <- acs_2019 %>%
          hisp_share = 100 * (hisp_pop/population),
          asian_share = 100 * (asian_pop/population),
          black_share = 100 * (black_pop/population),
-         male_share = 100 * (male_pop/population))
+         male_share = 100 * (male_pop/population),
+         poverty_rate = 100 * (pov/population))
 
 # Append into single ACS data frame, rename GEOID as FIPS
 
