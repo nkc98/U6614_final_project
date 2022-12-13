@@ -16,7 +16,7 @@ findings. See [feedback document](Feedback-Neil-Nicole.docx) for specifics.
 
 Substitute poverty rate for income in the control variables.
 
-***Neil to work on this***
+***Neil completed***
 
 # Change Regression Specification to Event-Study (Opposed to Diff-in-Diff)
 
