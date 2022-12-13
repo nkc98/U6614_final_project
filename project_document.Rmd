@@ -226,32 +226,26 @@ Additionally, we include an array of county fixed effects, $\nu_{i}$, that contr
 
 # Findings
 
+We test both a difference-in-difference model and an event study model.
+
 ## Difference-in-Difference Results
 
-We test two model specifications to estimate difference-in-difference effects. The first considers effects up to two years following Medicaid expansion, while the second considers effects up to five years following Medicaid expansion. We evaluate both of these specifications to determine if the effect of Medicaid expansion on drug overdose death rates was short-lived (i.e., only significant in the period two years after expansion), or if the effect persisted for a longer period.
+We estimate difference-in-difference effects for all counties, "high risk," and "low risk" counties. 
 
-```{r estimate models, include = FALSE}
-# Estimate two models, one for the period up until two years after expansion, another for the period up to four years after expansion
+```{r estimate DID models, include = FALSE}
 
 panel_t_2 <- YC_panel %>%
   filter(t_expansion < 2)
 
 did_models <- list(
-  
-  "Two Years Post-Expansion" <- feols(estimated_overdose_death_rate ~ 
-                                         treat + poverty_rate + med_age + male_pop + black_pop + hisp_pop + asian_pop | COUNTY + Year, 
-                data = panel_t_2,
-                weights = panel_t_2$population,
-                cluster = panel_t_2$COUNTY),
-  
-  "Five Years Post-Expansion" <- feols(estimated_overdose_death_rate ~ 
+  "All Counties" <- feols(estimated_overdose_death_rate ~ 
                                          treat + poverty_rate + med_age + male_pop + black_pop + hisp_pop + asian_pop | COUNTY + Year, 
                 data = YC_panel,
                 weights = YC_panel$population,
                 cluster = YC_panel$COUNTY)
 )
 
-names(did_models) <- c("Two Years Post-Expansion", "Five Years Post-Expansion")
+names(did_models) <- c("All Counties")
 
 #set up an object to customize your regression table goodness-of-fit statistics
 gm <- tibble::tribble(
@@ -283,19 +277,15 @@ did_estimation_results <- modelsummary(did_models,
 
 ```
 
-```{r display estimates, echo = FALSE}
+```{r display DID estimates, echo = FALSE}
 did_estimation_results
 ```
 
-Table 2 displays difference-in-difference estimation results for "treatment" effects two- and four-years following Medicaid expansion. In both cases, we find evidence that Medicaid Expansion had a positive and statistically significant (p < 0.01) effect on drug overdose deaths, holding constant an array of time- and county-variant factors (e.g., poverty rates, age, male population share, and racial composition), and controlling for county and year fixed effects.
-
-In particular, our estimates suggest that we can causally attribute Medicaid expansion in Appalachian counties to an *increase* in drug overdose death rates of *roughly 4 deaths per 100,000* in the two years following expansion. When expanding the time frame used to estimate the effect of Medicaid expansion to the four years following expansion, we find an *even greater* attributable increase in overdose death rates due to Medicaid expansion of *nearly 8 deaths per 100,000*. As such, we find that the effect of Medicaid expansion on overdose death rates in Appalachian counties not only persisted over time, but actually grew larger.
-
-Among control variables, we note some statistically significant associations that link county-level overdose death rates with poverty rates, male population share, Black population share, and Asian population share. Outside of poverty rates, however, where statistically significant, the size of these estimates are too small to provide much inferential value (e.g., a 100 percentage-point increase in Black population share decreases the overdose death rate by less than 1 death per 100,000, all else held constant).
+Table 2 displays difference-in-difference estimation results
 
 ## Event Study
 
-```{r}
+```{r estimate event study model, include = FALSE}
 ES_mod <- feols(
   estimated_overdose_death_rate ~ i(factor(t_expansion), as.numeric(medicaid_expansion), ref = -1) 
   + poverty_rate + med_age + male_pop + black_pop + hisp_pop + asian_pop
@@ -303,19 +293,17 @@ ES_mod <- feols(
   data = YC_panel, 
   weight = YC_panel$population,
   cluster = YC_panel$COUNTY)
-
 ```
 
-```{r}
-# Plot event study
+```{r fig3, fig.cap = "Medicaid Expansion's Effect on Drug Overdose Death Rates in All Appalachian Counties"}
 iplot(
   ES_mod,
   pt.join = TRUE,
   ci.join = TRUE,
   ci.lwd = 0,
   grid.par = list(vert = FALSE),
-  main = "Medicaid Expansion and Drug Overdose Death Rates",
-  ylab = "Overdose Death Rates",
+  main = "",
+  ylab = "Est. Effect on Overdose Death Rates",
   xlab = "Years since Medicaid Expansion")
 ```
 
