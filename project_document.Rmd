@@ -96,6 +96,8 @@ Given that both the NCHS data on overdose death rates and ACS control variables 
 
 From the sources, data is largely already available at the county-level, thus we are not required to perform any aggregation or dis-aggregation steps to make the data suitable for use. Furthermore, variables of interest are entirely quantitative, thus cleaning needs are minimal. All source data include county-specific FIPS codes as merging indices. The only intermediate data transformation we perform is the calculation of county-level racial composition shares and poverty rates, based on Census Bureau population data.
 
+## "High" and "Low Risk" Counties
+
 \medspace
 
 # Descriptive Statistics
@@ -210,6 +212,10 @@ Table 1 above shows difference-in-means between "treatment" (i.e., Medicaid expa
 
 # Empirical Strategy
 
+We evaluate the effect of Medicaid expansion on drug overdose deaths in Appalachia using both a difference-in-differences approach and an event study approach. The former allows us to establish a single average causal treatment effect estimate over the five years after Medicaid was expanded. The latter allows us to examine year-by-year treatment effects relative to the year prior to Medicaid expansion. 
+
+Furthermore, we look for heterogeneous treatment effects between "high" and "low risk" counties in both approaches. 
+
 ## Difference-in-Differences
 
 The primary variation that we seek to exploit through our analysis is the differential in state-level adoption of Medicaid expansion across the Appalachian region, with policy variation at the state-level thus filtering down to the county-level. To evaluate the effect of Medicaid expansion on drug overdose deaths in Appalachian counties, we estimate the following "differences-in-differences" specification:
@@ -226,11 +232,9 @@ Additionally, we include an array of county fixed effects, $\nu_{i}$, that contr
 
 # Findings
 
-We test both a difference-in-difference model and an event study model.
-
 ## Difference-in-Difference Results
 
-We estimate difference-in-difference effects for all counties, "high risk," and "low risk" counties. 
+We estimate difference-in-differences effects for all counties, "high risk," and "low risk" counties. 
 
 ```{r estimate DID models, include = FALSE}
 
@@ -685,7 +689,7 @@ saveRDS(yearly_counties_panel_overdose_acs, file = "yearly_panel.rds")
 saveRDS(appalachian_counties, file = "appalachian_counties.rds")
 ```
 
-## Appendix II: Defining "High" and "Low" Risk Counties
+## Appendix II: Defining "High" and "Low Risk" Counties
 
 
 
