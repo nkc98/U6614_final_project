@@ -22,9 +22,13 @@ Substitute poverty rate for income in the control variables.
 
 See the Medicaid lesson for specifics. Doubt this will change the qualitative findings, but guessing that estimates will move around a bit.
 
+***Neil completed***
+
 # Add Specifications for "High" and "Low" Risk counties
 
 This should be pretty easy once they are defined. Just need to add to the list of regressions.
+
+***Neil to do this***
 
 # Move Data Cleaning Code Into R Script
 
