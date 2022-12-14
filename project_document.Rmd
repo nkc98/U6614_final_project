@@ -55,6 +55,8 @@ In this context, we hope to assess whether expansion of the social safety net th
 
 ## Why Appalachia?
 
+We focus our study on the Appalachian region for a few reasons. First, in the pre-expansion period, Medicaid was already a widely-embraced program in Appalachia relative to the rest of the country and expansion was projected to increase enrollment by tens of millions of people, indicating that our policy "treatment" of interest (i.e., Medicaid expansion) had considerable uptake ([ARC, 2012](https://www.arc.gov/wp-content/uploads/2020/06/HealthCareCostsandAccessDisparitiesinAppalachia.pdf)). That is to say, intent-to-treat (ITT) effects measured by our study should be fairly reflective of average treatment-on-treated (ATT) effects. Second, the Appalachian region is defined at the county-level, which enables us to avoid potential selection bias and small sample size issues that would confound state-level analysis. Finally, we believe that Appalachian counties are largely similar in terms on non-measurable, unobserved characteristics across state lines, meaning that they can be fairly reliably construed as pseudo “control” and “treatment” groups. As such, any given Appalachian county should not be significantly more likely to have benefited from state-level adoption of Medicaid expansion than any other, based on its innate characteristics.
+
 \medspace
 
 # Policy Background & Research Hypothesis
@@ -86,7 +88,7 @@ YC_panel <- panel_data(year_county_panel, id = "COUNTY", wave = "Year") %>%
 
 Our data is a county-year panel dataset, which we use to examine drug overdose deaths in Appalachian counties over the period 2010-2019. In total, this panel dataset is constituted by `r nrow(year_county_panel)` county-year observations (i.e., `r nrow(appalachian_counties)` counties across nine years). For analysis, however, we restrict the panel to the four years prior to Medicaid expansion and the five years after, resulting in a final dataset of `r nrow(YC_panel)` observations. The discrepancy between these two datasets is due to Pennsylvania's delayed adoption of Medicaid.
 
-The subset of US counties defined as "Appalachian" is based on the jurisdiction of the Appalachian Regional Council ([ARC, 2021](https://www.arc.gov/appalachian-counties-served-by-arc/)). Accordingly, our units of observation for this study are counties, with the representative population being people living in the Appalachian region. We focus on counties as units of observation because the Appalachian region is defined at the county-level and to avoid potential selection bias and small sample size issues that would confound state-level analysis. Furthermore, we assume that Appalachian counties are largely similar in terms on non-measurable, unobserved characteristics across state lines, meaning that they can be fairly reliably construed as pseudo “control” and “treatment” groups. That is to say, any given Appalachian county should not be significantly more likely to have benefited from state-level adoption of Medicaid expansion than any other, based on its inate characteristics.
+The subset of US counties defined as "Appalachian" is based on the jurisdiction of the Appalachian Regional Council ([ARC, 2021](https://www.arc.gov/appalachian-counties-served-by-arc/)). Accordingly, our units of observation for this study are counties, with the representative population being people living in the Appalachian region. 
 
 Identification of state-level Medicaid expansion is based on tracking done by the Kaiser Family Foundation ([KFF, 2022](https://www.kff.org/medicaid/issue-brief/status-of-state-medicaid-expansion-decisions-interactive-map/)). Note that, due to the fact that Pennsylvania implemented Medicaid expansion a year after other expansion states, the timing of "treatment" for Appalachian counties in Pennsylvania is delayed by one year relative to other counties in expansion states. Additionally, we consider Virginia to be a non-expansion state for the purposes of this study, because it only enacted Medicaid expansion in 2019, well after the end of our study period.
 
@@ -100,7 +102,11 @@ From the sources, data is largely already available at the county-level, thus we
 
 ## "High" and "Low Risk" Counties
 
-To further distinguish between our hypothesis that Medicaid expansion has reduced drug overdose deaths in Appalachia and the counter hypothesis that oppositely suggests Medicaid expansion increased drug overdose deaths, within our county-year panel dataset, we subset "high" and "low risk" counties. 
+To further distinguish between our hypothesis that Medicaid expansion has reduced drug overdose deaths in Appalachia and the counter hypothesis that oppositely suggests Medicaid expansion increased drug overdose deaths, within our county-year panel dataset, we analyze "high" and "low risk" county subsets. 
+
+
+
+See Appendix II for our methodology in defining "high" and "low risk" counties, as well as a detailed breakdown of the characteristics of each group.
 
 \medspace
 
@@ -338,7 +344,7 @@ Figure 3 displays the yearly estimated effect of Medicaid expansion on drug over
 
 Our estimates provide significant evidence for the conclusion that Medicaid expansion in Appalachian states had the unintended consequence of ***increasing*** deaths from drug overdose. A possible mechanism for this result is increased access to prescription opioids.
 
-Our findings differ from previous studies on the effect of Medicaid expansion on overdose deaths. However, one of these studies [Swartz and Beltran (2019)](https://onlinelibrary.wiley.com/doi/epdf/10.1111/add.14741), did find that expansion increased the supply of prescription opioids and that there could be a lagged increase in overdose deaths.
+Our findings differ from previous studies on the effect of Medicaid expansion on overdose deaths. However, one of these studies [Swartz and Beltran (2019)](https://onlinelibrary.wiley.com/doi/epdf/10.1111/add.14741), did find that expansion increased the supply of prescription opioids and that there could be a lagged increase in overdose deaths. Our event study approach does show evidence to support a theory of lagged effects, as causal estimates are largest two-to-five years after Medicaid expansion.
 
 Key limitations include potential OVB due to county-year variation in number of Substance Use Disorder (SUD) treatment facilities and lack of external validity outside of Appalachia. The latter limitation could explain why our results differ from previous studies.
 
