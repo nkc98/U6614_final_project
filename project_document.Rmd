@@ -223,7 +223,7 @@ Additionally, we include an array of county fixed effects, $\nu_{i}$, that contr
 
 ## Event Study
 
-In this approach, we apply a slightly different specification that isolates treatments effects by year, before and after Medicaid expansion, which corresponds to the following population regression function:
+In this approach, we apply a modified specification that isolates treatments effects by year, before and after Medicaid expansion, which corresponds to the following population regression function:
 
 $$ODR_{it} =  1\{\text{Expansion}_i\} \left [ \sum_{y=-4}^{-2} \beta_y^{pre} 1\{t - t_i^* = y\} + \sum_{y=0}^{4} \beta_y^{post} 1\{t - t_i^* = y\}\right ] + \textbf{X}_{it} \gamma + \nu_{i} + \tau_{t} + \varepsilon_{it}$$
 where $1\{\text{Expansion}_i\}$ is a binary variable identifying high-eligibility states, and $t_i^*$ is the year Medicaid was expanded in county $i$. The $1\{t - t_i^* = y\}$ terms are dummy variables corresponding to an *event year*, i.e., the year relative to the expansion of Medicaid at time $t_i^*$. The coefficients of interest are now $\beta^{pre}_y$ and $\beta^{post}_y$, which measure the relationship between drug overdose death rates and expansion status in each of the four years leading up to Medicaid expansion and five years after. We omit the dummy for the year before Medicaid expansion ($y = -1$), so that the estimates of $\beta^{pre}_y$ and $\beta^{post}_y$ capture effects relative to just before Medicaid expansion. 
@@ -404,26 +404,25 @@ We compile publicly-available data from the Appalachian Regional Council (ARC), 
 
 ### Appalachian Counties Data
 
-The Appalachian Regional Commission defines 423 counties in 13 states (West Virginia, Alabama, Georgia, Kentucky, Maryland, Mississippi, New York, North Carolina, Ohio, Pennsylvania, South Carolina, Tennessee, and Virginia) as demarcating the Appalachian region. We adopt this geographical definition in our research approach.
-
-More information available at: https://www.arc.gov/appalachian-counties-served-by-arc/.
+The Appalachian Regional Commission defines 423 counties in 13 states (West Virginia, Alabama, Georgia, Kentucky, Maryland, Mississippi, New York, North Carolina, Ohio, Pennsylvania, South Carolina, Tennessee, and Virginia) as demarcating the Appalachian region. We adopt this geographical definition in our research approach. More information available at: https://www.arc.gov/appalachian-counties-served-by-arc/.
 
 ### Medicaid Expansion
 
-According to the Kaiser Family Foundation, of the 13 states, five states (Kentucky, Maryland, New York, Ohio, and West Virginia) passed legislation mandating the expansion of Medicaid as of January 1st, 2014. Two additional states, Pennsylvania and Virginia, would later expand Medicaid, with the former in 2015 and the latter in 2019. Six states (Alabama, Georgia, Mississippi, North Carolina, South Carolina, and Tennessee) have not expanded Medicaid to-date.
+According to the Kaiser Family Foundation, five states within Appalachia (Kentucky, Maryland, New York, Ohio, and West Virginia) passed legislation mandating the expansion of Medicaid as of January 1st, 2014. Two additional states, Pennsylvania and Virginia, would later expand Medicaid, with the former in 2015 and the latter in 2019. Six states (Alabama, Georgia, Mississippi, North Carolina, South Carolina, and Tennessee) have not expanded Medicaid to-date. Information on state-level Medicaid expansion available at: https://www.kff.org/medicaid/issue-brief/status-of-state-medicaid-expansion-decisions-interactive-map/.
 
-We add a dummy variable into our data to reflect this policy difference. Information on state-level Medicaid expansion available at: https://www.kff.org/medicaid/issue-brief/status-of-state-medicaid-expansion-decisions-interactive-map/.
+### Overdose Deaths
+
+Our data on drug overdose deaths comes from estimates modeled by the National Center for Health Statistics (NCHS), which are available at the county-level for the period 2003-2020. Estimates are based on the National Vital Statistics System multiple cause-of-death mortality files. Populations used for computing death rates for 2011–2018 are postcensal estimates based on the 2010 U.S. census. Rates for census years are based on populations enumerated in the corresponding censuses. Rates for noncensus years before 2010 are revised using updated intercensal population estimates and may differ from rates previously published. 
+
+Death rates for some states/counties and years may be low due to a high number of unresolved pending cases or misclassification of ICD–10 (cause of death) codes for unintentional poisoning as R99, “Other ill-defined and unspecified causes of mortality.” For example, this issue is known to affect New Jersey in 2009 and West Virginia in 2005 and 2009 but also may affect other years and other states or counties. Drug overdose death rates may be underestimated in those instances. Source link: https://www.cdc.gov/nchs/data-visualization/drug-poisoning-mortality/.
+
+### County-Level Demographics
+
+To control for time-variant, county-variant factors, we pull county-level demographic data from the US Census Bureau's American Community Survey (ACS), for years 2010-2019. Unfortunately, due to lack of data for small-population counties, we are only able to use data from the five-year edition of the ACS, likely obscuring time-variation among the demographic measures. Specifically, we include factors such as poverty rates, median age, male population share, and racial composition.Data is downloaded from the US Census Bureau API using the R package tidycensus.
 
 ### Geographic Boundaries
 
 In addition to county-level demographics, we pull county shapefiles from the Census Bureau for mapping visuals: https://www.census.gov/geographies/mapping-files/time-series/geo/cartographic-boundary.html
-
-### Overdose Deaths
-
-Our data on drug overdose deaths comes from estimates modeled by the National Center for Health Statistics (NCHS), which are available at the county-level for the period 2003-2020. Source link: https://www.cdc.gov/nchs/data-visualization/drug-poisoning-mortality/.
-### County-Level Demographics
-
-To control for time-variant, county-variant factors, we pull demographic data from the US Census Bureau's American Community Survey (ACS), for years 2010-2019. Data is downloaded from the US Census Bureau API using the R package tidycensus.
 
 ## Appendix II: Defining "High" and "Low Risk" Counties
 
