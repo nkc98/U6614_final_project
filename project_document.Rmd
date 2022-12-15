@@ -232,8 +232,6 @@ In particular, we measure the $\beta^{pre}_y$ parameters to capture the relation
 
 Finally, we include the same vector of time-varying controls ($\textbf{X}_{it}$), county fixed-effects ($\nu_{i}$), and year fixed-effects ($\tau_{t}$), as specified in the differences-in-differences approach.
 
-\medspace
-
 # Findings
 
 ## Difference-in-Difference Results
