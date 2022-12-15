@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2019.5.8)  14 DEC 2022 21:41
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2019.5.8)  14 DEC 2022 21:57
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1000,17 +1000,17 @@ LaTeX Font Info:    Font shape `T1/ppl/bx/n' in size <12> not available
 [1
 
 {/usr/local/texlive/2019/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] [2]
-<figs/fig1.pdf, id=40, 331.2375pt x 279.0425pt>
+<figs/fig1.pdf, id=40, 248.93pt x 208.78pt>
 File: figs/fig1.pdf Graphic file (type pdf)
 <use figs/fig1.pdf>
 Package pdftex.def Info: figs/fig1.pdf  used on input line 310.
-(pdftex.def)             Requested size: 331.24678pt x 279.05032pt.
+(pdftex.def)             Requested size: 248.93317pt x 208.78264pt.
 [3]
-<figs/fig2.pdf, id=51, 421.575pt x 280.04625pt>
+<figs/fig2.pdf, id=51, 421.575pt x 207.77625pt>
 File: figs/fig2.pdf Graphic file (type pdf)
 <use figs/fig2.pdf>
 Package pdftex.def Info: figs/fig2.pdf  used on input line 337.
-(pdftex.def)             Requested size: 421.58038pt x 280.04982pt.
+(pdftex.def)             Requested size: 421.58038pt x 207.77888pt.
 [4pdfTeX warning (ext4): destination with the same identifier (name{figure.1}) 
 has been already used, duplicate ignored
 
@@ -1108,7 +1108,7 @@ xmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></usr/local/texlive/2019/texmf-dis
 t/fonts/type1/urw/palatino/uplbi8a.pfb></usr/local/texlive/2019/texmf-dist/font
 s/type1/urw/palatino/uplr8a.pfb></usr/local/texlive/2019/texmf-dist/fonts/type1
 /urw/palatino/uplri8a.pfb>
-Output written on project_document.pdf (12 pages, 389494 bytes).
+Output written on project_document.pdf (12 pages, 385751 bytes).
 PDF statistics:
  305 PDF objects out of 1000 (max. 8388607)
  266 compressed objects within 3 object streams

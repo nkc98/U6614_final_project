@@ -102,9 +102,9 @@ From the sources, data is largely already available at the county-level, thus we
 
 ## "High" and "Low Risk" Counties
 
-To further distinguish between our hypothesis that Medicaid expansion has reduced drug overdose deaths in Appalachia and the counter hypothesis that oppositely suggests Medicaid expansion increased drug overdose deaths, within our county-year panel dataset, we analyze "high" and "low risk" county subsets. 
+To further distinguish between our hypothesis that Medicaid expansion has reduced drug overdose deaths in Appalachia and the counter hypothesis that oppositely suggests Medicaid expansion increased drug overdose deaths, within our county-year panel dataset, we analyze "high" and "low risk" county subsets. Operationally, we define "high risk" counties as Appalachian counties that were already experiencing substantial increases in drug overdose death rates prior to the expansion of Medicaid. Conversely, "low risk" counties are counties where overdose death rates were either stagnant or declining.
 
-
+Specifically, we expect that our hypothesized mechanism for causal effect (i.e., Medicaid expansion increasing access to substance abuse treatment) would be particularly strong in "high risk" counties where drug overdose rates were already accelerating prior to expansion.
 
 See Appendix II for our methodology in defining "high" and "low risk" counties, as well as a detailed breakdown of the characteristics of each group.
 
@@ -159,7 +159,7 @@ overdose_line_plot <- line_plot_panel %>%
 
 \FloatBarrier
 
-```{r fig2, fig.cap = "Yearly County-Level Drug Overdose Death Rates by Medicaid Expansion Status", fig.width=6, fig.height=4}
+```{r fig2, fig.cap = "Yearly County-Level Drug Overdose Death Rates by Medicaid Expansion Status", fig.width=6, fig.height=3}
 overdose_line_plot
 ```
 
