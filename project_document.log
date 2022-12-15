@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2019.5.8)  14 DEC 2022 21:57
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2019.5.8)  15 DEC 2022 11:56
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -999,102 +999,137 @@ LaTeX Font Info:    Font shape `T1/ppl/bx/n' in size <12> not available
 (Font)              Font shape `T1/ppl/b/n' tried instead on input line 134.
 [1
 
-{/usr/local/texlive/2019/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] [2]
-<figs/fig1.pdf, id=40, 248.93pt x 208.78pt>
+{/usr/local/texlive/2019/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] [2] [3]
+<figs/fig1.pdf, id=47, 331.2375pt x 279.0425pt>
 File: figs/fig1.pdf Graphic file (type pdf)
 <use figs/fig1.pdf>
-Package pdftex.def Info: figs/fig1.pdf  used on input line 310.
-(pdftex.def)             Requested size: 248.93317pt x 208.78264pt.
-[3]
-<figs/fig2.pdf, id=51, 421.575pt x 207.77625pt>
+Package pdftex.def Info: figs/fig1.pdf  used on input line 320.
+(pdftex.def)             Requested size: 331.24678pt x 279.05032pt.
+<figs/fig2.pdf, id=48, 421.575pt x 207.77625pt>
 File: figs/fig2.pdf Graphic file (type pdf)
 <use figs/fig2.pdf>
-Package pdftex.def Info: figs/fig2.pdf  used on input line 337.
+Package pdftex.def Info: figs/fig2.pdf  used on input line 342.
 (pdftex.def)             Requested size: 421.58038pt x 207.77888pt.
 [4pdfTeX warning (ext4): destination with the same identifier (name{figure.1}) 
 has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.342 \FloatBarrier
+l.347 \FloatBarrier
                     <./figs/fig1.pdf>] [5pdfTeX warning (ext4): destination wit
 h the same identifier (name{figure.2}) has been already used, duplicate ignored
 
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.391 
+l.396 
        <./figs/fig2.pdf>]
 LaTeX Font Info:    Font shape `T1/ppl/bx/n' in size <10.95> not available
-(Font)              Font shape `T1/ppl/b/n' tried instead on input line 432.
+(Font)              Font shape `T1/ppl/b/n' tried instead on input line 436.
 [6pdfTeX warning (ext4): destination with the same identifier (name{table.1}) h
 as been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.442 
+l.446 
       ]
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-<figs/fig3.pdf, id=91, 404.51125pt x 234.8775pt>
+[7]
+<figs/fig3.pdf, id=105, 404.51125pt x 234.8775pt>
 File: figs/fig3.pdf Graphic file (type pdf)
 <use figs/fig3.pdf>
-Package pdftex.def Info: figs/fig3.pdf  used on input line 543.
+Package pdftex.def Info: figs/fig3.pdf  used on input line 552.
 (pdftex.def)             Requested size: 404.51025pt x 234.87692pt.
-[7]
+<figs/fig4.pdf, id=106, 404.51125pt x 234.8775pt>
+File: figs/fig4.pdf Graphic file (type pdf)
+<use figs/fig4.pdf>
+Package pdftex.def Info: figs/fig4.pdf  used on input line 563.
+(pdftex.def)             Requested size: 404.51025pt x 234.87692pt.
+<figs/fig5.pdf, id=107, 404.51125pt x 234.8775pt>
+File: figs/fig5.pdf Graphic file (type pdf)
+<use figs/fig5.pdf>
+Package pdftex.def Info: figs/fig5.pdf  used on input line 574.
+(pdftex.def)             Requested size: 404.51025pt x 234.87692pt.
 LaTeX Font Info:    Font shape `T1/ppl/bx/it' in size <10.95> not available
-(Font)              Font shape `T1/ppl/b/it' tried instead on input line 559.
+(Font)              Font shape `T1/ppl/b/it' tried instead on input line 594.
 [8pdfTeX warning (ext4): destination with the same identifier (name{table.2}) h
 as been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.588 
+l.610 
       ] [9pdfTeX warning (ext4): destination with the same identifier (name{fig
 ure.3}) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.622 
-       <./figs/fig3.pdf>]
-<figs/fig6.pdf, id=145, 331.2375pt x 279.0425pt>
-File: figs/fig6.pdf Graphic file (type pdf)
-<use figs/fig6.pdf>
-Package pdftex.def Info: figs/fig6.pdf  used on input line 665.
-(pdftex.def)             Requested size: 331.24678pt x 279.05032pt.
-[10] [11pdfTeX warning (ext4): destination with the same identifier (name{figur
-e.4}) has been already used, duplicate ignored
+l.610 
+      pdfTeX warning (ext4): destination with the same identifier (name{figure.
+4}) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.730 \end{table}
+l.610 
+       <./figs/fig3.pdf> <./figs/fig4.pdf>] [10pdfTeX warning (ext4): destinati
+on with the same identifier (name{figure.5}) has been already used, duplicate i
+gnored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.647 
+       <./figs/fig5.pdf>]
+<figs/fig6.pdf, id=165, 331.2375pt x 279.0425pt>
+File: figs/fig6.pdf Graphic file (type pdf)
+<use figs/fig6.pdf>
+Package pdftex.def Info: figs/fig6.pdf  used on input line 689.
+(pdftex.def)             Requested size: 331.24678pt x 279.05032pt.
+[11] [12pdfTeX warning (ext4): destination with the same identifier (name{figur
+e.6}) has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.754 \end{table}
                  pdfTeX warning (ext4): destination with the same identifier (n
 ame{table.3}) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.730 \end{table}
+l.754 \end{table}
                   <./figs/fig6.pdf>]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 742.
-[12pdfTeX warning (ext4): destination with the same identifier (name{table.4}) 
+Overfull \hbox (966.1328pt too wide) in paragraph at lines 774--807
+ [][] 
+ []
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 809.
+[13pdfTeX warning (ext4): destination with the same identifier (name{table.4}) 
 has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.742 \end{document}
+l.809 \end{document}
+                    ] [14pdfTeX warning (ext4): destination with the same ident
+ifier (name{table.5}) has been already used, duplicate ignored
+
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.809 \end{document}
                     ]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 742.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 809.
 (./project_document.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 742.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 742.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 809.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 809.
  ) 
 Here is how much of TeX's memory you used:
- 27025 strings out of 492616
- 473700 string characters out of 6129482
- 573932 words of memory out of 5000000
- 30420 multiletter control sequences out of 15000+600000
- 579562 words of font info for 215 fonts, out of 8000000 for 9000
+ 27055 strings out of 492616
+ 474046 string characters out of 6129482
+ 573950 words of memory out of 5000000
+ 30427 multiletter control sequences out of 15000+600000
+ 580492 words of font info for 227 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  40i,14n,63p,815b,764s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2019/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
@@ -1108,10 +1143,10 @@ xmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></usr/local/texlive/2019/texmf-dis
 t/fonts/type1/urw/palatino/uplbi8a.pfb></usr/local/texlive/2019/texmf-dist/font
 s/type1/urw/palatino/uplr8a.pfb></usr/local/texlive/2019/texmf-dist/fonts/type1
 /urw/palatino/uplri8a.pfb>
-Output written on project_document.pdf (12 pages, 385751 bytes).
+Output written on project_document.pdf (14 pages, 401322 bytes).
 PDF statistics:
- 305 PDF objects out of 1000 (max. 8388607)
- 266 compressed objects within 3 object streams
- 71 named destinations out of 1000 (max. 500000)
- 24797 words of extra memory for PDF output out of 24883 (max. 10000000)
+ 330 PDF objects out of 1000 (max. 8388607)
+ 283 compressed objects within 3 object streams
+ 74 named destinations out of 1000 (max. 500000)
+ 24799 words of extra memory for PDF output out of 24883 (max. 10000000)
 

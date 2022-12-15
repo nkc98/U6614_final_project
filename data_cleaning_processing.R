@@ -1,4 +1,5 @@
-# Part 1: Build County-Level Dataset
+
+# Part 1: Build County-Level Dataset --------------------------------------
 
 ## Load Appalachian Counties list from the ARC
 appalachian_counties <- read_excel('data/appalachian_counties_ARC_2021.xlsx')
@@ -35,7 +36,7 @@ appalachian_counties <- appalachian_counties %>%
   left_join(county_shapes, by = 'FIPS') %>% 
   select(FIPS, STATE, COUNTY, medicaid_expansion, expansion_date, geometry)
 
-# Part 2: Load Time Series of Overdose Death Rates and Census Bureau Demographics
+# Part 2: Load Time Series of Overdose Death Rates and Census Data --------
 
 ## Load overdose death rate data
 
@@ -49,9 +50,7 @@ overdose_data <- overdose_data %>%
 
 ## Pull ACS data from Tidycensus
 
-### Apologies for the tedious code, this could've been a for loop. ###
-### We were a bit worried about variable name changes, though so   ###
-### we kept it as is just to be safe!                              ###
+### Apologies for the tedious code, this could've been a for loop. We were a bit worried about variable name changes, so we kept it as is just to be safe!
 
 census_api_key("b79b301dc87bb0fd551147883a8141dca4e2823e")
 
@@ -314,5 +313,105 @@ acs_10_to_19 <- acs_10_to_19 %>%
   mutate(GEOID = as.numeric(GEOID)) %>% 
   rename(FIPS = GEOID)
 
+
+# Part 3: Merge Data into County-Year Panel -------------------------------
+
+## Create four versions of the Appalachian counties data, one for each year in our study
+
+appalachian_counties_10 <- appalachian_counties %>% 
+  mutate(Year = 2010)
+appalachian_counties_11 <- appalachian_counties %>% 
+  mutate(Year = 2011)
+appalachian_counties_12 <- appalachian_counties %>% 
+  mutate(Year = 2012)
+appalachian_counties_13 <- appalachian_counties %>% 
+  mutate(Year = 2013)
+appalachian_counties_14 <- appalachian_counties %>% 
+  mutate(Year = 2014)
+appalachian_counties_15 <- appalachian_counties %>% 
+  mutate(Year = 2015)
+appalachian_counties_16 <- appalachian_counties %>% 
+  mutate(Year = 2016)
+appalachian_counties_17 <- appalachian_counties %>% 
+  mutate(Year = 2017)
+appalachian_counties_18 <- appalachian_counties %>% 
+  mutate(Year = 2018)
+appalachian_counties_19 <- appalachian_counties %>% 
+  mutate(Year = 2019)
+
+appalachian_counties_panel <- rbind(appalachian_counties_10,
+                                    appalachian_counties_11,
+                                    appalachian_counties_12,
+                                    appalachian_counties_13,
+                                    appalachian_counties_14,
+                                    appalachian_counties_15,
+                                    appalachian_counties_16,
+                                    appalachian_counties_17,
+                                    appalachian_counties_18,
+                                    appalachian_counties_19)
+
+## Create variable for time since expansion and treatment variable
+
+appalachian_counties_panel <- appalachian_counties_panel %>% 
+  mutate(t_expansion = Year - year(expansion_date),
+         treat = ifelse(t_expansion >= 0, medicaid_expansion, 0))
+
+## Merge panel with overdose data
+
+appalachian_counties_overdose_panel <- appalachian_counties_panel %>% 
+  mutate(FIPS = as.numeric(FIPS)) %>% 
+  left_join(overdose_data, by = c("FIPS", "Year"))
+
+## Merge panel with ACS data (save as an RDS file)
+
+year_county_panel <- appalachian_counties_overdose_panel %>% 
+  left_join(acs_10_to_19, by = c("FIPS", "Year"))
+
+# Part 4: Define "High" and "Low Risk" Counties ---------------------------
+
+# Note: We define high risk counties as counties with a pre-expansion compound annual growth rate (CAGR) of drug overdose death rates above the 
+# 75th percentile and similarly define "low risk" counties as counties with a pre-expansion CAGR of drug overdose death rates below the 25th 
+# percentile. Counties in between the 25th and 75th percentiles of pre-expansion CAGR of drug overdose rates are simply defined as "moderate risk."
+
+## Limit dataset to pre-expansion and select necessary variables, reshape to wide, calculate overdose death rate CAGR
+
+pre_expansion_panel <- year_county_panel %>% 
+  filter(between(t_expansion, -4, -1)) %>% 
+  select("FIPS", "t_expansion", "estimated_overdose_death_rate", "geometry", "medicaid_expansion") %>% 
+  spread(key = t_expansion, value = estimated_overdose_death_rate) %>% 
+  mutate(pre_expansion_CAGR = (((`-1`/`-4`)^(1/3)) - 1) * 100) 
+
+## Generate five-number summary for CAGR
+five_num_CAGR <- fivenum(pre_expansion_panel$pre_expansion_CAGR)
+
+## Code risk levels based on CAGR
+pre_expansion_panel <- pre_expansion_panel %>% 
+  mutate(risk = if_else(pre_expansion_CAGR > five_num_CAGR[4], "High", if_else(pre_expansion_CAGR < five_num_CAGR[2], "Low", "Moderate"))) %>% 
+  select("FIPS", "geometry", "pre_expansion_CAGR", "risk", "medicaid_expansion")
+
+## Save risk levels as a separate dataframe
+risk_levels <- pre_expansion_panel %>% 
+  select("FIPS", "pre_expansion_CAGR", "risk")
+
+## Merge risk levels in to main panel and county dataset
+year_county_panel <- year_county_panel %>% 
+  left_join(risk_levels, by = "FIPS")
+
+appalachian_counties <- appalachian_counties %>% 
+  mutate(FIPS = as.numeric(FIPS)) %>% 
+  left_join(risk_levels, by = "FIPS")
+
+# Part 5: Save Panel and County Dasets as .Rds Files ----------------------
+
+## Restrict county-year panel to years of analysis, tell R it's a panel, and save as .rds file
+CY_panel <- year_county_panel %>% 
+  filter(between(t_expansion, -4, 4))
+
+# panel_data(year_county_panel, id = "COUNTY", wave = "Year")
+
+saveRDS(CY_panel, file = "CY_panel.rds")
+
+## Save counties dataset, this file is purely for mapping and tabulations, but no inference
+saveRDS(appalachian_counties, file = "appalachian_counties.rds") 
 
 

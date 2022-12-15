@@ -5,7 +5,7 @@ We're almost done! Here are last steps we need to complete:
 Initial thought is this should be defined by counties above the 75th percentile and below the 25th percentile in terms of pre-expansion overdose death 
 rates. Will need to take a closer look at the distribution of overdose deaths pre-expansion to figure this out.
 
-***Neil to work on this***
+***Neil completed***
 
 # Write Up for Findings and Conclusion
 
