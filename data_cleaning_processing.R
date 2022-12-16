@@ -369,29 +369,37 @@ year_county_panel <- appalachian_counties_overdose_panel %>%
 
 # Part 4: Define "High" and "Low Risk" Counties ---------------------------
 
-# Note: We define high risk counties as counties with a pre-expansion compound annual growth rate (CAGR) of drug overdose death rates above the 
-# 75th percentile and similarly define "low risk" counties as counties with a pre-expansion CAGR of drug overdose death rates below the 25th 
-# percentile. Counties in between the 25th and 75th percentiles of pre-expansion CAGR of drug overdose rates are simply defined as "moderate risk."
+# Note: We define high risk counties as counties with a pre-expansion compound annual growth rate of drug overdose death rates above the
+# 75th percentile. We define "low risk" counties as counties with pre-expansion growth of drug overdose death rates at 0 or below. Counties
+# in between are simply defined as "moderate risk."
 
-## Limit dataset to pre-expansion and select necessary variables, reshape to wide, calculate overdose death rate CAGR
+## Limit dataset to pre-expansion and select necessary variables, reshape to wide, calculate overdose death rate average annual growth.
 
 pre_expansion_panel <- year_county_panel %>% 
   filter(between(t_expansion, -4, -1)) %>% 
   select("FIPS", "t_expansion", "estimated_overdose_death_rate", "geometry", "medicaid_expansion") %>% 
   spread(key = t_expansion, value = estimated_overdose_death_rate) %>% 
-  mutate(pre_expansion_CAGR = (((`-1`/`-4`)^(1/3)) - 1) * 100) 
+  mutate(growth_4_3 = (`-3` - `-4`)/`-4`,
+         growth_3_2 = (`-2` - `-3`)/`-3`,
+         growth_2_1 = (`-1` - `-2`)/`-2`,
+         avg_pre_exp_growth = ((growth_4_3 + growth_3_2 + growth_2_1)/3)*100)
 
-## Generate five-number summary for CAGR
-five_num_CAGR <- fivenum(pre_expansion_panel$pre_expansion_CAGR)
+## Generate five-number summary for avg. growth in overdose deaths
+five_num_growth <- fivenum(pre_expansion_panel$avg_pre_exp_growth)
+five_num_growth
 
-## Code risk levels based on CAGR
+# For reference only: distribution of growth rates is actually pretty normal!
+pre_expansion_panel %>%  ggplot(aes(x = avg_pre_exp_growth)) +
+  geom_histogram(aes(y=..density..))
+
+## Code risk levels based on avg. growth in overdose deaths
 pre_expansion_panel <- pre_expansion_panel %>% 
-  mutate(risk = if_else(pre_expansion_CAGR > five_num_CAGR[4], "High", if_else(pre_expansion_CAGR < five_num_CAGR[2], "Low", "Moderate"))) %>% 
-  select("FIPS", "geometry", "pre_expansion_CAGR", "risk", "medicaid_expansion")
+  mutate(risk = if_else(avg_pre_exp_growth > five_num_growth[3], "High", if_else(avg_pre_exp_growth <= 0, "Low", "Moderate"))) %>% 
+  select("FIPS", "geometry", "avg_pre_exp_growth", "risk", "medicaid_expansion")
 
 ## Save risk levels as a separate dataframe
 risk_levels <- pre_expansion_panel %>% 
-  select("FIPS", "pre_expansion_CAGR", "risk")
+  select("FIPS", "avg_pre_exp_growth", "risk")
 
 ## Merge risk levels in to main panel and county dataset
 year_county_panel <- year_county_panel %>% 
@@ -401,17 +409,22 @@ appalachian_counties <- appalachian_counties %>%
   mutate(FIPS = as.numeric(FIPS)) %>% 
   left_join(risk_levels, by = "FIPS")
 
-# Part 5: Save Panel and County Dasets as .Rds Files ----------------------
+# Part 5: Save Panel and County Dasets as .rda Files ----------------------
 
-## Restrict county-year panel to years of analysis, tell R it's a panel, and save as .rds file
+## Restrict county-year panel to years of analysis, tell R it's a panel, and save as .rda file
 CY_panel <- year_county_panel %>% 
   filter(between(t_expansion, -4, 4))
 
 # panel_data(year_county_panel, id = "COUNTY", wave = "Year")
 
-saveRDS(CY_panel, file = "CY_panel.rds")
+saveRDS(CY_panel, file = "CY_panel.rda")
 
 ## Save counties dataset, this file is purely for mapping and tabulations, but no inference
-saveRDS(appalachian_counties, file = "appalachian_counties.rds") 
+saveRDS(appalachian_counties, file = "appalachian_counties.rda") 
+
+
+
+
+
 
 

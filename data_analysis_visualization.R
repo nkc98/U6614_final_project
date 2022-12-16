@@ -2,10 +2,10 @@
 # Data Description --------------------------------------------------------
 
 ## Load panel data
-CY_panel <- readRDS("CY_panel.rds")
+CY_panel <- readRDS("CY_panel.rda")
 
 ## Load county data
-appalachian_counties <- readRDS("appalachian_counties.rds")
+appalachian_counties <- readRDS("appalachian_counties.rda")
 
 ## Tabulate counties by expansion status
 expansion_count <- as.numeric(table(appalachian_counties$medicaid_expansion))
@@ -81,7 +81,6 @@ diff_in_means_table
 ### Subset high-risk counties
 high_risk_panel <- CY_panel %>% 
   filter(risk == "High")
-
 
 ### Subset low-risk counties
 low_risk_panel <- CY_panel %>% 
@@ -223,7 +222,7 @@ ES_models <- list(
     | COUNTY + Year,
     data = low_risk_panel,
     weights = low_risk_panel$population,
-    cluster = low_risk_panel$COUNTY)
+    cluster = low_risk_panel$COUNTY),
 )
 
 names(ES_models) <- c("All Counties", "High Risk", "Low Risk")
@@ -261,7 +260,6 @@ ES_estimation_results <- modelsummary(ES_models,
 
 ES_estimation_results
 
-
 # Appendix II: Defining "High" and "Low Risk" Counties -------------------
 
 ## Map of Pre-Expansion Overdose Death Rate CAGR 
@@ -269,16 +267,17 @@ ES_estimation_results
 ### Covert counties datafile to sf
 pre_expansion_shapes <- st_as_sf(appalachian_counties)
 
-CAGR_map <- tm_shape(pre_expansion_shapes) + 
-  tm_polygons("pre_expansion_CAGR",
-              title = "CAGR of Overdose Death Rates",
+growth_map <- tm_shape(pre_expansion_shapes) + 
+  tm_polygons("avg_pre_exp_growth",
+              title = "Growth Rate of Overdose Death Rates",
               palette = 'PuRd') +
   tm_borders()
 
-CAGR_map
+growth_map
 
 ## Five-number Summary of Pre-Expansion Overdose Death Rate CAGR
-five_num_CAGR <- fivenum(appalachian_counties$pre_expansion_CAGR)
+five_num_growth <- fivenum(appalachian_counties$avg_pre_exp_growth)
+five_num_growth
 
 ## Two-Way Table of Risk Levels by Expansion Status
 expansion_risk_count <- table(appalachian_counties$medicaid_expansion, appalachian_counties$risk)
@@ -312,8 +311,6 @@ diff_in_means_table_2 <- datasummary_balance(~risk,
   kable_styling(latex_options = "HOLD_position")
 
 diff_in_means_table_2
-
-
 
 
 

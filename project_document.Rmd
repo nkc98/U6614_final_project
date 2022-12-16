@@ -1,6 +1,6 @@
 ---
 title: "Did Medicaid Expansion Change the Trajectory of Drug Overdose Deaths in Appalachia?"
-author: "Neil Chin (nkc2124) & Nicole Yahui Wu (yw3551)"
+author: "Neil Kejian Chin (nkc2124) & Nicole Yahui Wu (yw3551)"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 output: 
   pdf_document:
@@ -51,11 +51,11 @@ library(modelsummary)
 
 Deaths due to drug overdose are a pressing problem facing United States policymakers and society at large, with reportedly more than 932,000 people dying due to overdose since 1999 ([CDC, 2022](https://www.cdc.gov/drugoverdose/deaths/index.html)). Rates of overdose deaths increased in nearly every US state from 2013-2017, with particularly severe incidence in the Appalachian region ([CDC, 2020](https://www.cdc.gov/drugoverdose/deaths/2013-2017-increase.html); [CDC, 2021](https://www.cdc.gov/drugoverdose/deaths/2014.html)). The increase in deaths is driven primarily by the ongoing US opioid crisis, with the vast majority (>80%) of overdose deaths associated with opioid use ([CDC, 2022](https://www.cdc.gov/drugoverdose/deaths/index.html)).
 
-In this context, we hope to assess whether expansion of the social safety net through government policy can be causally linked to reductions in drug overdose death rates. Specifically, we propose to estimate the effects of the expansion of the US Medicaid program using a panel dataset of Appalachian counties, which increased income-based eligibility for healthcare (including drug addiction treatment) in some Appalachian states, on drug overdose deaths. We hope that the findings from this study can assist policymakers in determining whether expanding access to healthcare in low-income areas is a viable policy mechanism for addressing the ongoing drug overdose crisis.
+In this context, we hope to assess whether expansion of the social safety net through government policy can be causally linked to reductions in drug overdose death rates. Specifically, we propose to use a panel dataset of Appalachian counties to estimate the effects of the expansion of the US Medicaid program, which increased income-based eligibility for healthcare (including drug addiction treatment) in some Appalachian states, on drug overdose deaths. We hope that the findings from this study can assist policymakers in determining whether expanding access to healthcare in low-income areas is a viable policy mechanism for addressing the ongoing drug overdose crisis.
 
 ## Why Appalachia?
 
-In addition to the pressing need for causal analysis due to the escalating drug overdose crisis, we focus our study on the Appalachian region for a few methodological reasons. First, in the pre-expansion period, Medicaid was already a widely-embraced program in Appalachia relative to the rest of the country and expansion was projected to increase enrollment by tens of millions of people, indicating that our policy "treatment" of interest (i.e., Medicaid expansion) had considerable uptake ([ARC, 2012](https://www.arc.gov/wp-content/uploads/2020/06/HealthCareCostsandAccessDisparitiesinAppalachia.pdf)). That is to say, intent-to-treat (ITT) effects measured by our study should be fairly reflective of average treatment-on-treated (ATT) effects. Second, the Appalachian region is defined at the county-level, which enables us to avoid potential selection bias and small sample size issues that would confound state-level analysis. Finally, we believe that Appalachian counties are largely similar in terms on non-measurable, unobserved characteristics across state lines, meaning that they can be fairly reliably construed as pseudo “control” and “treatment” groups. As such, any given Appalachian county should not be significantly more likely to have benefited from state-level adoption of Medicaid expansion than any other, based on its innate characteristics.
+In addition to the pressing need for causal analysis due to the escalating drug overdose crisis, we focus our study on the Appalachian region for a few methodological reasons. First, in the pre-expansion period, Medicaid was already a widely-embraced program in Appalachia relative to the rest of the country and expansion was projected to increase enrollment by tens of millions of people, indicating that our policy "treatment" of interest (i.e., Medicaid expansion) had considerable uptake ([ARC, 2012](https://www.arc.gov/wp-content/uploads/2020/06/HealthCareCostsandAccessDisparitiesinAppalachia.pdf)). That is to say, intent-to-treat (ITT) effects measured by our study should be more reflective of average treatment-on-treated (ATT) effects than they would be in other geographies where Medicaid participation is not as high. Second, the Appalachian region is defined at the county-level, which enables us to avoid potential selection bias and small sample size issues that would confound state-level analysis. Finally, we believe that Appalachian counties are largely similar in terms on non-measurable, unobserved characteristics across state lines, meaning that they can be fairly reliably construed as pseudo “control” and “treatment” groups.
 
 \medspace
 
@@ -65,9 +65,9 @@ The Affordable Care Act (ACA) was passed by the United States Congress and signe
 
 Of the 13 states whose boundaries overlap with the broad geographical definition of Appalachia, five states (Kentucky, Maryland, New York, Ohio, and West Virginia) passed legislation mandating the expansion of Medicaid as of January 1st, 2014 ([KFF, 2022](https://www.kff.org/medicaid/issue-brief/status-of-state-medicaid-expansion-decisions-interactive-map/)). Two additional states, Pennsylvania and Virginia, would later expand Medicaid, with the former in 2015 and the latter in 2019. Six states (Alabama, Georgia, Mississippi, North Carolina, South Carolina, and Tennessee) have not expanded Medicaid to-date. 
 
-In our study, we identify this policy adoption discrepancy as a "treatment" (i.e., "differential exposure between entities over time") affecting drug overdose incidence in Appalachian communities. Our *hypothesized* causal mechanism is that expanded Medicaid eligibility allowed for greater access to low-cost health care among Appalachian counties in expansion states, therefore enabling people struggling with drug addiction to receive treatment when they otherwise would not have been able to receive care, reducing overall deaths from drug overdose in these areas.
+In our study, we identify this policy adoption discrepancy as a "treatment" (i.e., "differential exposure between entities over time") affecting drug overdose incidence in Appalachian communities. Our *hypothesized* causal mechanism is that expanded Medicaid eligibility allowed for greater access to low-cost health care among Appalachian counties in expansion states, therefore enabling people struggling with drug addiction to receive substance use disorder (SUD) treatment when they otherwise would not have been able to receive care, reducing overall deaths from drug overdose in these areas. In general, health insurance via Medicaid covers SUD treatment, with slight differences in extent of coverage across states ([American Addiction Centers, 2022](https://rehabs.com/insurance-coverage/medicaid/)).
 
-Existing literature has also examined the counter-hypothesis that Medicaid expansion may have actually *increased* drug overdose death rates by increasing access to prescription opioids. [Swartz and Beltran (2019)](https://onlinelibrary.wiley.com/doi/epdf/10.1111/add.14741) find that, while Medicaid expansion did increase prescription opioid availability, there was no accompanying increase in overdose mortality. [Venkataramani and Chatterjee (2018)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6318168/) examine early 2000s Medicaid expansion in Arizona, Maine, and New York, and find that expansion did in fact *decrease* overdose death rates relative to neighboring non-expansion states.
+Existing literature has also examined the counter-hypothesis that Medicaid expansion may have actually *increased* drug overdose death rates by increasing access to prescription opioids. [Swartz and Beltran (2019)](https://onlinelibrary.wiley.com/doi/epdf/10.1111/add.14741) find that, while Medicaid expansion did increase prescription opioid availability, there was no accompanying increase in overdose mortality. [Venkataramani and Chatterjee (2018)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6318168/) examine early 2000s Medicaid expansion in Arizona, Maine, and New York, and find that expansion did in fact *decrease* overdose death rates relative to neighboring non-expansion states. More recently, [Averett, Smith, and Yang (2019)](https://onlinelibrary.wiley.com/doi/10.1002/hec.3945) find that, at a state level, Medicaid expansion is not related to opioid deaths.
 
 \medspace
 
@@ -75,10 +75,10 @@ Existing literature has also examined the counter-hypothesis that Medicaid expan
 
 ```{r load data, include = FALSE}
 # Load panel data
-CY_panel <- readRDS("CY_panel.rds")
+CY_panel <- readRDS("CY_panel.rda")
 
 # Load county data
-appalachian_counties <- readRDS("appalachian_counties.rds")
+appalachian_counties <- readRDS("appalachian_counties.rda")
 
 # Tabulate counties by expansion status
 expansion_count <- as.numeric(table(appalachian_counties$medicaid_expansion))
@@ -90,19 +90,21 @@ The subset of US counties defined as "Appalachian" is based on the jurisdiction 
 
 Identification of state-level Medicaid expansion is based on tracking done by the Kaiser Family Foundation ([KFF, 2022](https://www.kff.org/medicaid/issue-brief/status-of-state-medicaid-expansion-decisions-interactive-map/)). Note that, due to the fact that Pennsylvania implemented Medicaid expansion a year after other expansion states, the timing of "treatment" for Appalachian counties in Pennsylvania is delayed by one year relative to other counties in expansion states. Additionally, Virginia did eventually enact Medicaid expansion in 2019, but these observations are not included in our analytical sample (2019 observations are only analyzed for Pennsylvania), and thus Appalachian counties in Virginia are considered to be "non-expansion" counties.
 
-Data on drug overdose death rates (i.e., deaths per 100,000 residents) comes from estimates modeled by the National Center for Health Statistics (NCHS), which are available at the county-level for the period 2003-2020. Unfortunately, county-level statistics on overdose deaths based on final counts of cause of death reporting only became available starting in 2020, outside of the time frame of this study.
+Data on drug overdose death rates (i.e., deaths per 100,000 residents) comes from estimates modeled by the National Center for Health Statistics (NCHS), which are available at the county-level for the period 2003-2020. Unfortunately, county-level statistics on overdose deaths based on final counts of cause of death reporting only became available starting in 2020, outside of the study time frame.
 
-County-level demographic covariates are taken from the US Census Bureau American Community Survey (ACS). Using these covariates, we hope to control for omitted variable bias stemming from county-level factors such as poverty rates, median age, and sex and race compositions. In particular, we expect that poverty rates would relate positively to overdose deaths, as poverty levels and overdose deaths have been previously linked ([Pear et al, 2019](https://pubmed.ncbi.nlm.nih.gov/30592998/)). We include controls for median age as drug overdose death incidence tends to vary by age group ([KFF, 2022](https://www.kff.org/other/state-indicator/opioid-overdose-deaths-by-age-group/?dataView=1&currentTimeframe=6&selectedDistributions=0-24--25-34--35-44--45-54&sortModel=%7B%22colId%22:%22Location%22,%22sort%22:%22asc%22%7D)). Drug overdose deaths are also more common among individuals identified as male than female ([CDC, 2022](https://www.cdc.gov/nchs/hus/topics/drug-overdose-deaths.htm)). Furthermore, access to drug treatment has been shown to differ according to race ([NIDA, 2019](https://nida.nih.gov/about-nida/noras-blog/2019/07/access-to-addiction-services-differs-by-race-gender)), potentially leading to differentials in drug overdose deaths depending on racial composition of counties.
+County-level demographic covariates are taken from the US Census Bureau American Community Survey (ACS). Using these covariates, we hope to control for omitted variable bias (OVB) stemming from county-level factors such as poverty rates, median age, and sex and race compositions. In particular, we expect that poverty rates would relate positively to overdose deaths, as poverty levels and overdose deaths have been previously linked ([Pear et al, 2019](https://pubmed.ncbi.nlm.nih.gov/30592998/)). We include controls for median age as drug overdose death incidence tends to vary by age group ([KFF, 2022](https://www.kff.org/other/state-indicator/opioid-overdose-deaths-by-age-group/?dataView=1&currentTimeframe=6&selectedDistributions=0-24--25-34--35-44--45-54&sortModel=%7B%22colId%22:%22Location%22,%22sort%22:%22asc%22%7D)). Drug overdose deaths are also more common among individuals identified as male than female ([CDC, 2022](https://www.cdc.gov/nchs/hus/topics/drug-overdose-deaths.htm)). Furthermore, access to drug treatment has been shown to differ according to race ([NIDA, 2019](https://nida.nih.gov/about-nida/noras-blog/2019/07/access-to-addiction-services-differs-by-race-gender)), potentially leading to differentials in drug overdose deaths depending on racial composition of counties. We acknowledge that some of these factors may actually be mostly time-invariant, but include them anyways to minimize OVB.
 
 Given that both the NCHS data on overdose death rates and ACS control variables are estimated at the county-level, we expand our study period to the four years prior to Medicaid expansion and the five years after (i.e., 2010-2019), in order to smooth over any potential estimation errors. We also hope that this larger time frame will capture any lags in treatment effects, given that reductions in drug overdose deaths due to expanded access to health care may not be reflected in the data until more than a year after Medicaid expansion.
 
-From the sources, data is largely already available at the county-level, thus we are not required to perform any aggregation or dis-aggregation steps to make the data suitable for use. Furthermore, variables of interest are entirely quantitative, thus cleaning needs are minimal. All source data include county-specific FIPS codes as merging indices. The only intermediate data transformation we perform is the calculation of county-level racial composition shares and poverty rates, based on Census Bureau population data.
+From the sources, data is largely already available at the county-level, thus we are not required to perform any aggregation or dis-aggregation steps to make the data suitable for use. Furthermore, variables of interest are entirely quantitative, thus cleaning needs are minimal. All source data include county FIPS codes as merging indices. The only intermediate data transformation we perform is the calculation of county-level racial composition shares and poverty rates, based on Census Bureau population data.
 
 ## "High" and "Low Risk" Counties
 
-To further distinguish between our hypothesis that Medicaid expansion has reduced drug overdose deaths in Appalachia and the counter hypothesis that oppositely suggests Medicaid expansion increased drug overdose deaths, within our county-year panel dataset, we separately analyze "high" and "low risk" county subsets. Operationally, we define "high risk" counties as Appalachian counties that were already experiencing substantial increases in drug overdose death rates prior to the expansion of Medicaid. Conversely, "low risk" counties are counties where overdose death rates were either stagnant or declining.
+To further distinguish between our hypothesis, that Medicaid expansion has reduced drug overdose deaths in Appalachia, and the counter hypothesis, that oppositely suggests Medicaid expansion increased drug overdose deaths, within our county-year panel dataset we separately analyze "high" and "low risk" county subsets. Operationally, we define "high risk" counties as Appalachian counties that were already experiencing substantial increases in drug overdose death rates prior to the expansion of Medicaid. "Low risk" counties are counties where overdose death rates were either stagnant or declining pre-expansion.
 
-Specifically, we expect that our hypothesized mechanism (i.e., Medicaid expansion increasing access to substance abuse treatment) would have a particularly strong causal effect in "high risk" counties where drug overdose rates were already accelerating prior to expansion.
+Specifically, we expect that our hypothesized mechanism (i.e., Medicaid expansion increasing access to substance abuse treatment) would have a particularly strong causal effect in "high risk" counties where drug overdose rates were already accelerating prior to expansion. Essentially, we think that Medicaid-eligible individuals would face a strong individual and communal impetus to seek out substance use disorder (SUD) treatment through the Medicaid program if deaths from drug overdose are already an acute problem in their community. Conversely, we think there would be less scope for causal effect in "low risk" counties, as drug overdose deaths are perceived as less of a crisis or already improving.
+
+For the counter-hypothesis mechanism, we would expect opposite results with regards to relative strength of causal effect. In "high risk" counties circulation of prescription opioids is likely already ubiquitous pre-expansion, and thus while Medicaid expansion could exacerbate the issue, the overall trajectory of opioid deaths will not change by a high degree. In "low risk" counties, however, it is possible that stagnant or receding overdose death rates pre-expansion could be due to a dwindling supply of prescription opioids, and a post-expansion supply shock leads to a rapid increase in drug overdose deaths.
 
 See Appendix II for our methodology in defining "high" and "low risk" counties, as well as a detailed breakdown of the characteristics of each group.
 
@@ -126,11 +128,11 @@ expansion_map <- tm_shape(appalachian_counties_map) +
   tm_borders()
 ```
 
-```{r fig1, fig.cap="Map of Medicaid Expansion Status Across Appalachian Counties", fig.width=6, fig.height=4}
+```{r fig1, fig.cap="Map of Medicaid Expansion Status Across Appalachian Counties", fig.width=5, fig.height=3.5}
 expansion_map
 ```
 
-Clearly, at the state level there is a degree of "North-South" bias in terms of which states elected to expand Medicaid. However, our empirical strategy (as discussed in the next section) aims to minimize any associated omitted variable bias with county-level fixed effects.
+Clearly, at the state level there is a degree of "North-South" bias in terms of which states elected to expand Medicaid. However, our empirical strategy (as discussed in section 5) aims to minimize any associated omitted variable bias with county-level fixed effects.
 
 ## Variation in Drug Overdose Death Rate
 
@@ -164,7 +166,7 @@ overdose_line_plot
 
 While drug overdose death rates are persistently higher in expansion counties than in non-expansion counties, it appears that expansion counties and non-expansion counties experience near-parallel trends prior to Medicaid expansion. In the first few years following expansion, however, we observe an *steepening trend* of overdose death rates in *expansion counties* relative to *non-expansion counties*, indicating that Medicaid expansion had a *positive* effect on overdose death rates, contradicting the direction of our hypothesized causal effect.
 
-Yet, we also observe that this steepening trend of overdose death rates in expansion counties *declines* following the first two years after Medicaid expansion. Between years three and four after Medicaid expansion, it even appears that parallel trends in overdose deaths have resumed. This suggests that, to the extent Medicaid expansion has increased overdose death rates in expansion counties, this effect was short-lived. 
+Yet, we also observe that this steepening trend of overdose death rates in expansion counties *declines* following the first two years after Medicaid expansion. Between years three and four after Medicaid expansion, this trend reverses. Overall, this suggests that, to the extent Medicaid expansion has increased overdose death rates in expansion counties, this effect may be inconsistent over time. We explore this possibility in our empirical strategy by employing an "event study" approach, which also allows us to more rigorously assess the assumption of parallel trends. 
 
 ## Variation in Key Continuous Variables
 
@@ -207,9 +209,9 @@ Table 1 shows difference-in-means between "treatment" (i.e., Medicaid expansion)
 
 The primary variation that we seek to exploit through our analysis is the differential in state-level adoption of Medicaid expansion across the Appalachian region, with policy variation at the state-level thus filtering down to the county-level. We do this in two ways:
 
-To establish a single average causal treatment effect estimate over the five years after Medicaid was expanded, we first take a difference-in-differences approach. This approach allows us to simply establish evidence of a causal linkage between Medicaid expansion and drug overdose deaths in Appalachia. We then go a step further by exploring an event study approach, examining year-by-year treatment effects relative to the year prior to Medicaid expansion. This second approach allows us to demonstrate the robustness of our measured treatment effect over time.
+To establish a single average causal treatment effect estimate over the five years after Medicaid was expanded, we first take a difference-in-differences approach. This approach allows us to simply establish evidence of a causal linkage between Medicaid expansion and drug overdose deaths in Appalachia. We then go a step further by exploring an event study approach, examining year-by-year treatment effects relative to the year prior to Medicaid expansion. This second approach allows us to demonstrate the robustness of our measured treatment effect over time, and also provides a more granular lens to critically assess the validity of the differences-in-differences result.
 
-Finally, we look for heterogeneous treatment effects between "high" and "low risk" counties in both approaches. 
+Finally, we look for heterogeneous treatment effects among "high" and "low risk" counties in both approaches. 
 
 ## Difference-in-Differences
 
@@ -226,9 +228,9 @@ Additionally, we include an array of county fixed effects, $\nu_{i}$, that contr
 In this approach, we apply a modified specification that isolates treatments effects by year, before and after Medicaid expansion, which corresponds to the following population regression function:
 
 $$ODR_{it} =  1\{\text{Expansion}_i\} \left [ \sum_{y=-4}^{-2} \beta_y^{pre} 1\{t - t_i^* = y\} + \sum_{y=0}^{4} \beta_y^{post} 1\{t - t_i^* = y\}\right ] + \textbf{X}_{it} \gamma + \nu_{i} + \tau_{t} + \varepsilon_{it}$$
-where $1\{\text{Expansion}_i\}$ is a binary variable identifying high-eligibility states, and $t_i^*$ is the year Medicaid was expanded in county $i$. The $1\{t - t_i^* = y\}$ terms are dummy variables corresponding to an *event year*, i.e., the year relative to the expansion of Medicaid at time $t_i^*$. The coefficients of interest are now $\beta^{pre}_y$ and $\beta^{post}_y$, which measure the relationship between drug overdose death rates and expansion status in each of the four years leading up to Medicaid expansion and five years after. We omit the dummy for the year before Medicaid expansion ($y = -1$), so that the estimates of $\beta^{pre}_y$ and $\beta^{post}_y$ capture effects relative to just before Medicaid expansion. 
+where $1\{\text{Expansion}_i\}$ is a binary variable identifying high-eligibility states, and $t_i^*$ is the year Medicaid was expanded in county $i$. The $1\{t - t_i^* = y\}$ terms are dummy variables corresponding to an *event year*, i.e., the year relative to the expansion of Medicaid at time $t_i^*$. The coefficients of interest are $\beta^{pre}_y$ and $\beta^{post}_y$, which measure the relationship between drug overdose death rates and expansion status in each of the four years leading up to Medicaid expansion and five years after. We omit the dummy for the year before Medicaid expansion ($y = -1$), so that the estimates of $\beta^{pre}_y$ and $\beta^{post}_y$ capture effects relative to just before Medicaid expansion. 
 
-In particular, we measure the $\beta^{pre}_y$ parameters to capture the relationship between expansion status and overdose death rates before Medicaid was expanded, in order to establish the assumption of parallel trends; statistically significant estimates during the pre-treatment period would be inconsistent with the parallel trends assumption, as this would indicate that expansion counties already faced a different trajectory of overdose death rates prior to the expansion of Medicaid. The $\beta^{post}_y$ parameters represent the causal effect of Medicaid expansion for each event year ($y$).
+In particular, we measure $\beta^{pre}_y$ parameters to capture the relationship between expansion status and overdose death rates before Medicaid was expanded, allowing us to establish the assumption of parallel trends; statistically significant estimates during the pre-treatment period would be inconsistent with the parallel trends assumption, as this would indicate that expansion counties already experienced a different trajectory of overdose death rates prior to the expansion of Medicaid. The $\beta^{post}_y$ parameters represent the causal effect of Medicaid expansion for each event year ($y$) after medicaid has been expanded.
 
 Finally, we include the same vector of time-varying controls ($\textbf{X}_{it}$), county fixed-effects ($\nu_{i}$), and year fixed-effects ($\tau_{t}$), as specified in the differences-in-differences approach.
 
@@ -298,17 +300,22 @@ did_estimation_results <- modelsummary(did_models,
                                        title = 'Effect of Medicaid Expansion on Drug Overdose Death Rates',
                                        stars = c('*' = .1, '**' = .05, '***' = .01),
                                        notes = 'Robust standard errors clustered by county are shown in parentheses.
-                      Observations are weighted by the population in each county.') %>% 
-  kable_styling(latex_options = c("hold_position", "scale_down"))
+                      Observations are weighted by the population in each county.') %>%
+  column_spec(column = 2:4, width = "2in") %>% 
+  kable_styling(latex_options = c("hold_position", "scale_down")) 
+
+coef <- round(did_models$`All Counties`$coefficients[1], 2)
 ```
 
 ```{r display DID estimates, echo = FALSE}
 did_estimation_results
 ```
 
-Table 2 displays difference-in-difference estimation results
+Table 2 displays difference-in-difference estimation results. We find evidence that Medicaid expansion *increased* the drug overdose death rate by roughly `r coef` deaths per 100,000 across all Appalachian counties in the post-expansion period, holding constant demographic factors and county and time fixed effects. This effect is slightly larger in "high risk" counties than it is in "low risk" counties, although the difference is not substantial, and smaller in both subgroups than it is across the entire sample. In all cases, this estimate of causal effect is quite significant ($\alpha < .01$).
 
 ## Event Study Results
+
+For our event study approach, we plot $\beta^{pre}_y$ and $\beta^{post}_y$ estimates for all counties, "high risk," and "low risk" counties in Figures 3-5. A complete table of event study approach estimates, across all Appalachian counties, "high risk," and "low risk" counties, can be found in Appendix III, Table 5.
 
 ```{r estimate event study model, include = FALSE}
 ES_mod <- feols(
@@ -328,11 +335,11 @@ iplot(
   ci.lwd = 0,
   grid.par = list(vert = FALSE),
   main = "",
-  ylab = "Est. Effect on Overdose Death Rates",
+  ylab = "Overdose Death Rates",
   xlab = "Years since Medicaid Expansion")
 ```
 
-Figure 3 displays the yearly estimated effect of Medicaid expansion on drug overdose death rates across all counties Appalachia, before and after expansion occurs. 
+Figure 3 displays the yearly estimated effect of Medicaid expansion on drug overdose death rates across all counties Appalachia, before and after expansion occurs. With regards to the pre-expansion $\beta^{pre}_y$ estimates, it appears that the assumption of parallel trends mostly holds true, as the parameters are centered around zero and are non statistically significant with the exception of $y=-4$. The $\beta^{post}_y$ estimates show a *positive* effect of Medicaid expansion on drug overdose deaths that increases in the period one-to-two years after Medicaid expansion, then stabilizes afterwards. Together, $\beta^{pre}_y$ and $\beta^{post}_y$ estimates in the event study approach largely conform to the results of the difference-in-differences approach when analyzing all counties in Appalachia.
 
 ```{r estimate event study model for high risk, include = FALSE}
 ES_mod_high_risk <- feols(
@@ -344,7 +351,7 @@ ES_mod_high_risk <- feols(
   cluster = high_risk_panel$COUNTY)
 ```
 
-```{r fig4, fig.cap = "Medicaid Expansion's Effect on Drug Overdose Death Rates in High Risk Appalachian Counties", fig.width=6, fig.height=4}
+```{r fig4, fig.cap = "Medicaid Expansion's Effect on Drug Overdose Death Rates in High Risk Counties", fig.width=6, fig.height=4}
 iplot(
   ES_mod_high_risk,
   pt.join = TRUE,
@@ -352,11 +359,9 @@ iplot(
   ci.lwd = 0,
   grid.par = list(vert = FALSE),
   main = "",
-  ylab = "Est. Effect on Overdose Death Rates",
+  ylab = "Overdose Death Rates",
   xlab = "Years since Medicaid Expansion")
 ```
-
-Figure 4 displays the yearly estimated effect of Medicaid expansion on drug overdose death rates across "high risk" counties in Appalachia, before and after expansion occurs. 
 
 ```{r estimate event study model for low risk, include = FALSE}
 ES_mod_low_risk <- feols(
@@ -368,7 +373,7 @@ ES_mod_low_risk <- feols(
   cluster = low_risk_panel$COUNTY)
 ```
 
-```{r fig5, fig.cap = "Medicaid Expansion's Effect on Drug Overdose Death Rates in Low Risk Appalachian Counties", fig.width=6, fig.height=4}
+```{r fig5, fig.cap = "Medicaid Expansion's Effect on Drug Overdose Death Rates in Low Risk Counties", fig.width=6, fig.height=4}
 iplot(
   ES_mod_low_risk,
   pt.join = TRUE,
@@ -376,25 +381,39 @@ iplot(
   ci.lwd = 0,
   grid.par = list(vert = FALSE),
   main = "",
-  ylab = "Est. Effect on Overdose Death Rates",
+  ylab = "Overdose Death Rates",
   xlab = "Years since Medicaid Expansion")
 ```
 
-Figure 5 displays the yearly estimated effect of Medicaid expansion on drug overdose death rates across "low risk" counties in Appalachia, before and after expansion occurs.
+Figure 4 displays the yearly estimated effect of Medicaid expansion on drug overdose death rates across "high risk" counties in Appalachia, before and after expansion occurs. For the pre-expansion $\beta^{pre}_y$ estimates, it appears that the assumption of parallel trends does not hold true. In the period four to one year prior to Medicaid expansion, it appears that the time-trend in drug overdose death rates is already diverging between expansion and non-expansion counties, as the $\beta^{pre}_y$ estimates are statistically significant and are moving in an upwards direction over time. The $\beta^{post}_y$ estimates show a *positive* effect of Medicaid expansion on drug overdose deaths that increases in the period one-to-two years after Medicaid expansion, afterwards causal effects estimates stabilize but are increasingly noisy (i.e., widening 95% confidence intervals). Overall, the event study findings for "high risk" counties cast doubt on the validity of difference-in-difference results, as the assumption of parallel trends is shown to be dubious.
 
-A complete table of estimates under the event study approach, across all Appalachian counties, "high risk," and "low risk" counties, can be found in Appendix III.
+Figure 5 displays the yearly estimated effect of Medicaid expansion on drug overdose death rates across "low risk" counties in Appalachia, before and after expansion occurs. Based on the pre-expansion $\beta^{pre}_y$ estimates, the assumption of parallel trends also appears to be fairly weak, as some of the $\beta^{pre}_y$ estimates are relatively statistically significant. Unlike the "high risk" county estimates, although the 95% confidence interval is quite large, the $\beta^{pre}_y$ estimates actually suggest that the difference in overdose death rates between expansion and non-expansion counties is shrinking in "low risk" counties over the period up until one year before expansion. Once again, $\beta^{post}_y$ estimates show a *positive* effect of Medicaid expansion on drug overdose deaths that increases in the period one-to-two years after Medicaid expansion, only to stabilize afterwards. For "low risk counties," in particular, causal effect estimates are increasingly noisy after expansion (i.e., the 95% confidence interval is very large and widening). The event study findings for "low risk" counties cast some doubt on the validity of difference-in-difference results because the assumption of parallel trends is again not very strong, but the causal effects estimates are fairly consistent with the possible exception of the final year ($y=4$).
 
 \medspace
 
 # Conclusion
 
-Our estimates provide significant evidence for the conclusion that Medicaid expansion in Appalachian states had the unintended consequence of ***increasing*** deaths from drug overdose. A possible mechanism for this result is increased access to prescription opioids.
+## Consistency and Validity of Findings
 
-Our findings differ from previous studies on the effect of Medicaid expansion on overdose deaths. However, [Swartz and Beltran (2019)](https://onlinelibrary.wiley.com/doi/epdf/10.1111/add.14741), did find that expansion increased the supply of prescription opioids and that there could be a lagged increase in overdose deaths. Our event study approach does show evidence to support a theory of lagged effects, as causal estimates are largest two-to-five years after Medicaid expansion.
+Overall, we find that strong evidence *against* our hypothesis that Medicaid expansion would *reduce* drug overdose death rates in Appalachia. Causal effects estimates, both in the difference-in-differences and event study approach, point in the *positive* direction when measured among all Appalachian counties, "high risk" counties, and "low risk" counties.
 
-Key limitations include potential OVB due to county-year variation in number of Substance Use Disorder (SUD) treatment facilities and lack of external validity outside of Appalachia. The latter limitation could explain why our results differ from previous studies.
+Instead, these results provide limited evidence to support the counter-hypothesis that Medicaid expansion *increased* drug overdose death rates in Appalachia. When examining all counties in Appalachia, the results of both difference-in-differences and event study approaches suggest that a positive causal effect is likely. However, the results from separate analysis of "high risk" and "low risk" counties casts some doubt on this conclusion as well. First, the assumption of parallel trends weakens when estimating causal effects for these subsets, and also causal effects estimates for "high risk" counties are noisy. Second, the pattern of results for "high" and "low risk" counties does not conform with the mechanism proposed by the counter hypothesis (i.e., Medicaid expansion increasing access to prescription opioids), as this would have likely lead to a stronger effect in "low risk" counties, but in fact our estimates are broadly similar between the two groups.
 
-\medspace
+If anything, the event study results do show evidence to support a claim of lagged effects, as causal estimates are largest two-to-five years after Medicaid expansion across all groups. This trajectory of effects is theorized but not tested by [Swartz and Beltran (2019)](https://onlinelibrary.wiley.com/doi/epdf/10.1111/add.14741), who find that expansion increased the supply of prescription opioids but did not affect overdose deaths. 
+
+We also cannot rule out the potential alternative hypothesis that Medicaid expansion simply increased the ability of expansion counties to collect data and attribute deaths to drug overdoses. This last explanation would seem most consistent with the fact that the size of our causal effects do not vary much by group, as we imagine this effect would be rather agnostic to pre-expansion growth in overdose death rates. To summarize, we find evidence against the original hypothesis (i.e., Medicaid expansion reduced drug overdose deaths), but we also cannot conclusively differentiate the evidence supporting the counter-hypothesis from this possible alternative explanation.
+
+Furthermore, there are a few key limitations that potentially challenge the validity of this study. First, we are unable to control for potential OVB due to county-year variation in number of substance use disorder (SUD) treatment facilities, as this data was unavailable at the county-level. However, it is unclear what the direction of this bias would be. On one hand, SUD treatment facilities could be negatively correlated with deaths from drug overdose due to the services that they provide; on the other, it could also be the case that there are simply more SUD treatment facilities in areas with high rates of drug overdose deaths. 
+
+Lack of SUD treatment center data also impedes our ability to test the mechanism behind our original hypothesis, as it is possible that the effect of enhanced access to healthcare through Medicaid expansion on drug overdose death rates would have been mediated by the presence of SUD treatment centers. Second, we similarly lack data on the supply of prescription opioids in Appalachian counties over this period, making it difficult to assess the mechanism in the counter-hypothesis as well. Finally, we believe that the focus of our sample on Appalachian counties limits external validity, which potentially could explain the difference between our results and prior research. 
+
+## Policy Implications
+
+With regards to policy, our results show that simply increasing access the healthcare by itself is not a solution to the ongoing crisis of drug overdose deaths in the United States, and possibly could be an exacerbating factor. Our findings suggest, although weakly, that there is a positive linkage between the healthcare system in Appalachia and deaths from drug overdose. If this is indeed the case, then policymakers ought to consider steps that decouple medical care (i.e., access to doctors and prescription medication) from drug addiction. Interventions suggested by experts include stronger limitations on amounts of opioids prescribed, increasing access to rehabilitation treatment, and liability placed on prescription drug companies ([University of Pennslyvania, 2019](https://knowledge.wharton.upenn.edu/article/opioid-crisis-policy-solutions/)).
+
+As for the Medicaid program in particular, it should be emphasized that, even to the extent that these detrimental linkages exist, communities in Appalachia are heavily reliant on the program to meet broader healthcare needs and any potential reforms should be careful not to restrict access to these critical services. Above all, it should be noted that the evidence found in our study is quite ambiguous, and taken alone, does not necessarily warrant decisive policy response.
+
+\newpage
 
 # Appendices
 
@@ -402,7 +421,7 @@ Key limitations include potential OVB due to county-year variation in number of 
 
 We compile publicly-available data from the Appalachian Regional Council (ARC), Kaiser Family Foundation (KFF), National Center for Health Statistics (NCHS), and the US Census Bureau into a single county-year panel data set.
 
-### Appalachian Counties Data
+### Appalachian Counties
 
 The Appalachian Regional Commission defines 423 counties in 13 states (West Virginia, Alabama, Georgia, Kentucky, Maryland, Mississippi, New York, North Carolina, Ohio, Pennsylvania, South Carolina, Tennessee, and Virginia) as demarcating the Appalachian region. We adopt this geographical definition in our research approach. More information available at: https://www.arc.gov/appalachian-counties-served-by-arc/.
 
@@ -424,32 +443,38 @@ To control for time-variant, county-variant factors, we pull county-level demogr
 
 In addition to county-level demographics, we pull county shapefiles from the Census Bureau for mapping visuals: https://www.census.gov/geographies/mapping-files/time-series/geo/cartographic-boundary.html
 
+\newpage
+
 ## Appendix II: Defining "High" and "Low Risk" Counties
 
-To define "high" and "low risk" counties, we examine the trajectory of drug overdose death rates in Appalachian counties prior to Medicaid expansion. In particular, we calculate the compound annual growth rates (CAGR) of overdose death rates in Appalachian counties in the pre-expansion period (i.e., between one and four years prior to expansion). Shown in Figure 6, CAGR of overdose death rates varies considerably across Appalachian counties during this period, with some counties experiencing a drastic reduction in overdose death rates, while others see massive increases.
+To define "high" and "low risk" counties, we examine the trajectory of drug overdose death rates in Appalachian counties prior to Medicaid expansion. In particular, we calculate the annual growth rates of overdose death rates in Appalachian counties in the pre-expansion period (i.e., between one and four years prior to expansion). 
+
+$$Avg.~Pre~Expansion~Growth~Rate_{i} = 100 * \frac{1}{3} \sum_{t=-4}^{-2} \frac{ODR_{t+1} - ODR_t}{ODR_t}$$
+
+Shown in Figure 6, growth of overdose death rates varies considerably across Appalachian counties during this period, with some counties experiencing a drastic reduction in overdose death rates, while others see massive increases.
 
 ```{r create CAGR map}
 # Covert counties datafile to sf
 pre_expansion_shapes <- st_as_sf(appalachian_counties)
 
-CAGR_map <- tm_shape(pre_expansion_shapes) + 
-  tm_polygons("pre_expansion_CAGR",
-              title = "CAGR of Overdose Death Rates",
+growth_map <- tm_shape(pre_expansion_shapes) + 
+  tm_polygons("avg_pre_exp_growth",
+              title = "Growth Rate of Overdose Death Rates",
               palette = 'PuRd') +
   tm_borders()
 ```
 
 ```{r fig6, fig.cap="Map of Pre-Expansion CAGR of Overdose Death Rates Across Appalachian Counties", fig.width=6, fig.height=4}
-CAGR_map
+growth_map
 ```
 
 ```{r five num sum, include = FALSE}
-five_num_CAGR <- fivenum(appalachian_counties$pre_expansion_CAGR)
+five_num_growth <- fivenum(appalachian_counties$avg_pre_exp_growth)
 ```
 
-Over this period, CAGR of overdose death rates ranged from `r round(five_num_CAGR[1], 2)`% to `r round(five_num_CAGR[5], 2)`%, with a median of `r round(five_num_CAGR[3], 2)`%. We define "high risk" counties as counties with a pre-expansion CAGR of drug overdose death rates above the 75th percentile (i.e., `r round(five_num_CAGR[4], 2)`%), and similarly define "low risk" counties as counties with a pre-expansion CAGR of drug overdose death rates below the 25th percentile (i.e., `r round(five_num_CAGR[2], 2)`%). Qualitatively, "high risk" counties can be thought of as Appalachian counties that were already experiencing substantial increases in drug overdose death rates prior to the expansion of Medicaid. Conversely, "low risk" counties are counties where overdose death rates were either stagnant or declining. Counties in between the 25th and 75th percentiles of pre-expansion CAGR of drug overdose rates are simply defined as "moderate risk."
+Over this period, annual average growth of overdose death rates ranged from `r round(five_num_growth[1], 2)`% to `r round(five_num_growth[5], 2)`%, with a median of `r round(five_num_growth[3], 2)`%. We define "high risk" counties as counties with average pre-expansion growth of drug overdose death rates above the median, and define "low risk" counties as counties with a pre-expansion growth of drug overdose death at or below zero. Qualitatively, "high risk" counties can be thought of as Appalachian counties that were already experiencing substantial increases in drug overdose death rates prior to the expansion of Medicaid. Conversely, "low risk" counties are counties where overdose death rates were either stagnant or declining. Counties in between are simply defined as "moderate risk."
 
-From Table 3, it is evident that "high risk" counties are more concentrated among expansion counties, while "low risk" counties are more concentrated among non-expansion counties. Notable, however, is the fact that across Appalachian counties and regardless of expansion status, most counties are low-to-moderate risk, which would indicate that the crisis of rising drug overdose death rates was relatively confined to specific areas in the pre-expansion period. 
+From Table 3, it is evident that "high risk" counties are relatively more concentrated among expansion counties, while "low risk" counties are more concentrated among non-expansion counties. This lack of balance likely impacts our estimates of causal effects among these subsets. In our event study findings (see Appendix III), estimates for "high" and "low" risk counties are noisier than for all counties, so this discrepancy could be a detriment to internal validity.
 
 ```{r twoway risk expansion, echo = FALSE}
 expansion_risk_count <- table(appalachian_counties$medicaid_expansion, appalachian_counties$risk)
@@ -491,6 +516,8 @@ diff_in_means_table_2
 ```
 
 From Table 4, we make the somewhat odd observation that "high risk" counties are poorer and older than "low risk" counties. This would seem to run contrary to the established findings that poverty and youth are factors that tend to *increase* incidence of drug overdose deaths. However, it could just be the case that these factors only affect the *level* of drug overdose death rates in a particular county, but do not play a role in *rates of growth*. In terms of male population share and racial composition, however, there are no statistically significant differences.
+
+\newpage
 
 ## Appendix III: Event Study Estimates
 
@@ -548,10 +575,12 @@ ES_estimation_results <- modelsummary(ES_models,
                                       gof_map = gm,
                                       title = 'Effect of Medicaid Expansion on Drug Overdose Death Rates',
                                       stars = c('*' = .1, '**' = .05, '***' = .01),
-                                      notes = 'Control covariates include county-level poverty rate, median age, male pop. share, Black pop. share, White pop. share, 
-                      Hispanic pop. share, and Asian pop. share.
-                      Robust standard errors clustered by county are shown in parentheses.
-                      Observations are weighted by the population in each county.') %>% 
+                                      notes = list(
+                                      'Observations are weighted by the population in each county.',
+                                      'Robust standard errors clustered by county are shown in parentheses.',
+                                      'White pop. share, Hispanic pop. share, and Asian pop. share.',
+                                      'Control covariates include county-level poverty rate, median age, male pop. share, Black pop. share,')) %>% 
+  column_spec(column = 2:4, width = "1.5in") %>% 
   kable_styling(latex_options = "hold_position")
 ```
 
